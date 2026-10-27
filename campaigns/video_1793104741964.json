@@ -1,0 +1,144 @@
+{
+  "campaignId": "video_1793104741964",
+  "title": "Thought for 5s, 159 tokens\n  Constructing the response now, ",
+  "brand": {
+    "name": "Sentinel Cyber",
+    "primaryColor": "#6366f1",
+    "accentColor": "#06B6D4",
+    "backgroundColor": "#030712",
+    "theme": "cyber"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Get Started Today →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "PROBLEM STATEMENT",
+      "headline": "Thought for 5s, 159 tokens\n  Constructing the response now, focusing o",
+      "accentWord": "for 5s,",
+      "subtitle": "Break bottlenecks with code-driven automation.",
+      "description": "Manual workflows create invisible latency, deployment friction, and unexpected regressions.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s_compare",
+      "type": "before_after_split",
+      "tag": "BEFORE VS AFTER",
+      "headline": "Ditch The Legacy Architecture",
+      "accentWord": "Legacy",
+      "subtitle": "See the quantifiable difference in velocity and posture.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "beforeAfter": {
+        "beforeTitle": "Legacy Approach",
+        "beforeItems": [
+          "Manual Fragile Configuration",
+          "Opaque Observability Blindspots",
+          "Slow 45-Minute MTTR Incidents"
+        ],
+        "afterTitle": "Modern Automated Pipeline",
+        "afterItems": [
+          "100% Code-Driven Execution",
+          "Real-Time Telemetry & Health Checks",
+          "Sub-Second Automatic Recovery"
+        ]
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s_term",
+      "type": "terminal_code",
+      "tag": "LIVE EXECUTION",
+      "headline": "Autonomous Verification In Seconds",
+      "accentWord": "Autonomous",
+      "terminalCommand": "sentinelcyber deploy --verify --production",
+      "terminalOutput": "✔ AST parsed in 1.2s. 100% verification rules passing.",
+      "terminalAlert": "VERIFIED: Zero Regressions Detected",
+      "terminalTitle": "engine — deploy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s_topo",
+      "type": "network_topology",
+      "tag": "ARCHITECTURE TOPOLOGY",
+      "headline": "Direct End-To-End Connectivity",
+      "accentWord": "Connectivity",
+      "terminalTitle": "bash — auth_policy.sh",
+      "nodeLeft": {
+        "icon": "user",
+        "label": "Client Identity",
+        "status": "Passkey Verified",
+        "sub": "MFA Active"
+      },
+      "nodeCenter": {
+        "icon": "shield",
+        "label": "Policy Mesh",
+        "sub": "Continuous Auth Engine",
+        "status": "ENFORCED"
+      },
+      "nodeRight": {
+        "icon": "lock",
+        "label": "Cloud Workload",
+        "sub": "Zero WAN IP Exposure",
+        "status": "ISOLATED"
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s_metric",
+      "type": "metric_counter",
+      "tag": "PROVEN IMPACT",
+      "headline": "Measurable Production Velocity",
+      "accentWord": "Velocity",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Efficiency & Latency Gain",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Manual Overhead Incurred",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s_cta",
+      "type": "conversion_cta",
+      "tag": "GET STARTED",
+      "headline": "Deploy Your Next Experience Today",
+      "accentWord": "Today",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Get Started Free →",
+      "trustBadges": [
+        "SOC 2 TYPE II AUDITED",
+        "ZERO OVERHEAD",
+        "DEPLOYS IN 5 MIN"
+      ],
+      "durationSeconds": 5
+    }
+  ]
+}

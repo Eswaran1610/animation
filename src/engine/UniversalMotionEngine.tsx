@@ -1,5 +1,4 @@
-import React from "react";
-import { AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig, Audio, staticFile } from "remotion";
+import { AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { noise2D } from "@remotion/noise";
 import { evolvePath } from "@remotion/paths";
 import Prism from "prismjs";
@@ -7,30 +6,9 @@ import "prismjs/components/prism-bash";
 import { CampaignData, MotionScene } from "./schema";
 
 // =========================================================================
-// CRISP VECTOR SVG ICONS (Resolution-independent, 0 external deps)
+// SVG VECTOR ICONS (Zero external font dependency, 100% deterministic)
 // =========================================================================
-const IconShield: React.FC<{ color: string; size?: number }> = ({ color, size = 36 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    <path d="m9 12 2 2 4-4" />
-  </svg>
-);
-
-const IconLock: React.FC<{ color: string; size?: number }> = ({ color, size = 36 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-  </svg>
-);
-
-const IconUser: React.FC<{ color: string; size?: number }> = ({ color, size = 36 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-    <circle cx="12" cy="7" r="4" />
-  </svg>
-);
-
-const IconCheck: React.FC<{ color: string; size?: number }> = ({ color, size = 22 }) => (
+const IconCheck: React.FC<{ color: string; size?: number }> = ({ color, size = 20 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="20 6 9 17 4 12" />
   </svg>
@@ -43,1240 +21,900 @@ const IconCross: React.FC<{ color: string; size?: number }> = ({ color, size = 2
   </svg>
 );
 
+const IconShield: React.FC<{ color: string; size?: number }> = ({ color, size = 28 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
 const IconAlert: React.FC<{ color: string; size?: number }> = ({ color, size = 28 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
     <line x1="12" y1="9" x2="12" y2="13" />
     <line x1="12" y1="17" x2="12.01" y2="17" />
   </svg>
 );
 
-const IconTerminal: React.FC<{ color: string; size?: number }> = ({ color, size = 22 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+const IconTerminal: React.FC<{ color: string; size?: number }> = ({ color, size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="4 17 10 11 4 5" />
     <line x1="12" y1="19" x2="20" y2="19" />
   </svg>
 );
 
-const IconSparkles: React.FC<{ color: string; size?: number }> = ({ color, size = 32 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z" />
+const IconSparkle: React.FC<{ color: string; size?: number }> = ({ color, size = 24 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
   </svg>
 );
 
 // =========================================================================
-// SYNTAX HIGHLIGHTER HELPER (Prism.js Bash / Shell Tokenizer)
+// SYNTAX HIGHLIGHTING (Prism.js token renderer)
 // =========================================================================
-const renderSyntaxTokens = (code: string) => {
-  if (!code) return null;
-  const tokens = Prism.tokenize(code, Prism.languages.bash);
-
-  return tokens.map((token, i) => {
+function renderSyntaxTokens(text: string) {
+  const tokens = Prism.tokenize(text, Prism.languages.bash);
+  return tokens.map((token: any, i: number) => {
     if (typeof token === "string") {
       return <span key={i} style={{ color: "#F8FAFC" }}>{token}</span>;
     }
-
-    let color = "#38BDF8"; // default cyan
-    if (token.type === "keyword" || token.type === "builtin") color = "#C084FC"; // neon purple
-    else if (token.type === "string") color = "#34D399"; // emerald
-    else if (token.type === "function") color = "#60A5FA"; // light blue
-    else if (token.type === "operator" || token.type === "punctuation") color = "#94A3B8"; // slate
-    else if (token.type === "variable") color = "#FBBF24"; // amber
-    else if (token.type === "comment") color = "#64748B"; // muted
-    else if (token.type === "number") color = "#FB923C"; // orange
-    else if (String(token.content).startsWith("-")) color = "#F43F5E"; // rose flags
-
-    const content =
-      typeof token.content === "string"
-        ? token.content
-        : Array.isArray(token.content)
-        ? token.content.map((c) => (typeof c === "string" ? c : c.content)).join("")
-        : String(token.content);
-
-    return (
-      <span key={i} style={{ color, fontWeight: token.type === "keyword" ? 800 : 600 }}>
-        {content}
-      </span>
-    );
+    let color = "#38BDF8";
+    if (token.type === "keyword" || token.type === "function") color = "#F43F5E";
+    else if (token.type === "string") color = "#10B981";
+    else if (token.type === "parameter" || token.type === "variable") color = "#F59E0B";
+    else if (token.type === "comment") color = "#64748B";
+    return <span key={i} style={{ color, fontWeight: 600 }}>{token.content}</span>;
   });
-};
+}
 
 // =========================================================================
-// MAIN PERMANENT ENGINE COMPOSITION
+// CINEMATIC BACKGROUND: Perlin Volumetric Noise & Deep Obsidian Mesh
 // =========================================================================
-export const UniversalMotionEngine: React.FC<{ campaign: CampaignData }> = ({ campaign }) => {
+const CinematicAtmosphere: React.FC<{ theme?: string; primaryColor: string; accentColor: string }> = ({
+  theme = "cyber",
+  primaryColor,
+  accentColor,
+}) => {
   const frame = useCurrentFrame();
-  const { fps, width, height } = useVideoConfig();
+  const isClaude = theme === "claude";
 
-  const isVertical = campaign.aspectRatio === "9:16";
-  const isClaudeTheme = campaign.brand.theme === "claude";
-  const totalFrames = campaign.scenes.reduce((acc, s) => acc + s.durationSeconds * fps, 0);
+  // Multi-octave Perlin noise drift
+  const x1 = 50 + noise2D("aurora_x", frame / 180, 0) * 22;
+  const y1 = 35 + noise2D("aurora_y", 0, frame / 180) * 18;
+  const x2 = 50 + noise2D("aurora_x2", frame / 150, 1) * 25;
+  const y2 = 70 + noise2D("aurora_y2", 1, frame / 150) * 20;
 
-  // Continuous subtle 3D cinematic camera tracking
-  const cameraZ = interpolate(frame, [0, Math.max(1, totalFrames)], [1, 1.05]);
-  const cameraRotY = interpolate(frame, [0, Math.max(1, totalFrames)], [-1.2, 1.2]);
+  const bgBase = isClaude ? "#181714" : theme === "fintech" ? "#060A12" : "#030611";
+  const glow1 = isClaude ? "rgba(217, 119, 87, 0.18)" : `${primaryColor}22`;
+  const glow2 = isClaude ? "rgba(245, 241, 232, 0.08)" : `${accentColor}18`;
 
-  // Organic volumetric neon light drift using Perlin noise from @remotion/noise
-  const noiseGlowX = noise2D("neon-drift-x", frame * 0.012, 0);
-  const noiseGlowY = noise2D("neon-drift-y", 0, frame * 0.012);
-  const glowX = interpolate(noiseGlowX, [-1, 1], [38, 62]);
-  const glowY = interpolate(noiseGlowY, [-1, 1], [16, 34]);
-
-  const bgBase = isClaudeTheme ? "#1A1916" : campaign.brand.backgroundColor || "#030712";
-  const fontFamily = isClaudeTheme
-    ? "Georgia, 'Times New Roman', serif"
-    : "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif";
-
-  let accumulatedFrames = 0;
+  // Grid line scan drift
+  const gridOffsetY = (frame * 0.8) % 60;
 
   return (
-    <AbsoluteFill
-      style={{
-        backgroundColor: bgBase,
-        color: isClaudeTheme ? "#F5F1E8" : "#F8FAFC",
-        fontFamily,
-        overflow: "hidden",
-        perspective: 1400,
-      }}
-    >
-      {/* Background Cyber Audio Score */}
-      <Audio src={staticFile(campaign.audioTrack || "cyber_audio.wav")} volume={0.65} />
-
-      {/* Synchronized Foley SFX at scene boundary transitions */}
-      {campaign.scenes.map((_, idx) => {
-        if (idx === 0) return null;
-        const triggerFrame = campaign.scenes.slice(0, idx).reduce((acc, s) => acc + s.durationSeconds * fps, 0);
-        return (
-          <Sequence key={`sfx-${idx}`} from={triggerFrame} durationInFrames={30}>
-            <Audio src={staticFile("sfx/whoosh.wav")} volume={0.5} />
-          </Sequence>
-        );
-      })}
-
-      {/* Subtle Matrix / Circuit Grid Background (skipped in Claude theme for clean organic texture) */}
-      {!isClaudeTheme && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `
-              linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px)
-            `,
-            backgroundSize: "72px 72px",
-            opacity: 0.8,
-            pointerEvents: "none",
-          }}
-        />
-      )}
-
-      {/* Subtle Procedural Film Grain Overlay */}
+    <AbsoluteFill style={{ backgroundColor: bgBase, overflow: "hidden" }}>
+      {/* Volumetric Neon Drift */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          opacity: isClaudeTheme ? 0.06 : 0.035,
-          pointerEvents: "none",
-          backgroundImage: "radial-gradient(circle at 50% 50%, rgba(255,255,255,0.7) 1px, transparent 1px)",
-          backgroundSize: "4px 4px",
-          mixBlendMode: "screen",
+          background: `
+            radial-gradient(70% 50% at ${x1}% ${y1}%, ${glow1}, transparent 75%),
+            radial-gradient(60% 45% at ${x2}% ${y2}%, ${glow2}, transparent 75%)
+          `,
         }}
       />
 
-      {/* Dual Volumetric Atmospheric Neons Driven by Perlin Noise */}
+      {/* Cyber Grid Plane with Perspective */}
+      {!isClaude && (
+        <div
+          style={{
+            position: "absolute",
+            inset: -200,
+            backgroundImage: `
+              linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
+            `,
+            backgroundSize: "60px 60px",
+            backgroundPosition: `0px ${gridOffsetY}px`,
+            transform: "perspective(800px) rotateX(45deg) translateY(-80px)",
+            transformOrigin: "center top",
+            opacity: 0.7,
+            maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 85%)",
+            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 85%)",
+          }}
+        />
+      )}
+
+      {/* Top and Bottom Vignette */}
       <div
         style={{
           position: "absolute",
-          top: `${glowY}%`,
-          left: `${glowX}%`,
-          width: isVertical ? 950 : 1300,
-          height: isVertical ? 950 : 1300,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${campaign.brand.primaryColor}38 0%, transparent 65%)`,
-          transform: "translate(-50%, -50%)",
-          filter: "blur(140px)",
+          inset: 0,
+          background: "radial-gradient(circle at center, transparent 30%, rgba(3, 6, 17, 0.85) 100%)",
           pointerEvents: "none",
         }}
       />
-      <div
-        style={{
-          position: "absolute",
-          bottom: "12%",
-          right: "8%",
-          width: 750,
-          height: 750,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, ${campaign.brand.accentColor}25 0%, transparent 65%)`,
-          filter: "blur(130px)",
-          pointerEvents: "none",
-        }}
-      />
+    </AbsoluteFill>
+  );
+};
 
-      {/* Top Global Progress Tracker */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: `${(frame / Math.max(1, totalFrames)) * 100}%`,
-          height: 5,
-          background: `linear-gradient(90deg, ${campaign.brand.primaryColor}, ${campaign.brand.accentColor})`,
-          boxShadow: `0 0 16px ${campaign.brand.primaryColor}`,
-          zIndex: 100,
-        }}
-      />
+// =========================================================================
+// 1. ARCHETYPE: KINETIC HOOK (Massive 3D Typographic Slam - NO PowerPoint)
+// =========================================================================
+const SceneKineticHook: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({
+  scene,
+  campaign,
+  frame,
+  fps,
+}) => {
+  const words = scene.headline.split(" ");
+  const isClaude = campaign.brand.theme === "claude";
 
-      {/* 3D Viewport Wrapper */}
+  // Shock impact camera shake
+  const impactFrame = 16;
+  const shake = frame > impactFrame && frame < impactFrame + 10 ? Math.sin((frame - impactFrame) * 2.5) * 6 : 0;
+
+  // Moving light streak
+  const streakX = interpolate(frame, [15, 60], [-100, 200], { extrapolateRight: "clamp" });
+
+  return (
+    <AbsoluteFill
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "80px 60px",
+        textAlign: "center",
+        transform: `translate(${shake}px, ${shake * 0.5}px)`,
+      }}
+    >
+      {/* Category Pill with Glowing Pulse */}
       <div
         style={{
-          width: "100%",
-          height: "100%",
-          transform: `scale(${cameraZ}) rotateY(${cameraRotY}deg)`,
-          transformStyle: "preserve-3d",
-          position: "relative",
+          background: `${campaign.brand.primaryColor}18`,
+          border: `1px solid ${campaign.brand.primaryColor}88`,
+          borderRadius: 9999,
+          padding: "10px 28px",
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          boxShadow: `0 0 35px ${campaign.brand.primaryColor}44`,
+          marginBottom: 36,
+          transform: `scale(${spring({ frame, fps, config: { damping: 10, stiffness: 120 } })})`,
         }}
       >
-        {/* Dynamic Scene Choreography */}
-        {campaign.scenes.map((scene, idx) => {
-          const startFrame = accumulatedFrames;
-          const durationFrames = scene.durationSeconds * fps;
-          accumulatedFrames += durationFrames;
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: campaign.brand.primaryColor, boxShadow: `0 0 10px ${campaign.brand.primaryColor}` }} />
+        <span style={{ fontSize: 16, fontWeight: 900, letterSpacing: 3, textTransform: "uppercase", color: campaign.brand.primaryColor, fontFamily: isClaude ? "Georgia, serif" : "monospace" }}>
+          {scene.tag || "CRITICAL ALERT"}
+        </span>
+      </div>
+
+      {/* Giant Kinetic Words Slamming Down */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "12px 24px",
+          maxWidth: 960,
+          perspective: 1000,
+        }}
+      >
+        {words.map((w, i) => {
+          const wSpring = spring({ frame: frame - i * 3, fps, config: { damping: 11, stiffness: 140, mass: 0.6 } });
+          const wY = interpolate(wSpring, [0, 1], [-60, 0]);
+          const wRotX = interpolate(wSpring, [0, 1], [40, 0]);
+          const isAccent = scene.accentWord && w.toLowerCase().includes(scene.accentWord.toLowerCase().replace(/[^a-z0-9]/gi, ""));
 
           return (
-            <Sequence key={scene.id || idx} from={startFrame} durationInFrames={durationFrames}>
-              <EngineSceneRenderer
-                scene={scene}
-                campaign={campaign}
-                index={idx}
-                total={campaign.scenes.length}
-                isVertical={isVertical}
-                durationFrames={durationFrames}
-                isClaudeTheme={isClaudeTheme}
-              />
-            </Sequence>
+            <span
+              key={i}
+              style={{
+                display: "inline-block",
+                transform: `translateY(${wY}px) rotateX(${wRotX}deg)`,
+                opacity: wSpring,
+                fontSize: words.length > 6 ? 78 : 92,
+                fontWeight: isClaude ? 700 : 900,
+                letterSpacing: -2,
+                lineHeight: 1.08,
+                fontFamily: isClaude ? "Georgia, serif" : "inherit",
+                color: isAccent ? campaign.brand.primaryColor : "#FFFFFF",
+                textShadow: isAccent ? `0 0 50px ${campaign.brand.primaryColor}aa, 0 0 90px ${campaign.brand.primaryColor}44` : "0 10px 30px rgba(0,0,0,0.8)",
+              }}
+            >
+              {w}
+            </span>
           );
         })}
+      </div>
+
+      {/* 3D Floating Alert Orb / Warning Card */}
+      <div
+        style={{
+          marginTop: 56,
+          maxWidth: 880,
+          width: "100%",
+          background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)",
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          borderRadius: 28,
+          padding: "32px 36px",
+          backdropFilter: "blur(20px)",
+          boxShadow: "0 30px 80px rgba(0, 0, 0, 0.6)",
+          transform: `perspective(1000px) rotateX(12deg) scale(${spring({ frame: frame - 10, fps, config: { damping: 14 } })})`,
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Anamorphic light sweep */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: `${streakX}%`,
+            width: 140,
+            background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent)",
+            transform: "skewX(-25deg)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div style={{ display: "flex", alignItems: "center", gap: 18, textAlign: "left" }}>
+          <div style={{ width: 56, height: 56, borderRadius: 18, background: `${campaign.brand.primaryColor}22`, border: `1px solid ${campaign.brand.primaryColor}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <IconAlert color={campaign.brand.primaryColor} size={30} />
+          </div>
+          <div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: "#FFFFFF", lineHeight: 1.3 }}>
+              {scene.subtitle || scene.description}
+            </div>
+            {scene.description && scene.subtitle && (
+              <div style={{ fontSize: 17, color: "rgba(248, 250, 252, 0.65)", marginTop: 8, lineHeight: 1.4 }}>
+                {scene.description}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </AbsoluteFill>
   );
 };
 
 // =========================================================================
-// UNIVERSAL SCENE RENDERER (Proper Full-Canvas Spatial Composition)
+// 2. ARCHETYPE: 3D BEFORE VS AFTER SPLIT (Floating Isometric Glass)
 // =========================================================================
-const EngineSceneRenderer: React.FC<{
-  scene: MotionScene;
-  campaign: CampaignData;
-  index: number;
-  total: number;
-  isVertical: boolean;
-  durationFrames: number;
-  isClaudeTheme: boolean;
-}> = ({ scene, campaign, index, total, isVertical, durationFrames, isClaudeTheme }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-
-  // Snappy transitions
-  const sceneOpacity = interpolate(
-    frame,
-    [0, 4, durationFrames - 4, durationFrames],
-    [0, 1, 1, 0],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
-  );
-
-  const sceneScale = interpolate(
-    frame,
-    [0, 6, durationFrames - 6, durationFrames],
-    [0.97, 1, 1, 1.02],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
-  );
-
-  const words = scene.headline.split(" ");
-
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        padding: isVertical ? "65px 56px 50px" : "55px 90px 45px",
-        boxSizing: "border-box",
-        opacity: sceneOpacity,
-        transform: `scale(${sceneScale})`,
-      }}
-    >
-      {/* 1. TOP HEADER HUD (Brand + Live Status + Scene Index) */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 50, marginBottom: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          {/* Pulsing Status Indicator */}
-          <div style={{ position: "relative", width: 12, height: 12 }}>
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: "50%",
-                backgroundColor: campaign.brand.primaryColor,
-              }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                inset: -4,
-                borderRadius: "50%",
-                backgroundColor: campaign.brand.primaryColor,
-                opacity: interpolate(Math.sin((frame / 8) * Math.PI), [-1, 1], [0.2, 0.7]),
-              }}
-            />
-          </div>
-
-          {/* Category Tag Pill */}
-          <div
-            style={{
-              background: isClaudeTheme ? "rgba(217, 119, 87, 0.12)" : "rgba(255, 255, 255, 0.06)",
-              border: `1px solid ${campaign.brand.primaryColor}55`,
-              borderRadius: 9999,
-              padding: "6px 16px",
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <span
-              style={{
-                fontSize: 13,
-                fontWeight: 800,
-                letterSpacing: 2,
-                textTransform: "uppercase",
-                color: campaign.brand.primaryColor,
-                fontFamily: isClaudeTheme ? "'JetBrains Mono', Menlo, monospace" : "inherit",
-              }}
-            >
-              {scene.tag}
-            </span>
-          </div>
-        </div>
-
-        {/* Scene Index & Brand */}
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "rgba(248, 250, 252, 0.5)", letterSpacing: 1.5, textTransform: "uppercase" }}>
-            {campaign.brand.name}
-          </span>
-          <div
-            style={{
-              fontFamily: "'Fira Code', 'JetBrains Mono', monospace",
-              fontSize: 14,
-              fontWeight: 700,
-              color: "#FFFFFF",
-              background: "rgba(255, 255, 255, 0.08)",
-              padding: "4px 12px",
-              borderRadius: 8,
-              border: "1px solid rgba(255, 255, 255, 0.12)",
-            }}
-          >
-            0{index + 1} / 0{total}
-          </div>
-        </div>
-      </div>
-
-      {/* 2. HERO KINETIC TYPOGRAPHY AREA */}
-      <div style={{ marginBottom: 28 }}>
-        {/* Kinetic Staggered Words */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px" }}>
-          {words.map((w, wIdx) => {
-            const wordSpring = spring({
-              frame: frame - wIdx * 2,
-              fps,
-              config: { damping: 14, stiffness: 100, mass: 0.7 },
-            });
-            const wordY = interpolate(wordSpring, [0, 1], [24, 0]);
-            const isAccent = scene.accentWord && w.toLowerCase().includes(scene.accentWord.toLowerCase().replace(/[^a-z0-9]/gi, ""));
-
-            return (
-              <span
-                key={wIdx}
-                style={{
-                  display: "inline-block",
-                  transform: `translateY(${wordY}px)`,
-                  opacity: wordSpring,
-                  fontSize: isVertical ? (words.length > 7 ? 48 : 58) : 64,
-                  fontWeight: isClaudeTheme ? 700 : 900,
-                  letterSpacing: isClaudeTheme ? 0 : -1.2,
-                  lineHeight: 1.12,
-                  color: isAccent ? campaign.brand.primaryColor : isClaudeTheme ? "#F5F1E8" : "#FFFFFF",
-                  textShadow: isAccent ? `0 0 35px ${campaign.brand.primaryColor}88` : "none",
-                }}
-              >
-                {w}
-              </span>
-            );
-          })}
-        </div>
-
-        {/* Subtitle / Context description */}
-        {scene.subtitle && (
-          <div
-            style={{
-              marginTop: 14,
-              fontSize: 20,
-              fontWeight: 400,
-              color: isClaudeTheme ? "#9A9488" : "rgba(248, 250, 252, 0.75)",
-              lineHeight: 1.4,
-              maxWidth: "96%",
-            }}
-          >
-            {scene.subtitle}
-          </div>
-        )}
-      </div>
-
-      {/* 3. VISUAL CENTERPIECE STAGE (Full-Scale Immersive Allocation) */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start", position: "relative" }}>
-        {/* Archetype 1: Terminal Code */}
-        {(scene.type === "terminal_code" || (scene.type as any) === "code_terminal") && (
-          <StudioTerminalMockup scene={scene} campaign={campaign} frame={frame} isVertical={isVertical} />
-        )}
-
-        {/* Archetype 2: Network Topology Architecture */}
-        {scene.type === "network_topology" && (
-          <StudioTopologyMockup scene={scene} campaign={campaign} frame={frame} isVertical={isVertical} />
-        )}
-
-        {/* Archetype 3: Before vs After Split Comparison */}
-        {scene.type === "before_after_split" && (
-          <StudioBeforeAfterMockup scene={scene} campaign={campaign} frame={frame} isVertical={isVertical} />
-        )}
-
-        {/* Archetype 4: Feature Cards Staggered Stack */}
-        {scene.type === "feature_cards" && (
-          <StudioFeatureCardsMockup items={scene.items || []} campaign={campaign} frame={frame} isVertical={isVertical} />
-        )}
-
-        {/* Archetype 5: Metric Counter Command Center */}
-        {scene.type === "metric_counter" && (
-          <StudioMetricMockup scene={scene} campaign={campaign} frame={frame} isVertical={isVertical} />
-        )}
-
-        {/* Archetype 6: Conversion CTA Action Showcase */}
-        {scene.type === "conversion_cta" && (
-          <StudioConversionMockup scene={scene} campaign={campaign} frame={frame} fps={fps} isVertical={isVertical} />
-        )}
-
-        {/* Archetype 7: Kinetic Hook Narrative Callout */}
-        {scene.type === "kinetic_hook" && (
-          <StudioHookMockup scene={scene} campaign={campaign} frame={frame} isVertical={isVertical} />
-        )}
-      </div>
-
-      {/* 4. FOOTER TELEMETRY STRIP */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingTop: 18,
-          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
-          fontFamily: "'Fira Code', 'JetBrains Mono', monospace",
-          fontSize: 12,
-          color: "rgba(248, 250, 252, 0.45)",
-          letterSpacing: 1.2,
-          textTransform: "uppercase",
-          height: 38,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ color: campaign.brand.primaryColor }}>●</span>
-          <span>SYSTEM: DETERMINISTIC MOTION GRAPHICS</span>
-        </div>
-        <div>SHA-256 SECURED // FRAME {frame}</div>
-      </div>
-    </div>
-  );
-};
-
-// =========================================================================
-// ARCHETYPE: BEFORE VS AFTER SPLIT COMPARISON (Huge Visual Variety)
-// =========================================================================
-const StudioBeforeAfterMockup: React.FC<{
-  scene: MotionScene;
-  campaign: CampaignData;
-  frame: number;
-  isVertical: boolean;
-}> = ({ scene, campaign, frame, isVertical }) => {
+const SceneBeforeAfter: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({
+  scene,
+  campaign,
+  frame,
+  fps,
+}) => {
   const ba = scene.beforeAfter || {
-    beforeTitle: "Legacy Manual Workflow",
-    beforeItems: ["Unrestricted Lateral Subnet Exposure", "Opaque Observability & Log Blindspots", "Slow 45-Minute MTTR During Incidents"],
-    afterTitle: "Modern Zero-Trust Architecture",
-    afterItems: ["Ephemeral TLS 1.3 Micro-Tunnels", "Real-Time Biometric Posture Evaluation", "0ms Unauthorized Lateral Movement Allowed"],
+    beforeTitle: "Vulnerable Legacy System",
+    beforeItems: ["Unvalidated Remote Inputs", "Arbitrary Code Execution Vectors", "Opaque Posture Blindspots"],
+    afterTitle: "Autonomous Zero-Trust Shield",
+    afterItems: ["Real-Time AST Taint Interception", "Zero WAN Surface Exposure", "Sub-Millisecond Attack Termination"],
   };
 
-  const beforeSlide = interpolate(frame, [8, 24], [30, 0], { extrapolateRight: "clamp" });
-  const afterSlide = interpolate(frame, [16, 32], [30, 0], { extrapolateRight: "clamp" });
-  const vsScale = spring({ frame: frame - 12, fps: 30, config: { damping: 12, stiffness: 120 } });
+  const beforeSlideX = interpolate(frame, [4, 22], [-80, 0], { extrapolateRight: "clamp" });
+  const afterSlideX = interpolate(frame, [12, 30], [80, 0], { extrapolateRight: "clamp" });
+  const vsPop = spring({ frame: frame - 14, fps, config: { damping: 9, stiffness: 140 } });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 18, position: "relative" }}>
-      {/* 1. Legacy / Before Card (Red / Warning Aesthetic) */}
-      <div
-        style={{
-          transform: `translateY(${beforeSlide}px)`,
-          background: "rgba(239, 68, 68, 0.06)",
-          border: "1px solid rgba(239, 68, 68, 0.35)",
-          borderRadius: 22,
-          padding: "24px 26px",
-          boxShadow: "0 15px 35px rgba(0, 0, 0, 0.4)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-          <span style={{ background: "rgba(239, 68, 68, 0.2)", color: "#EF4444", fontSize: 12, fontWeight: 900, padding: "4px 10px", borderRadius: 6, letterSpacing: 1.5, textTransform: "uppercase" }}>
-            BEFORE
-          </span>
-          <span style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF" }}>{ba.beforeTitle}</span>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {ba.beforeItems.map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(239, 68, 68, 0.18)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <IconCross color="#EF4444" size={14} />
-              </div>
-              <span style={{ fontSize: 16, color: "rgba(248, 250, 252, 0.8)", fontWeight: 500 }}>{item}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Floating Animated "VS" Badge */}
-      <div
-        style={{
-          alignSelf: "center",
-          transform: `scale(${vsScale})`,
-          background: `linear-gradient(135deg, ${campaign.brand.primaryColor}, ${campaign.brand.accentColor})`,
-          color: "#050811",
-          fontWeight: 900,
-          fontSize: 14,
-          padding: "6px 16px",
-          borderRadius: 9999,
-          boxShadow: `0 0 20px ${campaign.brand.primaryColor}88`,
-          letterSpacing: 2,
-          zIndex: 10,
-        }}
-      >
-        VS
-      </div>
-
-      {/* 2. Modern / After Card (Brand Primary Aesthetic) */}
-      <div
-        style={{
-          transform: `translateY(${afterSlide}px)`,
-          background: `${campaign.brand.primaryColor}10`,
-          border: `1px solid ${campaign.brand.primaryColor}55`,
-          borderRadius: 22,
-          padding: "24px 26px",
-          boxShadow: `0 20px 45px -10px ${campaign.brand.primaryColor}24`,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-          <span style={{ background: `${campaign.brand.primaryColor}25`, color: campaign.brand.primaryColor, fontSize: 12, fontWeight: 900, padding: "4px 10px", borderRadius: 6, letterSpacing: 1.5, textTransform: "uppercase" }}>
-            AFTER
-          </span>
-          <span style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF" }}>{ba.afterTitle}</span>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {ba.afterItems.map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 22, height: 22, borderRadius: "50%", background: `${campaign.brand.primaryColor}28`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <IconCheck color={campaign.brand.primaryColor} size={15} />
-              </div>
-              <span style={{ fontSize: 16, color: "#FFFFFF", fontWeight: 600 }}>{item}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// =========================================================================
-// ARCHETYPE 1: STUDIO macOS TERMINAL / IDE MOCKUP (Prism.js Syntax Highlighted)
-// =========================================================================
-const StudioTerminalMockup: React.FC<{
-  scene: MotionScene;
-  campaign: CampaignData;
-  frame: number;
-  isVertical: boolean;
-}> = ({ scene, campaign, frame }) => {
-  const cmd = scene.terminalCommand || "ztnz verify --identity user@corp.internal --posture=strict";
-  const typedCount = Math.min(cmd.length, Math.floor(interpolate(frame, [10, 55], [0, cmd.length], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })));
-  const displayed = cmd.slice(0, typedCount);
-  const cursorBlink = Math.sin((frame / 12) * Math.PI) > 0;
-
-  const logLines = [
-    { text: "→ Querying Zero-Trust Identity Controller [IDP-01]", delay: 35, status: "OK", color: "#38BDF8" },
-    { text: "→ Device Posture Evaluated: BitLocker Enforced, EDR Active", delay: 50, status: "PASS", color: "#10B981" },
-    { text: "→ Dynamic Ephemeral Micro-Tunnel Provisioned: tunnel_id=0x9f4a", delay: 65, status: "PASS", color: "#10B981" },
-    { text: "→ WAN Port Cloaking Active: 0 External IP Surface Exposed", delay: 80, status: "SECURE", color: "#C084FC" },
-  ];
-
-  return (
-    <div
+    <AbsoluteFill
       style={{
-        width: "100%",
-        background: "rgba(10, 15, 29, 0.92)",
-        backdropFilter: "blur(24px)",
-        border: "1px solid rgba(255, 255, 255, 0.15)",
-        borderRadius: 24,
-        overflow: "hidden",
-        boxShadow: "0 35px 80px -15px rgba(0, 0, 0, 0.75)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "60px 48px",
+        perspective: 1200,
       }}
     >
-      {/* Window Chrome */}
+      {/* Scene Header */}
+      <div style={{ textAlign: "center", marginBottom: 36 }}>
+        <div style={{ fontSize: 15, fontWeight: 900, letterSpacing: 3, textTransform: "uppercase", color: campaign.brand.primaryColor, marginBottom: 12 }}>
+          {scene.tag || "BEFORE VS AFTER"}
+        </div>
+        <div style={{ fontSize: 56, fontWeight: 900, color: "#FFFFFF", letterSpacing: -1 }}>
+          {scene.headline}
+        </div>
+      </div>
+
+      {/* 3D Comparative Stacking Container */}
+      <div style={{ width: "100%", maxWidth: 940, display: "flex", flexDirection: "column", gap: 24, position: "relative" }}>
+        
+        {/* 1. TOP CARD: THE PAINFUL "BEFORE" (Crimson Glow & 3D Tilt) */}
+        <div
+          style={{
+            transform: `perspective(1000px) rotateX(8deg) rotateY(-4deg) translateX(${beforeSlideX}px)`,
+            background: "linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(15, 23, 42, 0.85) 100%)",
+            border: "1.5px solid rgba(239, 68, 68, 0.5)",
+            borderRadius: 30,
+            padding: "36px 38px",
+            boxShadow: "0 25px 60px rgba(239, 68, 68, 0.18), 0 35px 80px rgba(0, 0, 0, 0.8)",
+            backdropFilter: "blur(24px)",
+            position: "relative",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+            <span style={{ background: "rgba(239, 68, 68, 0.3)", color: "#EF4444", fontSize: 13, fontWeight: 900, padding: "6px 14px", borderRadius: 8, letterSpacing: 2, textTransform: "uppercase", border: "1px solid rgba(239, 68, 68, 0.6)" }}>
+              BEFORE
+            </span>
+            <span style={{ fontSize: 26, fontWeight: 800, color: "#FFFFFF" }}>{ba.beforeTitle}</span>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {ba.beforeItems.map((item, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(239, 68, 68, 0.25)", border: "1px solid rgba(239, 68, 68, 0.6)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <IconCross color="#EF4444" size={16} />
+                </div>
+                <span style={{ fontSize: 20, color: "rgba(248, 250, 252, 0.85)", fontWeight: 600 }}>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Floating Animated "VS" Blast Badge */}
+        <div
+          style={{
+            alignSelf: "center",
+            transform: `scale(${vsPop})`,
+            background: `linear-gradient(135deg, ${campaign.brand.primaryColor}, ${campaign.brand.accentColor})`,
+            color: "#050811",
+            fontWeight: 900,
+            fontSize: 18,
+            padding: "10px 26px",
+            borderRadius: 9999,
+            boxShadow: `0 0 40px ${campaign.brand.primaryColor}, 0 0 80px ${campaign.brand.primaryColor}66`,
+            letterSpacing: 3,
+            zIndex: 20,
+            margin: "-16px 0",
+          }}
+        >
+          VS
+        </div>
+
+        {/* 2. BOTTOM CARD: THE REVOLUTIONARY "AFTER" (Emerald/Cyan Neon Glow) */}
+        <div
+          style={{
+            transform: `perspective(1000px) rotateX(8deg) rotateY(-4deg) translateX(${afterSlideX}px)`,
+            background: `linear-gradient(135deg, ${campaign.brand.primaryColor}18 0%, rgba(15, 23, 42, 0.85) 100%)`,
+            border: `1.5px solid ${campaign.brand.primaryColor}88`,
+            borderRadius: 30,
+            padding: "36px 38px",
+            boxShadow: `0 25px 60px ${campaign.brand.primaryColor}25, 0 35px 80px rgba(0, 0, 0, 0.8)`,
+            backdropFilter: "blur(24px)",
+            position: "relative",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+            <span style={{ background: `${campaign.brand.primaryColor}35`, color: campaign.brand.primaryColor, fontSize: 13, fontWeight: 900, padding: "6px 14px", borderRadius: 8, letterSpacing: 2, textTransform: "uppercase", border: `1px solid ${campaign.brand.primaryColor}88` }}>
+              AFTER
+            </span>
+            <span style={{ fontSize: 26, fontWeight: 800, color: "#FFFFFF" }}>{ba.afterTitle}</span>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            {ba.afterItems.map((item, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: `${campaign.brand.primaryColor}30`, border: `1px solid ${campaign.brand.primaryColor}88`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <IconCheck color={campaign.brand.primaryColor} size={16} />
+                </div>
+                <span style={{ fontSize: 20, color: "#FFFFFF", fontWeight: 700 }}>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+// =========================================================================
+// 3. ARCHETYPE: FULL-CANVAS IMMERSIVE TERMINAL (Prism Code & Alert Recoil)
+// =========================================================================
+const SceneTerminal: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({
+  scene,
+  campaign,
+  frame,
+  fps,
+}) => {
+  const cmd = scene.terminalCommand || "sentinel inspect --runtime php-fpm --block-rce";
+  const typedCount = Math.min(cmd.length, Math.floor(interpolate(frame, [8, 48], [0, cmd.length], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })));
+  const displayed = cmd.slice(0, typedCount);
+  const cursorBlink = Math.sin((frame / 10) * Math.PI) > 0;
+
+  // Alert impact screen shake recoil
+  const alertTriggerFrame = 65;
+  const isAlertActive = frame >= alertTriggerFrame && !!scene.terminalAlert;
+  const shakeX = isAlertActive && frame < alertTriggerFrame + 14 ? Math.sin((frame - alertTriggerFrame) * 3) * 8 : 0;
+  const shakeY = isAlertActive && frame < alertTriggerFrame + 14 ? Math.cos((frame - alertTriggerFrame) * 3) * 5 : 0;
+
+  return (
+    <AbsoluteFill
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "60px 44px",
+        transform: `translate(${shakeX}px, ${shakeY}px)`,
+      }}
+    >
+      {/* Floating Scene Header */}
+      <div style={{ textAlign: "center", marginBottom: 28 }}>
+        <div style={{ fontSize: 15, fontWeight: 900, letterSpacing: 3, textTransform: "uppercase", color: campaign.brand.primaryColor, marginBottom: 10 }}>
+          {scene.tag || "LIVE EXECUTION"}
+        </div>
+        <div style={{ fontSize: 52, fontWeight: 900, color: "#FFFFFF", letterSpacing: -1 }}>
+          {scene.headline}
+        </div>
+      </div>
+
+      {/* 3D Tilt Developer Terminal Window */}
       <div
         style={{
-          background: "rgba(255, 255, 255, 0.04)",
-          padding: "18px 24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          width: "100%",
+          maxWidth: 980,
+          background: "rgba(10, 15, 29, 0.94)",
+          backdropFilter: "blur(30px)",
+          border: `1.5px solid ${isAlertActive ? "rgba(239, 68, 68, 0.8)" : "rgba(255, 255, 255, 0.16)"}`,
+          borderRadius: 28,
+          overflow: "hidden",
+          boxShadow: isAlertActive
+            ? "0 0 60px rgba(239, 68, 68, 0.35), 0 40px 100px rgba(0, 0, 0, 0.9)"
+            : "0 0 50px rgba(0, 0, 0, 0.6), 0 40px 100px rgba(0, 0, 0, 0.9)",
+          transform: "perspective(1100px) rotateX(6deg) rotateY(-3deg)",
+          transition: "border-color 0.2s ease",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#FF5F56" }} />
-          <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#FFBD2E" }} />
-          <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#27C93F" }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: 16 }}>
-            <IconTerminal color="rgba(248, 250, 252, 0.6)" size={18} />
-            <span style={{ fontSize: 14, color: "rgba(248, 250, 252, 0.7)", fontFamily: "'Fira Code', monospace" }}>
-              {scene.terminalTitle || "auth_policy.sh"}
+        {/* macOS Chrome Header */}
+        <div
+          style={{
+            background: "rgba(255, 255, 255, 0.04)",
+            padding: "20px 28px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#FF5F56" }} />
+            <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#FFBD2E" }} />
+            <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#27C93F" }} />
+            <span style={{ marginLeft: 16, fontSize: 16, color: "rgba(248, 250, 252, 0.75)", fontFamily: "'Fira Code', monospace" }}>
+              {scene.terminalTitle || "terminal.sh"}
             </span>
           </div>
-        </div>
-        <div style={{ fontSize: 12, fontFamily: "'Fira Code', monospace", color: campaign.brand.primaryColor, background: `${campaign.brand.primaryColor}18`, padding: "4px 12px", borderRadius: 6 }}>
-          zsh • active session
-        </div>
-      </div>
-
-      {/* Terminal Body with Prism.js Syntax Highlighting */}
-      <div style={{ padding: "32px 28px", minHeight: 440, fontFamily: "'Fira Code', monospace", fontSize: 20, lineHeight: 1.6 }}>
-        {/* Command Line with Syntax Color Tokens */}
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <span style={{ marginRight: 12, fontWeight: 800, color: campaign.brand.primaryColor }}>$</span>
-          <div>{renderSyntaxTokens(displayed)}</div>
-          <span
-            style={{
-              display: "inline-block",
-              width: 10,
-              height: 24,
-              background: cursorBlink ? campaign.brand.primaryColor : "transparent",
-              marginLeft: 6,
-              verticalAlign: "middle",
-            }}
-          />
-        </div>
-
-        {/* Execution Log Stream */}
-        <div style={{ marginTop: 28, display: "flex", flexDirection: "column", gap: 14 }}>
-          {logLines.map((line, lIdx) => {
-            if (frame < line.delay) return null;
-            return (
-              <div key={lIdx} style={{ fontSize: 17, color: line.color, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span>{line.text}</span>
-                <span style={{ background: "rgba(255,255,255,0.08)", padding: "3px 10px", borderRadius: 4, fontSize: 13, fontWeight: 700 }}>
-                  [{line.status}]
-                </span>
-              </div>
-            );
-          })}
-
-          {frame > 82 && scene.terminalOutput && (
-            <div style={{ marginTop: 14, padding: "16px 20px", background: `${campaign.brand.primaryColor}14`, border: `1px solid ${campaign.brand.primaryColor}44`, borderRadius: 12, color: "#FFFFFF", fontSize: 18 }}>
-              {scene.terminalOutput}
-            </div>
-          )}
-
-          {frame > 95 && scene.terminalAlert && (
-            <div style={{ marginTop: 16, padding: "16px 22px", background: "rgba(239, 68, 68, 0.16)", border: "1px solid rgba(239, 68, 68, 0.45)", borderRadius: 14, display: "flex", alignItems: "center", gap: 14, color: "#EF4444", fontWeight: 700, fontSize: 18 }}>
-              <IconAlert color="#EF4444" size={28} />
-              <span>{scene.terminalAlert}</span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Terminal Telemetry Strip */}
-      <div
-        style={{
-          background: "rgba(255, 255, 255, 0.03)",
-          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
-          padding: "14px 28px",
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: 13,
-          fontFamily: "'Fira Code', monospace",
-          color: "rgba(248, 250, 252, 0.5)",
-        }}
-      >
-        <span>PACKETS: 4,890 // LATENCY: 0.6ms</span>
-        <span style={{ color: campaign.brand.primaryColor, fontWeight: 700 }}>TLS 1.3 ENFORCED</span>
-      </div>
-    </div>
-  );
-};
-
-// =========================================================================
-// ARCHETYPE 2: STUDIO NETWORK TOPOLOGY (@remotion/paths Evolved Connection)
-// =========================================================================
-const StudioTopologyMockup: React.FC<{
-  scene: MotionScene;
-  campaign: CampaignData;
-  frame: number;
-  isVertical: boolean;
-}> = ({ scene, campaign, frame }) => {
-  const packetPos = (frame * 2.8) % 100;
-  const left = scene.nodeLeft || { icon: "user", label: "Remote Engineer", status: "MFA Verified", sub: "Clean Posture" };
-  const center = scene.nodeCenter || { icon: "shield", label: "ZTNA Gateway", sub: "Policy Decision Engine", status: "CONTINUOUS AUTH" };
-  const right = scene.nodeRight || { icon: "lock", label: "Cloud Workload", sub: "Zero WAN Exposure", status: "CLOAKED" };
-
-  const pathD = "M 80 50 L 880 50";
-  const pathEvolution = evolvePath(Math.min(1, frame / 20), pathD);
-
-  return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 26 }}>
-      {/* Main Architecture Diagram Canvas */}
-      <div
-        style={{
-          background: "rgba(15, 23, 42, 0.82)",
-          backdropFilter: "blur(24px)",
-          border: `1px solid ${campaign.brand.primaryColor}44`,
-          borderRadius: 26,
-          padding: "48px 30px",
-          position: "relative",
-          boxShadow: `0 30px 70px -15px ${campaign.brand.primaryColor}24`,
-        }}
-      >
-        {/* Animated Connection Beam via @remotion/paths */}
-        <div style={{ position: "absolute", top: "54px", left: "12%", right: "12%", height: 10, zIndex: 1 }}>
-          <svg width="100%" height="10" viewBox="0 0 960 10" preserveAspectRatio="none">
-            <line x1="0" y1="5" x2="960" y2="5" stroke="rgba(255, 255, 255, 0.12)" strokeWidth="3" />
-            <path
-              d={pathD}
-              fill="none"
-              stroke={campaign.brand.primaryColor}
-              strokeWidth="3"
-              strokeDasharray={pathEvolution.strokeDasharray}
-              strokeDashoffset={pathEvolution.strokeDashoffset}
-              style={{ filter: `drop-shadow(0 0 8px ${campaign.brand.primaryColor})` }}
-            />
-          </svg>
-
-          {/* Travelling Photon Pulse */}
-          <div
-            style={{
-              position: "absolute",
-              top: -4,
-              left: `${packetPos}%`,
-              width: 18,
-              height: 18,
-              borderRadius: "50%",
-              background: campaign.brand.primaryColor,
-              boxShadow: `0 0 24px ${campaign.brand.primaryColor}, 0 0 40px ${campaign.brand.accentColor}`,
-            }}
-          />
-        </div>
-
-        {/* 3 Major Architecture Nodes */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative", zIndex: 10 }}>
-          {/* Node 1: Left (Client) */}
-          <div style={{ textAlign: "center", width: 145 }}>
-            <div
-              style={{
-                width: 92,
-                height: 92,
-                borderRadius: 26,
-                background: "rgba(255, 255, 255, 0.06)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 14px",
-                boxShadow: "0 12px 30px rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <IconUser color="#FFFFFF" size={44} />
-            </div>
-            <div style={{ fontSize: 19, fontWeight: 800, color: "#FFFFFF" }}>{left.label}</div>
-            <div style={{ fontSize: 14, color: campaign.brand.primaryColor, fontWeight: 700, marginTop: 4 }}>
-              ✓ {left.status}
-            </div>
-            {left.sub && <div style={{ fontSize: 13, color: "rgba(248, 250, 252, 0.55)", marginTop: 2 }}>{left.sub}</div>}
-          </div>
-
-          {/* Node 2: Center (Gateway / Policy Engine) */}
-          <div style={{ textAlign: "center", width: 180 }}>
-            <div
-              style={{
-                width: 108,
-                height: 108,
-                borderRadius: 34,
-                background: `linear-gradient(135deg, ${campaign.brand.primaryColor}38, ${campaign.brand.accentColor}38)`,
-                border: `2px solid ${campaign.brand.primaryColor}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 14px",
-                boxShadow: `0 0 50px ${campaign.brand.primaryColor}55`,
-              }}
-            >
-              <IconShield color={campaign.brand.primaryColor} size={54} />
-            </div>
-            <div style={{ fontSize: 21, fontWeight: 900, color: campaign.brand.primaryColor }}>{center.label}</div>
-            <div style={{ fontSize: 14, color: "#FFFFFF", fontWeight: 700, marginTop: 4 }}>{center.sub}</div>
-            <div style={{ fontSize: 12, fontFamily: "'Fira Code', monospace", color: campaign.brand.accentColor, marginTop: 4, fontWeight: 700 }}>
-              [{center.status || "ACTIVE"}]
-            </div>
-          </div>
-
-          {/* Node 3: Right (Target Application) */}
-          <div style={{ textAlign: "center", width: 145 }}>
-            <div
-              style={{
-                width: 92,
-                height: 92,
-                borderRadius: 26,
-                background: "rgba(255, 255, 255, 0.06)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 14px",
-                boxShadow: "0 12px 30px rgba(0, 0, 0, 0.5)",
-              }}
-            >
-              <IconLock color={campaign.brand.accentColor} size={44} />
-            </div>
-            <div style={{ fontSize: 19, fontWeight: 800, color: "#FFFFFF" }}>{right.label}</div>
-            <div style={{ fontSize: 14, color: campaign.brand.accentColor, fontWeight: 700, marginTop: 4 }}>
-              🔒 {right.sub}
-            </div>
-            {right.status && <div style={{ fontSize: 13, color: "rgba(248, 250, 252, 0.55)", marginTop: 2 }}>{right.status}</div>}
+          <div style={{ fontSize: 13, fontFamily: "'Fira Code', monospace", color: campaign.brand.primaryColor, background: `${campaign.brand.primaryColor}20`, padding: "4px 14px", borderRadius: 8, fontWeight: 700 }}>
+            LIVE RUNTIME
           </div>
         </div>
-      </div>
 
-      {/* Lower Audit Verification Checklist */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        {[
-          "Device Posture Evaluated: Clean EDR & BitLocker Active",
-          "Network Invisibility: Internal IP Space Never Published to WAN",
-          "Continuous Session Authentication: Zero Lateral Movement",
-        ].map((rule, rIdx) => {
-          const ruleSpring = interpolate(frame, [12 + rIdx * 8, 26 + rIdx * 8], [0, 1], { extrapolateRight: "clamp" });
-          return (
-            <div
-              key={rIdx}
+        {/* Terminal Content */}
+        <div style={{ padding: "36px 32px", minHeight: 480, fontFamily: "'Fira Code', monospace", fontSize: 21, lineHeight: 1.6 }}>
+          {/* Active Command Line */}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span style={{ marginRight: 14, fontWeight: 900, color: campaign.brand.primaryColor, fontSize: 24 }}>$</span>
+            <div>{renderSyntaxTokens(displayed)}</div>
+            <span
               style={{
-                opacity: ruleSpring,
-                transform: `translateY(${interpolate(ruleSpring, [0, 1], [15, 0])}px)`,
-                display: "flex",
-                alignItems: "center",
-                gap: 16,
-                background: "rgba(255, 255, 255, 0.04)",
-                padding: "18px 22px",
-                borderRadius: 16,
-                border: "1px solid rgba(255, 255, 255, 0.09)",
-              }}
-            >
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: `${campaign.brand.primaryColor}22`, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <IconCheck color={campaign.brand.primaryColor} size={18} />
-              </div>
-              <span style={{ fontSize: 18, color: "rgba(248, 250, 252, 0.92)", fontWeight: 600 }}>{rule}</span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
-
-// =========================================================================
-// ARCHETYPE 4: STUDIO FEATURE CARDS STAGGERED STACK
-// =========================================================================
-const StudioFeatureCardsMockup: React.FC<{
-  items: (string | { title: string; description?: string; badge?: string })[];
-  campaign: CampaignData;
-  frame: number;
-  isVertical: boolean;
-}> = ({ items, campaign, frame }) => {
-  const displayItems = items.length > 0 ? items : [
-    { title: "Granular App-Level Micro-Tunnels", description: "Users access authorized apps only, never entire subnets.", badge: "HARDENED" },
-    { title: "Continuous Risk Telemetry", description: "Sessions terminate instantly upon suspicious posture shifts.", badge: "REAL-TIME" },
-    { title: "100% Deterministic Policy Enforcement", description: "Automated cryptographically signed access policies.", badge: "ZERO-TOUCH" },
-  ];
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-      {displayItems.map((item, idx) => {
-        const title = typeof item === "string" ? item : item.title;
-        const description = typeof item === "string" ? undefined : item.description;
-        const badge = typeof item === "string" ? undefined : item.badge;
-
-        const slide = interpolate(frame, [8 + idx * 7, 24 + idx * 7], [45, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-        const op = interpolate(frame, [8 + idx * 7, 24 + idx * 7], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-        const barFill = interpolate(frame, [22 + idx * 7, 44 + idx * 7], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-
-        return (
-          <div
-            key={idx}
-            style={{
-              transform: `translateY(${slide}px)`,
-              opacity: op,
-              background: "rgba(15, 23, 42, 0.76)",
-              backdropFilter: "blur(22px)",
-              border: "1px solid rgba(255, 255, 255, 0.13)",
-              borderRadius: 22,
-              padding: "26px 28px",
-              boxShadow: "0 18px 40px rgba(0, 0, 0, 0.45)",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            {/* Animated card progress accent line */}
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: `${barFill}%`,
-                height: 4,
-                background: `linear-gradient(90deg, ${campaign.brand.primaryColor}, ${campaign.brand.accentColor})`,
+                display: "inline-block",
+                width: 12,
+                height: 26,
+                background: cursorBlink ? campaign.brand.primaryColor : "transparent",
+                marginLeft: 6,
+                verticalAlign: "middle",
               }}
             />
-
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 18 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 14,
-                    background: `linear-gradient(135deg, ${campaign.brand.primaryColor}33, ${campaign.brand.accentColor}33)`,
-                    border: `1px solid ${campaign.brand.primaryColor}77`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconCheck color={campaign.brand.primaryColor} size={24} />
-                </div>
-                <div>
-                  <div style={{ fontSize: 23, fontWeight: 800, color: "#FFFFFF" }}>{title}</div>
-                  {description && (
-                    <div style={{ fontSize: 17, color: "rgba(248, 250, 252, 0.7)", marginTop: 6, lineHeight: 1.45 }}>
-                      {description}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {badge && (
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 800,
-                    letterSpacing: 1.5,
-                    fontFamily: "'Fira Code', monospace",
-                    color: campaign.brand.accentColor,
-                    background: `${campaign.brand.accentColor}18`,
-                    border: `1px solid ${campaign.brand.accentColor}44`,
-                    padding: "5px 12px",
-                    borderRadius: 6,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {badge}
-                </div>
-              )}
-            </div>
           </div>
-        );
-      })}
-    </div>
+
+          {/* Dynamic Execution Stream */}
+          <div style={{ marginTop: 32, display: "flex", flexDirection: "column", gap: 16 }}>
+            {frame > 30 && (
+              <div style={{ color: "#38BDF8", fontSize: 18, display: "flex", alignItems: "center", gap: 10 }}>
+                <span>⚡ AST engine parsing runtime memory hooks...</span>
+                <span style={{ background: "rgba(56, 189, 248, 0.18)", padding: "2px 8px", borderRadius: 4, fontSize: 12, fontWeight: 700 }}>ATTACHED</span>
+              </div>
+            )}
+            {frame > 45 && (
+              <div style={{ color: "#10B981", fontSize: 18, display: "flex", alignItems: "center", gap: 10 }}>
+                <span>✔ Sandboxed process isolation enforced (PID active)</span>
+                <span style={{ background: "rgba(16, 185, 129, 0.18)", padding: "2px 8px", borderRadius: 4, fontSize: 12, fontWeight: 700 }}>PASS</span>
+              </div>
+            )}
+
+            {/* Terminal Output Banner */}
+            {frame > 58 && scene.terminalOutput && (
+              <div
+                style={{
+                  marginTop: 12,
+                  padding: "20px 24px",
+                  background: "rgba(15, 23, 42, 0.9)",
+                  border: `1px solid ${campaign.brand.primaryColor}55`,
+                  borderRadius: 16,
+                  color: "#FFFFFF",
+                  fontSize: 19,
+                  fontWeight: 600,
+                  boxShadow: `0 10px 30px ${campaign.brand.primaryColor}20`,
+                }}
+              >
+                {scene.terminalOutput}
+              </div>
+            )}
+
+            {/* Glowing Interception / Defense Alert */}
+            {frame >= alertTriggerFrame && scene.terminalAlert && (
+              <div
+                style={{
+                  marginTop: 16,
+                  padding: "20px 26px",
+                  background: "rgba(239, 68, 68, 0.2)",
+                  border: "1.5px solid rgba(239, 68, 68, 0.6)",
+                  borderRadius: 18,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                  color: "#EF4444",
+                  fontWeight: 800,
+                  fontSize: 20,
+                  boxShadow: "0 0 40px rgba(239, 68, 68, 0.35)",
+                  transform: `scale(${spring({ frame: frame - alertTriggerFrame, fps, config: { damping: 10, stiffness: 140 } })})`,
+                }}
+              >
+                <IconAlert color="#EF4444" size={32} />
+                <span>{scene.terminalAlert}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Terminal Telemetry Strip */}
+        <div
+          style={{
+            background: "rgba(255, 255, 255, 0.03)",
+            borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+            padding: "16px 32px",
+            display: "flex",
+            justifyContent: "space-between",
+            fontSize: 14,
+            fontFamily: "'Fira Code', monospace",
+            color: "rgba(248, 250, 252, 0.5)",
+          }}
+        >
+          <span>ENGINE: REALTIME TELEMETRY</span>
+          <span style={{ color: campaign.brand.primaryColor, fontWeight: 700 }}>ZERO REGRESSIONS</span>
+        </div>
+      </div>
+    </AbsoluteFill>
   );
 };
 
 // =========================================================================
-// ARCHETYPE 5: STUDIO METRIC COUNTER COMMAND CENTER (Full Height ~720px)
+// 4. ARCHETYPE: HIGH-ENERGY RADIAL METRIC DIAL (Shockwave Burst)
 // =========================================================================
-const StudioMetricMockup: React.FC<{
-  scene: MotionScene;
-  campaign: CampaignData;
-  frame: number;
-  isVertical: boolean;
-}> = ({ scene, campaign, frame }) => {
-  const target = scene.metricTarget ?? 95;
-  const count = Math.floor(interpolate(frame, [4, 45], [0, target], { extrapolateRight: "clamp" }));
+const SceneMetricCounter: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({
+  scene,
+  campaign,
+  frame,
+  fps,
+}) => {
+  const target = scene.metricTarget || 100;
+  const count = Math.floor(interpolate(frame, [4, 42], [0, target], { extrapolateRight: "clamp" }));
 
-  // Circular gauge animation
-  const radius = 105;
+  // Circular gauge circumference
+  const radius = 130;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (count / 100) * circumference;
 
+  // Expanding shockwave ring when count hits target
+  const isLanded = frame >= 42;
+  const shockScale = isLanded ? interpolate(frame, [42, 70], [1.0, 2.2], { extrapolateRight: "clamp" }) : 1;
+  const shockOpacity = isLanded ? interpolate(frame, [42, 70], [0.8, 0], { extrapolateRight: "clamp" }) : 0;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 26 }}>
-      {/* Central Hero Gauge Card */}
-      <div
-        style={{
-          background: "rgba(15, 23, 42, 0.82)",
-          backdropFilter: "blur(24px)",
-          border: `1px solid ${campaign.brand.primaryColor}44`,
-          borderRadius: 28,
-          padding: "40px 24px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          boxShadow: `0 30px 70px -15px ${campaign.brand.primaryColor}30`,
-        }}
-      >
-        <div style={{ position: "relative", width: 240, height: 240, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {/* SVG Circular Progress Ring */}
-          <svg width="240" height="240" style={{ transform: "rotate(-90deg)" }}>
-            <circle
-              cx="120"
-              cy="120"
-              r={radius}
-              stroke="rgba(255, 255, 255, 0.08)"
-              strokeWidth="16"
-              fill="transparent"
-            />
-            <circle
-              cx="120"
-              cy="120"
-              r={radius}
-              stroke={campaign.brand.primaryColor}
-              strokeWidth="16"
-              strokeDasharray={circumference}
-              strokeDashoffset={strokeDashoffset}
-              strokeLinecap="round"
-              fill="transparent"
-              style={{ filter: `drop-shadow(0 0 14px ${campaign.brand.primaryColor})` }}
-            />
-          </svg>
-
-          {/* Centered Bold Numeric Value */}
-          <div style={{ position: "absolute", textAlign: "center" }}>
-            <div style={{ fontSize: 64, fontWeight: 900, color: "#FFFFFF", lineHeight: 1 }}>
-              {count}
-              <span style={{ fontSize: 36, color: campaign.brand.primaryColor }}>{scene.metricSuffix || "%"}</span>
-            </div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: campaign.brand.primaryColor, letterSpacing: 2, textTransform: "uppercase", marginTop: 6 }}>
-              REDUCTION
-            </div>
-          </div>
+    <AbsoluteFill
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "60px 48px",
+      }}
+    >
+      <div style={{ textAlign: "center", marginBottom: 36 }}>
+        <div style={{ fontSize: 15, fontWeight: 900, letterSpacing: 3, textTransform: "uppercase", color: campaign.brand.primaryColor, marginBottom: 10 }}>
+          {scene.tag || "BENCHMARK PERFORMANCE"}
         </div>
-
-        <div style={{ fontSize: 26, fontWeight: 800, color: "#FFFFFF", marginTop: 22, textAlign: "center" }}>
-          {scene.metricLabel}
+        <div style={{ fontSize: 56, fontWeight: 900, color: "#FFFFFF", letterSpacing: -1 }}>
+          {scene.headline}
         </div>
       </div>
 
-      {/* Dual Comparative Context Cards */}
-      <div style={{ display: "flex", gap: 20 }}>
-        {/* Legacy State */}
-        <div
-          style={{
-            flex: 1,
-            background: "rgba(239, 68, 68, 0.07)",
-            border: "1px solid rgba(239, 68, 68, 0.3)",
-            borderRadius: 22,
-            padding: "26px 22px",
-          }}
-        >
-          <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.5, color: "#EF4444", textTransform: "uppercase" }}>
-            LEGACY ARCHITECTURE
-          </div>
-          <div style={{ fontSize: 40, fontWeight: 900, color: "#FFFFFF", marginTop: 8 }}>
-            2,400+
-          </div>
-          <div style={{ fontSize: 15, color: "rgba(248, 250, 252, 0.7)", marginTop: 6 }}>
-            Subnet IPs Exposed
-          </div>
-        </div>
+      {/* Massive Central Orbital Gauge */}
+      <div style={{ position: "relative", width: 340, height: 340, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        
+        {/* Expanding Shockwave Ring */}
+        {isLanded && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "50%",
+              border: `3px solid ${campaign.brand.primaryColor}`,
+              transform: `scale(${shockScale})`,
+              opacity: shockOpacity,
+              pointerEvents: "none",
+            }}
+          />
+        )}
 
-        {/* Modern Zero-Trust State */}
-        <div
-          style={{
-            flex: 1,
-            background: `${campaign.brand.accentColor}14`,
-            border: `1px solid ${campaign.brand.accentColor}48`,
-            borderRadius: 22,
-            padding: "26px 22px",
-          }}
-        >
-          <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.5, color: campaign.brand.accentColor, textTransform: "uppercase" }}>
-            ZERO-TRUST ENFORCED
+        {/* Orbital SVG Gauge Ring */}
+        <svg width="340" height="340" style={{ transform: "rotate(-90deg)" }}>
+          <circle cx="170" cy="170" r={radius} stroke="rgba(255, 255, 255, 0.08)" strokeWidth="20" fill="transparent" />
+          <circle
+            cx="170"
+            cy="170"
+            r={radius}
+            stroke={campaign.brand.primaryColor}
+            strokeWidth="20"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            fill="transparent"
+            style={{ filter: `drop-shadow(0 0 20px ${campaign.brand.primaryColor})` }}
+          />
+        </svg>
+
+        {/* Center Big Number */}
+        <div style={{ position: "absolute", textAlign: "center" }}>
+          <div style={{ fontSize: 88, fontWeight: 900, color: "#FFFFFF", lineHeight: 1, letterSpacing: -2 }}>
+            {count}
+            <span style={{ fontSize: 44, color: campaign.brand.primaryColor }}>{scene.metricSuffix || "%"}</span>
           </div>
-          <div style={{ fontSize: 40, fontWeight: 900, color: "#FFFFFF", marginTop: 8 }}>
-            {scene.secondaryMetricValue || "0ms"}
-          </div>
-          <div style={{ fontSize: 15, color: "rgba(248, 250, 252, 0.7)", marginTop: 6 }}>
-            {scene.secondaryMetricLabel || "Lateral Traversal Allowed"}
+          <div style={{ fontSize: 14, fontWeight: 800, color: campaign.brand.primaryColor, letterSpacing: 3, textTransform: "uppercase", marginTop: 8 }}>
+            EFFICIENCY
           </div>
         </div>
       </div>
-    </div>
+
+      <div style={{ fontSize: 28, fontWeight: 800, color: "#FFFFFF", marginTop: 32, textAlign: "center", maxWidth: 700 }}>
+        {scene.metricLabel}
+      </div>
+
+      {/* Dual Context Cards (Dynamic, NO Hardcoded IP text!) */}
+      <div style={{ display: "flex", gap: 24, marginTop: 40, width: "100%", maxWidth: 840 }}>
+        <div style={{ flex: 1, background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.12)", borderRadius: 24, padding: "28px 24px", backdropFilter: "blur(20px)" }}>
+          <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: "rgba(248, 250, 252, 0.5)", textTransform: "uppercase" }}>
+            EXECUTION OVERHEAD
+          </div>
+          <div style={{ fontSize: 44, fontWeight: 900, color: "#FFFFFF", marginTop: 8 }}>
+            {scene.secondaryMetricValue || "0.2ms"}
+          </div>
+          <div style={{ fontSize: 16, color: "rgba(248, 250, 252, 0.7)", marginTop: 4 }}>
+            {scene.secondaryMetricLabel || "Runtime AST Overhead"}
+          </div>
+        </div>
+
+        <div style={{ flex: 1, background: `${campaign.brand.primaryColor}14`, border: `1px solid ${campaign.brand.primaryColor}44`, borderRadius: 24, padding: "28px 24px", backdropFilter: "blur(20px)" }}>
+          <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, color: campaign.brand.primaryColor, textTransform: "uppercase" }}>
+            VERIFICATION
+          </div>
+          <div style={{ fontSize: 44, fontWeight: 900, color: "#FFFFFF", marginTop: 8 }}>
+            100%
+          </div>
+          <div style={{ fontSize: 16, color: "rgba(248, 250, 252, 0.7)", marginTop: 4 }}>
+            Deterministic Protection
+          </div>
+        </div>
+      </div>
+    </AbsoluteFill>
   );
 };
 
 // =========================================================================
-// ARCHETYPE 6: STUDIO CONVERSION CTA SHOWCASE
+// 5. ARCHETYPE: CONVERSION CTA (Apple/Stripe High-Energy Finale)
 // =========================================================================
-const StudioConversionMockup: React.FC<{
-  scene: MotionScene;
-  campaign: CampaignData;
-  frame: number;
-  fps: number;
-  isVertical: boolean;
-}> = ({ scene, campaign, frame, fps, isVertical }) => {
-  const btnSpring = spring({ frame, fps, config: { damping: 13, stiffness: 95, mass: 0.6 } });
-  const pulse = interpolate(Math.sin((frame / fps) * Math.PI * 3), [-1, 1], [22, 54]);
+const SceneConversionCTA: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({
+  scene,
+  campaign,
+  frame,
+  fps,
+}) => {
+  const isClaude = campaign.brand.theme === "claude";
+  const btnScale = spring({ frame: frame - 8, fps, config: { damping: 10, stiffness: 120 } });
+  const shimmerX = interpolate(frame, [15, 65], [-120, 220], { extrapolateRight: "clamp" });
 
-  const badges = scene.trustBadges || [
-    "SOC 2 TYPE II AUDITED",
-    "ZERO AGENT OVERHEAD",
-    "INSTANT CLOUD ONBOARDING",
-  ];
+  const badges = scene.trustBadges || ["DEPLOY IN 60 SECONDS", "ZERO DOWNTIME", "ENTERPRISE READY"];
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", paddingTop: 20 }}>
-      {/* Brand Hologram Crest */}
+    <AbsoluteFill
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "80px 50px",
+        textAlign: "center",
+      }}
+    >
+      {/* 3D Rotating Brand Orb / Shield */}
       <div
         style={{
           width: 110,
           height: 110,
-          borderRadius: 34,
-          background: `linear-gradient(135deg, ${campaign.brand.primaryColor}38, ${campaign.brand.accentColor}38)`,
-          border: `2px solid ${campaign.brand.primaryColor}`,
+          borderRadius: 36,
+          background: `linear-gradient(135deg, ${campaign.brand.primaryColor}, ${campaign.brand.accentColor})`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          marginBottom: 32,
-          boxShadow: `0 0 50px ${campaign.brand.primaryColor}66`,
+          boxShadow: `0 0 60px ${campaign.brand.primaryColor}88`,
+          transform: `scale(${spring({ frame, fps, config: { damping: 9 } })}) rotate(${Math.sin(frame / 20) * 8}deg)`,
+          marginBottom: 36,
         }}
       >
-        <IconSparkles color={campaign.brand.primaryColor} size={54} />
+        <IconShield color="#FFFFFF" size={54} />
       </div>
 
-      {/* Prominent Action Button */}
+      <div style={{ fontSize: 16, fontWeight: 900, letterSpacing: 3, textTransform: "uppercase", color: campaign.brand.primaryColor, marginBottom: 14 }}>
+        {scene.tag || "GET STARTED TODAY"}
+      </div>
+
+      <div style={{ fontSize: 64, fontWeight: 900, color: "#FFFFFF", letterSpacing: -2, maxWidth: 880, lineHeight: 1.1, marginBottom: 44 }}>
+        {scene.headline}
+      </div>
+
+      {/* Massive Glossy Gradient Button with Shimmer Sweep */}
       <div
         style={{
-          transform: `scale(${btnSpring})`,
-          background: `linear-gradient(135deg, ${campaign.brand.primaryColor}, ${campaign.brand.accentColor})`,
-          padding: "28px 56px",
-          borderRadius: 9999,
-          fontSize: 34,
-          fontWeight: 900,
-          color: "#050811",
-          boxShadow: `0 16px ${pulse}px ${campaign.brand.primaryColor}88`,
-          cursor: "pointer",
-          width: isVertical ? "94%" : "auto",
-          letterSpacing: -0.5,
+          transform: `scale(${btnScale})`,
           position: "relative",
+          width: "100%",
+          maxWidth: 620,
+          height: 96,
+          borderRadius: 9999,
+          background: `linear-gradient(90deg, ${campaign.brand.primaryColor}, ${campaign.brand.accentColor})`,
+          boxShadow: `0 0 50px ${campaign.brand.primaryColor}88, 0 20px 40px rgba(0,0,0,0.6)`,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           overflow: "hidden",
+          cursor: "pointer",
         }}
       >
-        {/* Shine Sweep Accent */}
+        {/* Shimmer Light Reflection Sweep */}
         <div
           style={{
             position: "absolute",
             top: 0,
-            left: `${interpolate(frame % 80, [0, 40], [-100, 200], { extrapolateRight: "clamp" })}%`,
-            width: "50%",
-            height: "100%",
-            background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent)",
+            bottom: 0,
+            left: `${shimmerX}%`,
+            width: 120,
+            background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)",
             transform: "skewX(-25deg)",
+            pointerEvents: "none",
           }}
         />
-        {campaign.ctaText}
+
+        <span style={{ fontSize: 26, fontWeight: 900, color: "#050811", letterSpacing: 1 }}>
+          {scene.ctaHeadline || campaign.ctaText || "Get Started Free →"}
+        </span>
       </div>
 
-      {/* Enterprise Reassurance Badges */}
-      <div style={{ marginTop: 42, display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}>
-        {badges.map((b, bIdx) => (
+      {/* Trust Badges Floating Below */}
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14, marginTop: 44 }}>
+        {badges.map((b, i) => (
           <div
-            key={bIdx}
+            key={i}
             style={{
               background: "rgba(255, 255, 255, 0.05)",
-              border: "1px solid rgba(255, 255, 255, 0.14)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
               borderRadius: 9999,
-              padding: "12px 22px",
-              fontSize: 14,
-              fontWeight: 700,
-              fontFamily: "'Fira Code', monospace",
-              color: "rgba(248, 250, 252, 0.85)",
+              padding: "10px 22px",
               display: "flex",
               alignItems: "center",
               gap: 10,
+              fontSize: 14,
+              fontWeight: 800,
+              letterSpacing: 1.5,
+              color: "rgba(248, 250, 252, 0.8)",
             }}
           >
-            <IconCheck color={campaign.brand.primaryColor} size={17} />
+            <IconCheck color={campaign.brand.primaryColor} size={16} />
             <span>{b}</span>
           </div>
         ))}
       </div>
-    </div>
+    </AbsoluteFill>
   );
 };
 
 // =========================================================================
-// ARCHETYPE 7: STUDIO KINETIC HOOK NARRATIVE CALLOUT (Full Height ~680px)
+// SCENE ROUTER & CINEMATIC CAMERA RIG (Full-Canvas, Continuous Dolly)
 // =========================================================================
-const StudioHookMockup: React.FC<{
+const StudioScene: React.FC<{
   scene: MotionScene;
   campaign: CampaignData;
-  frame: number;
-  isVertical: boolean;
-}> = ({ scene, campaign, frame }) => {
+  durationFrames: number;
+  fps: number;
+}> = ({ scene, campaign, durationFrames, fps }) => {
+  const frame = useCurrentFrame();
+
+  // Continuous cinematic camera dolly (zoom from 1.0 -> 1.06)
+  const camScale = interpolate(frame, [0, durationFrames], [1.0, 1.06], { extrapolateRight: "clamp" });
+  const camFloatY = Math.sin((frame / fps) * 0.8) * 6;
+
+  // Scene fade in / fade out
+  const opacity = interpolate(
+    frame,
+    [0, 5, durationFrames - 5, durationFrames],
+    [0, 1, 1, 0],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+  );
+
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Narrative Callout Block */}
-      <div
-        style={{
-          background: "rgba(15, 23, 42, 0.82)",
-          backdropFilter: "blur(24px)",
-          border: `1px solid ${campaign.brand.primaryColor}44`,
-          borderRadius: 26,
-          padding: "42px 34px",
-          boxShadow: "0 28px 65px rgba(0, 0, 0, 0.65)",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
-          <IconAlert color="#EF4444" size={30} />
-          <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: 2, textTransform: "uppercase", color: "#EF4444" }}>
-            CRITICAL INFRASTRUCTURE WARNING
-          </span>
-        </div>
-
-        <div style={{ fontSize: 28, color: "rgba(248, 250, 252, 0.95)", lineHeight: 1.5, fontWeight: 600 }}>
-          {scene.description || "Traditional perimeter networks grant full lateral traversal upon a single credential breach."}
-        </div>
-      </div>
-
-      {/* Supporting Data Pill Stack */}
-      <div style={{ display: "flex", gap: 18 }}>
-        <div style={{ flex: 1, background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: 18, padding: "24px 22px" }}>
-          <div style={{ fontSize: 13, color: "rgba(248, 250, 252, 0.55)", fontWeight: 700, textTransform: "uppercase" }}>EXPLOIT VECTOR</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: "#EF4444", marginTop: 8 }}>Lateral Traversal</div>
-        </div>
-        <div style={{ flex: 1, background: "rgba(255, 255, 255, 0.04)", border: "1px solid rgba(255, 255, 255, 0.1)", borderRadius: 18, padding: "24px 22px" }}>
-          <div style={{ fontSize: 13, color: "rgba(248, 250, 252, 0.55)", fontWeight: 700, textTransform: "uppercase" }}>MEAN BREACH COST</div>
-          <div style={{ fontSize: 26, fontWeight: 800, color: "#FFFFFF", marginTop: 8 }}>$4.45 Million</div>
-        </div>
-      </div>
-    </div>
+    <AbsoluteFill
+      style={{
+        opacity,
+        transform: `scale(${camScale}) translateY(${camFloatY}px)`,
+        transformOrigin: "center center",
+      }}
+    >
+      {scene.type === "kinetic_hook" && <SceneKineticHook scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.type === "before_after_split" && <SceneBeforeAfter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {(scene.type === "terminal_code" || (scene.type as any) === "code_terminal") && (
+        <SceneTerminal scene={scene} campaign={campaign} frame={frame} fps={fps} />
+      )}
+      {scene.type === "metric_counter" && <SceneMetricCounter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.type === "conversion_cta" && <SceneConversionCTA scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      
+      {/* Fallback for other scene types */}
+      {scene.type === "feature_cards" && <SceneBeforeAfter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.type === "network_topology" && <SceneTerminal scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+    </AbsoluteFill>
   );
 };
+
+// =========================================================================
+// MAIN ENTRY: Universal Motion Engine
+// =========================================================================
+export const UniversalMotionEngine: React.FC<{ campaign: CampaignData }> = ({ campaign }) => {
+  const { fps } = useVideoConfig();
+
+  // Calculate timeline offsets
+  let runningFrame = 0;
+  const timeline = campaign.scenes.map((scene) => {
+    const durationFrames = Math.round((scene.durationSeconds || 5) * fps);
+    const from = runningFrame;
+    runningFrame += durationFrames;
+    return { scene, from, durationFrames };
+  });
+
+  return (
+    <AbsoluteFill style={{ backgroundColor: campaign.brand.backgroundColor || "#030611", overflow: "hidden" }}>
+      {/* 1. Underlying Cinematic Ambient Atmosphere */}
+      <CinematicAtmosphere
+        theme={campaign.brand.theme}
+        primaryColor={campaign.brand.primaryColor}
+        accentColor={campaign.brand.accentColor}
+      />
+
+      {/* 2. Full-Screen Cinematic Scenes */}
+      {timeline.map(({ scene, from, durationFrames }, i) => (
+        <Sequence key={scene.id || i} from={from} durationInFrames={durationFrames}>
+          <StudioScene
+            scene={scene}
+            campaign={campaign}
+            durationFrames={durationFrames}
+            fps={fps}
+          />
+        </Sequence>
+      ))}
+    </AbsoluteFill>
+  );
+};
+
