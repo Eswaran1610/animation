@@ -3,6 +3,18 @@ import fs from "fs";
 import path from "path";
 import { validateAndRender } from "./engine/runner";
 import { CampaignData, MotionScene } from "./engine/schema";
+import { askGemini } from "./engine/geminiDirector";
+
+const envPath = path.join(__dirname, "../.env");
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, "utf-8");
+  for (const line of envContent.split("\n")) {
+    const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+    if (match && !process.env[match[1]]) {
+      process.env[match[1]] = match[2].replace(/(^['"]|['"]$)/g, "").trim();
+    }
+  }
+}
 
 const PORT = 4000;
 const OUTPUT_DIR = path.join(__dirname, "../out");
@@ -56,7 +68,7 @@ function parseUserPrompt(promptText: string, customConfig?: any): CampaignData {
   if (customConfig?.brandName) name = customConfig.brandName;
 
   // DYNAMIC SCENE CHOREOGRAPHY BASED ON TOPIC & INTENT
-  const scenes: MotionScene[] = [];
+  const scenes: any[] = [];
 
   // Scene 1: Always start with a striking Hook or Title
   scenes.push({
@@ -208,10 +220,25 @@ const server = http.createServer((req, res) => {
   if (req.method === "POST" && req.url === "/api/render") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
-    req.on("end", () => {
+    req.on("end", async () => {
       try {
         const payload = JSON.parse(body);
-        const campaignData = parseUserPrompt(payload.prompt || "", payload.customConfig);
+        let campaignData: CampaignData | null = null;
+
+        // 1. Try Gemini AI Director if key is configured
+        const geminiKey = payload.geminiApiKey || process.env.GEMINI_API_KEY;
+        if (geminiKey && geminiKey.trim().length > 10) {
+          console.log(`[UI Render] Consulting Gemini AI Creative Director for prompt: "${payload.prompt?.slice(0, 50)}..."`);
+          campaignData = await askGemini(payload.prompt || "", geminiKey);
+          if (campaignData) {
+            console.log(`[UI Render] Gemini successfully generated custom motion script with ${campaignData.scenes.length} scenes.`);
+          }
+        }
+
+        // 2. Fall back to local dynamic intent parser if Gemini is not used or fails
+        if (!campaignData) {
+          campaignData = parseUserPrompt(payload.prompt || "", payload.customConfig);
+        }
 
         console.log(`[UI Render] Starting studio render for ${campaignData.campaignId} (Theme: ${campaignData.brand.theme || "cyber"})...`);
         const { videoOut, contactOut, campaignJsonPath } = validateAndRender(campaignData);
@@ -328,8 +355,21 @@ const server = http.createServer((req, res) => {
           </div>
         </details>
 
+        <!-- Gemini Creative Director API Key -->
+        <div class="mt-5 p-3.5 bg-slate-950/80 rounded-xl border border-slate-800">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+              <span>✨ Gemini AI Creative Director</span>
+              <span class="text-[10px] text-emerald-400 font-semibold bg-emerald-950/70 border border-emerald-800/80 px-2 py-0.5 rounded-full">Free Tier Supported</span>
+            </label>
+            <a href="https://aistudio.google.com" target="_blank" class="text-[11px] text-indigo-400 hover:text-indigo-300 underline">Get free key →</a>
+          </div>
+          <input id="geminiApiKey" type="password" placeholder="Paste free Gemini API key (AIzaSy...) or leave blank for local engine" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition">
+          <p class="text-[10px] text-slate-500 mt-1">If provided, Gemini writes custom, viral video scripts with zero generic templates.</p>
+        </div>
+
         <!-- Generate Button -->
-        <button id="renderBtn" onclick="handleRender()" class="mt-6 w-full bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-4 rounded-xl text-lg shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition active:scale-[0.99]">
+        <button id="renderBtn" onclick="handleRender()" class="mt-5 w-full bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-4 rounded-xl text-lg shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition active:scale-[0.99]">
           <span id="btnText">Render Dynamic Motion Video 🚀</span>
           <svg id="spinner" class="animate-spin h-5 w-5 text-white hidden" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
         </button>
@@ -453,11 +493,13 @@ const server = http.createServer((req, res) => {
         ctaText: document.getElementById('ctaText').value || undefined,
       };
 
+      const geminiApiKey = document.getElementById('geminiApiKey')?.value?.trim() || undefined;
+
       try {
         const res = await fetch('/api/render', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt, customConfig }),
+          body: JSON.stringify({ prompt, customConfig, geminiApiKey }),
         });
 
         const data = await res.json();

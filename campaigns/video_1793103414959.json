@@ -1,0 +1,114 @@
+{
+  "campaignId": "video_1793103414959",
+  "title": "Act as an expert React developer specializing in Remotion vi",
+  "brand": {
+    "name": "Claude Code",
+    "primaryColor": "#6366f1",
+    "accentColor": "#F5F1E8",
+    "backgroundColor": "#1A1916",
+    "theme": "claude"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Get Started Today →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "CLAUDE CODE",
+      "headline": "Act as an expert React developer specializing in Remotion video creati",
+      "accentWord": "as an",
+      "subtitle": "Autonomous execution across your entire codebase.",
+      "description": "Manual workflows create invisible latency, deployment friction, and unexpected regressions.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s_term",
+      "type": "terminal_code",
+      "tag": "LIVE EXECUTION",
+      "headline": "Autonomous Verification In Seconds",
+      "accentWord": "Autonomous",
+      "terminalCommand": "claude review --strict --fix-memory-leaks --branch=prod",
+      "terminalOutput": "✔ AST parsed in 1.2s. 100% verification rules passing.",
+      "terminalAlert": "VERIFIED: Zero Regressions Detected",
+      "terminalTitle": "claude — refactor.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s_feat",
+      "type": "feature_cards",
+      "tag": "CORE CAPABILITIES",
+      "headline": "Built For Mission-Critical Scale",
+      "accentWord": "Scale",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        {
+          "title": "Continuous Risk Telemetry",
+          "description": "Real-time posture and performance inspection.",
+          "badge": "REAL-TIME"
+        },
+        {
+          "title": "100% Code-Driven Engine",
+          "description": "Deterministic frame rendering without manual editing.",
+          "badge": "AUTOMATED"
+        },
+        {
+          "title": "Instant Multi-Format Output",
+          "description": "Native 9:16 vertical, 16:9 horizontal, and 1:1 square.",
+          "badge": "MULTI-FORMAT"
+        }
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s_metric",
+      "type": "metric_counter",
+      "tag": "PROVEN IMPACT",
+      "headline": "Measurable Production Velocity",
+      "accentWord": "Velocity",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Efficiency & Latency Gain",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Manual Overhead Incurred",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s_cta",
+      "type": "conversion_cta",
+      "tag": "GET STARTED",
+      "headline": "Deploy Your Next Experience Today",
+      "accentWord": "Today",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Get Started Free →",
+      "trustBadges": [
+        "CLAUDE-POWERED",
+        "ZERO RETENTION",
+        "OPEN ECOSYSTEM"
+      ],
+      "durationSeconds": 5
+    }
+  ]
+}
