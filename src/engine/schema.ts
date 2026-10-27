@@ -4,6 +4,7 @@ import { z } from "zod";
 export const SupportedSceneTypes = [
   "kinetic_hook",        // Word-by-word kinetic headline with category pill and visual callout
   "terminal_code",       // macOS window with live simulated typing, syntax stream & status pill
+  "code_terminal",       // Alias for terminal_code
   "network_topology",   // Interactive multi-tier architecture diagram with live packet animation
   "before_after_split",  // Side-by-side / vertical Before vs After comparison screen
   "feature_cards",       // Frosted-glass staggered feature checklist with status pills
