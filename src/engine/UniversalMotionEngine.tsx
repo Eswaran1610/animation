@@ -433,7 +433,7 @@ const EngineSceneRenderer: React.FC<{
       {/* 3. VISUAL CENTERPIECE STAGE (Full-Scale Immersive Allocation) */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start", position: "relative" }}>
         {/* Archetype 1: Terminal Code */}
-        {scene.type === "terminal_code" && (
+        {(scene.type === "terminal_code" || (scene.type as any) === "code_terminal") && (
           <StudioTerminalMockup scene={scene} campaign={campaign} frame={frame} isVertical={isVertical} />
         )}
 
