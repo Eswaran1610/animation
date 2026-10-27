@@ -1,0 +1,69 @@
+{
+  "campaignId": "fintech_pulse_analytics",
+  "title": "Fintech Pulse Real-time Trading",
+  "brand": {
+    "name": "FinPulse AI",
+    "primaryColor": "#F59E0B",
+    "accentColor": "#10B981",
+    "backgroundColor": "#050811"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Start Free Portfolio Sync →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "scene_1",
+      "type": "kinetic_hook",
+      "tag": "PORTFOLIO BOTTLENECK",
+      "headline": "Tired Of Slow Delayed Stock Trackers",
+      "accentWord": "Delayed",
+      "description": "Traditional broker feeds update every 15 minutes, costing traders profitable execution.",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene_2",
+      "type": "terminal_code",
+      "tag": "REAL-TIME WEBSOCKET",
+      "headline": "Sub-Millisecond Order Book Streaming",
+      "accentWord": "Sub-Millisecond",
+      "terminalCommand": "finpulse stream --exchanges=binance,nasdaq --latency=sub-ms",
+      "terminalOutput": "[LIVE] Connected to 42 liquid order books. Zero latency detected.",
+      "terminalAlert": "SUCCESS: 12,450 ticks/sec processed in real-time memory.",
+      "durationSeconds": 6
+    },
+    {
+      "id": "scene_3",
+      "type": "feature_cards",
+      "tag": "PROVEN CAPABILITIES",
+      "headline": "Engineered For High-Frequency Precision",
+      "accentWord": "Precision",
+      "items": [
+        "Instant Cross-Exchange Arbitrage",
+        "Automated Capital Gains Tax Sync",
+        "Sub-Second Anomaly & Fraud Guard"
+      ],
+      "durationSeconds": 6
+    },
+    {
+      "id": "scene_4",
+      "type": "metric_counter",
+      "tag": "MEASURED RESULTS",
+      "headline": "Unmatched Execution Speed",
+      "accentWord": "Speed",
+      "metricTarget": 99,
+      "metricSuffix": ".9%",
+      "metricLabel": "Sync Uptime Across Exchanges",
+      "secondaryMetricValue": "1.2ms",
+      "secondaryMetricLabel": "Average Routing Latency",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene_5",
+      "type": "conversion_cta",
+      "tag": "START TRADING",
+      "headline": "Automate Your Wealth Today",
+      "accentWord": "Today",
+      "durationSeconds": 5
+    }
+  ]
+}

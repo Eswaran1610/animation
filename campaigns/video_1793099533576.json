@@ -1,0 +1,144 @@
+{
+  "campaignId": "video_1793099533576",
+  "title": "Title: Zero-Trust Micro-Tunnel Architecture\n    Topic: Cloud",
+  "brand": {
+    "name": "Sentinel ZTNA",
+    "primaryColor": "#6366f1",
+    "accentColor": "#06B6D4",
+    "backgroundColor": "#030712"
+  },
+  "aspectRatio": "16:9",
+  "ctaText": "Get Started Today →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "ARCHITECTURE OVERVIEW",
+      "headline": "Title: Zero-Trust Micro-Tunnel Architecture\n    Topic: Cloud Infrastructure Security & Lateral Breach Prevention\n    Brand Name: Sentinel ZTNA\n    Aspect Ratio: 9:16\n    Primary Color: #10B981\n    Accent Color: #06B6D4\n\n    Scene 1 (Hook):\n    Headline: \"Perimeter VPNs Grant Full Lateral Access Upon Breach\"\n    Accent: \"Lateral\"\n    Description: \"A single compromised credential exposes your entire private cloud network to internal\n  port scans and database exfiltration.\"\n\n    Scene 2 (Terminal):\n    Title: \"soc-telemetry — incident_scan.sh\"\n    Command: \"nmap -sS -p 22,443,5432,8080 10.0.0.0/16 --open\"\n    Output: \"[-] 4,200 Internal Workload Ports Discovered via VPN Tunnel.\"\n    Alert: \"CRITICAL RISK: VPN Perimeter Breached. Attacker Can Probe Databases.\"\n\n    Scene 3 (Topology):\n    Client: \"Remote Engineer\" (status: \"Biometric Passkey\")\n    Gateway: \"ZTNA Policy Mesh\" (sub: \"Continuous Auth Engine\", status: \"ENFORCED\")\n    Target: \"Production DB\" (sub: \"WAN Cloaked (0 IP)\", status: \"ZERO EXPOSURE\")\n\n    Scene 4 (Features):\n    - \"Ephemeral TLS 1.3 Micro-Tunnels\" (badge: \"AUTO-TEARDOWN\")\n    - \"Continuous Device Posture Checks\" (badge: \"REAL-TIME\")\n    - \"Zero Public IP Address Surface\" (badge: \"CLOAKED\")\n\n    Scene 5 (Metrics):\n    Hero Metric: 98% Lateral Attack Surface Eliminated\n    Secondary: 0ms Unauthorized Subnet Traversal Allowed\n\n    Scene 6 (Call to Action):\n    Button: \"Deploy Sentinel Zero-Trust →\"\n    Badges: \"SOC 2 TYPE II AUDITED\", \"FIPS 140-3 COMPLIANT\", \"99.999% SLA UPTIME\"\n  ──────",
+      "accentWord": "Cloud",
+      "subtitle": "A modern visual explanation of your enterprise architecture.",
+      "description": "Eliminate latency, simplify deployment pipelines, and enforce zero-trust security.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s2",
+      "type": "terminal_code",
+      "tag": "LIVE VERIFICATION",
+      "headline": "Deterministic Infrastructure Execution",
+      "accentWord": "Deterministic",
+      "terminalCommand": "engine deploy --cluster=production --verify",
+      "terminalOutput": "✔ 100% Policy Rules Verified. Zero lateral risk detected.",
+      "terminalAlert": "ENFORCEMENT: All Workload Access Cloaked",
+      "terminalTitle": "bash — deploy_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s3",
+      "type": "network_topology",
+      "tag": "NETWORK ARCHITECTURE",
+      "headline": "Direct App Micro-Tunnels Enforced",
+      "accentWord": "Micro-Tunnels",
+      "terminalTitle": "bash — auth_policy.sh",
+      "nodeLeft": {
+        "icon": "user",
+        "label": "Client Identity",
+        "status": "Passkey Verified",
+        "sub": "Clean Posture"
+      },
+      "nodeCenter": {
+        "icon": "shield",
+        "label": "Policy Mesh",
+        "sub": "Continuous Auth",
+        "status": "ENFORCED"
+      },
+      "nodeRight": {
+        "icon": "lock",
+        "label": "Cloud App",
+        "sub": "Zero WAN IP",
+        "status": "CLOAKED"
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s4",
+      "type": "feature_cards",
+      "tag": "CORE CAPABILITIES",
+      "headline": "Engineered For Mission-Critical Scale",
+      "accentWord": "Mission-Critical",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        {
+          "title": "Continuous Risk Telemetry",
+          "description": "Real-time device and user session evaluation.",
+          "badge": "REAL-TIME"
+        },
+        {
+          "title": "100% Code-Driven Animations",
+          "description": "Deterministic frame rendering without manual editing.",
+          "badge": "AUTOMATED"
+        },
+        {
+          "title": "Instant Multi-Format Export",
+          "description": "Native 9:16 vertical, 16:9 horizontal, and 1:1 square.",
+          "badge": "MULTI-FORMAT"
+        }
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s5",
+      "type": "metric_counter",
+      "tag": "PROVEN IMPACT",
+      "headline": "Quantifiable Performance & Security Gain",
+      "accentWord": "Performance",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Eliminated",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Unauthorized Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s6",
+      "type": "conversion_cta",
+      "tag": "READY TO SCALE",
+      "headline": "Upgrade Your Video Pipeline Today",
+      "accentWord": "Today",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "trustBadges": [
+        "SOC 2 TYPE II AUDITED",
+        "ZERO RUNTIME OVERHEAD",
+        "INSTANT DEPLOYMENT"
+      ],
+      "durationSeconds": 5
+    }
+  ]
+}

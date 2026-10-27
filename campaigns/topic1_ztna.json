@@ -1,0 +1,67 @@
+{
+  "campaignId": "ztna_enterprise_security",
+  "title": "ZTNA Enterprise Security Overview",
+  "brand": {
+    "name": "Sentinel ZTNA",
+    "primaryColor": "#10B981",
+    "accentColor": "#06B6D4",
+    "backgroundColor": "#030712"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Deploy Sentinel ZTNA →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "scene_1",
+      "type": "kinetic_hook",
+      "tag": "PERIMETER FAILURE",
+      "headline": "Legacy VPNs Expose Your Entire Network",
+      "accentWord": "Entire",
+      "description": "One stolen credential gives attackers unrestricted lateral access to internal databases.",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene_2",
+      "type": "terminal_code",
+      "tag": "EXPLOIT SIMULATION",
+      "headline": "Attacker Traverses Internal Subnets",
+      "accentWord": "Internal",
+      "terminalCommand": "ssh guest@vpn.internal.corp -p 22",
+      "terminalOutput": "[+] AUTH SUCCESS: Subnet 10.0.0.0/8 exposed.",
+      "terminalAlert": "CRITICAL: Lateral threat vector enabled across 2,400 servers.",
+      "durationSeconds": 6
+    },
+    {
+      "id": "scene_3",
+      "type": "network_topology",
+      "tag": "ZTNA ENFORCEMENT",
+      "headline": "Micro-Tunnels Cloak The Internal Network",
+      "accentWord": "Cloak",
+      "nodeLeft": { "icon": "👤", "label": "Remote User", "status": "MFA Verified" },
+      "nodeCenter": { "icon": "🛡️", "label": "ZTNA Gateway", "sub": "Continuous Auth" },
+      "nodeRight": { "icon": "🔒", "label": "App Only", "sub": "Network Hidden" },
+      "durationSeconds": 6
+    },
+    {
+      "id": "scene_4",
+      "type": "metric_counter",
+      "tag": "PROVEN SECURITY",
+      "headline": "Lateral Threat Completely Eliminated",
+      "accentWord": "Eliminated",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Reduced",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Movement Allowed",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene_5",
+      "type": "conversion_cta",
+      "tag": "ENTERPRISE READY",
+      "headline": "Retire Legacy VPNs Today",
+      "accentWord": "Today",
+      "durationSeconds": 5
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+node_modules/
+out/
+.agents/
+
+# Local tooling and environment files
+.env
+.env.*
+*.log

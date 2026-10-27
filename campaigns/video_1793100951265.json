@@ -1,0 +1,144 @@
+{
+  "campaignId": "video_1793100951265",
+  "title": "You are working on Animatrix AI, a reusable AI-powered motio",
+  "brand": {
+    "name": "Sentinel ZTNA",
+    "primaryColor": "#357e79",
+    "accentColor": "#06B6D4",
+    "backgroundColor": "#030712"
+  },
+  "aspectRatio": "1:1",
+  "ctaText": "Get Started Today →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "ARCHITECTURE OVERVIEW",
+      "headline": "You are working on Animatrix AI, a reusable AI-powered motion-graphics video generation system built with React, Node.js, and Remotion.\n\n## Objective\n\nCreate one polished 40-second vertical cybersecurity video explaining PHP SQL injection and its prevention using MySQLi prepared statements.\n\nThe video must look like a professionally directed cybersecurity documentary, not a sequence of ordinary text cards.\n\n## Mandatory architecture rules\n\n1. Inspect the existing repository and package versions before changing anything.\n2. Do not replace or recreate the existing project architecture without justification.\n3. Do not generate a new permanent Remotion component for every video.\n4. Build reusable animation components that accept validated scene data.\n5. Keep per-video JSON, narration, media assets, and rendered MP4 files separate from the permanent engine.\n6. Do not overwrite existing components or modify unrelated functionality.\n7. First provide an implementation plan, affected-file list, dependency list, and risk assessment.\n8. Do not install dependencies or modify files until the plan has been reviewed and approved.\n\n## Story\n\nTarget duration: 40 seconds.\nFrame rate: 30 FPS.\nComposition: 1080 × 1920.\nTotal duration: 1,200 frames.\n\nScene 1, 0–5 seconds: Cinematic hook. Introduce the PHP vulnerability and database risk.\n\nScene 2, 5–12 seconds: Show deliberately vulnerable PHP code. Use Prism.js for syntax highlighting and highlight the unsafe interpolation of user-controlled input.\n\nScene 3, 12–19 seconds: Show a clearly labelled controlled visual simulation of SQL injection. Use fictional data and a visual representation of the application-to-database flow.\n\nScene 4, 19–25 seconds: Explain the root cause by visually separating SQL query structure from user-supplied data.\n\nScene 5, 25–34 seconds: Show the corrected MySQLi prepared-statement example. Animate parameter binding and visually distinguish code structure from input data.\n\nScene 6, 34–40 seconds: Summarize the lesson and display the final Animatrix AI branding.\n\n## Reusable components to evaluate\n\n- CinematicBackground\n- Optional procedural NoiseTexture\n- CodeWindow\n- SyntaxHighlight\n- HighlightedLines\n- LoginForm\n- NetworkDiagram\n- DatabaseVisual\n- ThreatIndicator\n- DataFlowAnimation\n- SceneTransition\n- KineticTypography\n- Voiceover\n- BackgroundMusic\n- SoundEffect\n\nUse existing components where possible. Do not create duplicates.\n\n## Dependencies\n\nEvaluate Prism.js for syntax highlighting.\n\nEvaluate a compatible Remotion noise implementation only if it is necessary and compatible with the installed Remotion version.\n\nDo not assume that a package API or import path is correct. Verify compatibility before implementation. Avoid unnecessary dependencies.\n\n## Technical requirements\n\n- Use a stable rendering path for syntax-highlighted code.\n- Ensure the video renders consistently in Remotion's rendering environment.\n- Validate scene types, frame durations, asset paths, and required fields.\n- Ensure the six scene durations total exactly 1,200 frames.\n- Use deterministic animation wherever possible.\n- Ensure all text is readable at mobile resolution.\n- Keep audio and animation timing synchronized.\n- Add suitable error handling for missing assets and invalid scene data.\n- Avoid unsupported security claims.\n- Use fictional data for the attack simulation.\n- Keep the vulnerable and secure PHP examples technically accurate.\n\n## Required deliverables\n\n1. Repository inspection report.\n2. Implementation plan with affected files.\n3. Dependency compatibility report.\n4. Reusable Remotion components.\n5. Validated JSON configuration for this PHP story.\n6. A working Remotion composition.\n7. A test render.\n8. A quality-control checklist.\n9. Documentation explaining how to create another video by changing JSON without changing the permanent engine.\n\nStart with inspection and the proposed plan only. Do not edit files or install packages until approval.",
+      "accentWord": "Cloud",
+      "subtitle": "A modern visual explanation of your enterprise architecture.",
+      "description": "Eliminate latency, simplify deployment pipelines, and enforce zero-trust security.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s2",
+      "type": "terminal_code",
+      "tag": "LIVE VERIFICATION",
+      "headline": "Deterministic Infrastructure Execution",
+      "accentWord": "Deterministic",
+      "terminalCommand": "engine deploy --cluster=production --verify",
+      "terminalOutput": "✔ 100% Policy Rules Verified. Zero lateral risk detected.",
+      "terminalAlert": "ENFORCEMENT: All Workload Access Cloaked",
+      "terminalTitle": "bash — deploy_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s3",
+      "type": "network_topology",
+      "tag": "NETWORK ARCHITECTURE",
+      "headline": "Direct App Micro-Tunnels Enforced",
+      "accentWord": "Micro-Tunnels",
+      "terminalTitle": "bash — auth_policy.sh",
+      "nodeLeft": {
+        "icon": "user",
+        "label": "Client Identity",
+        "status": "Passkey Verified",
+        "sub": "Clean Posture"
+      },
+      "nodeCenter": {
+        "icon": "shield",
+        "label": "Policy Mesh",
+        "sub": "Continuous Auth",
+        "status": "ENFORCED"
+      },
+      "nodeRight": {
+        "icon": "lock",
+        "label": "Cloud App",
+        "sub": "Zero WAN IP",
+        "status": "CLOAKED"
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s4",
+      "type": "feature_cards",
+      "tag": "CORE CAPABILITIES",
+      "headline": "Engineered For Mission-Critical Scale",
+      "accentWord": "Mission-Critical",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        {
+          "title": "Continuous Risk Telemetry",
+          "description": "Real-time device and user session evaluation.",
+          "badge": "REAL-TIME"
+        },
+        {
+          "title": "100% Code-Driven Animations",
+          "description": "Deterministic frame rendering without manual editing.",
+          "badge": "AUTOMATED"
+        },
+        {
+          "title": "Instant Multi-Format Export",
+          "description": "Native 9:16 vertical, 16:9 horizontal, and 1:1 square.",
+          "badge": "MULTI-FORMAT"
+        }
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s5",
+      "type": "metric_counter",
+      "tag": "PROVEN IMPACT",
+      "headline": "Quantifiable Performance & Security Gain",
+      "accentWord": "Performance",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Eliminated",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Unauthorized Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s6",
+      "type": "conversion_cta",
+      "tag": "READY TO SCALE",
+      "headline": "Upgrade Your Video Pipeline Today",
+      "accentWord": "Today",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "trustBadges": [
+        "SOC 2 TYPE II AUDITED",
+        "ZERO RUNTIME OVERHEAD",
+        "INSTANT DEPLOYMENT"
+      ],
+      "durationSeconds": 5
+    }
+  ]
+}

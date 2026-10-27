@@ -1,0 +1,144 @@
+{
+  "campaignId": "video_1793102144839",
+  "title": "Create a professional, cinematic cybersecurity motion-graphi",
+  "brand": {
+    "name": "Sentinel ZTNA",
+    "primaryColor": "#6366f1",
+    "accentColor": "#06B6D4",
+    "backgroundColor": "#030712"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Get Started Today →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "ARCHITECTURE OVERVIEW",
+      "headline": "Create a professional, cinematic cybersecurity motion-graphics video titled **“ONE PHP VULNERABILITY. DATABASE BREACHED.”**\n\n**STORY CONCEPT:**\nShow how a vulnerable PHP login system can be exploited through SQL injection, explain how the breach happens, and demonstrate how developers can prevent it using prepared statements. Present the attack as a fictional, controlled visual simulation—not a real-world attack.\n\n**VIDEO SETTINGS**\n- Format: 9:16 vertical\n- Resolution: 1080 × 1920\n- Frame rate: 30 FPS\n- Duration: Approximately 40 seconds\n- Visual style: Premium cybersecurity documentary, cinematic motion graphics, sophisticated UI, realistic code-editor visuals, smooth camera movement, layered depth, and professional sound design.\n- Color palette: Near-black (#080B12), electric cyan (#00D9FF), danger red (#FF3B5C), and security green (#36E59A).\n- Typography: Bold modern sans-serif headlines and clean, highly readable monospace code.\n- Audio: Dramatic electronic background music, subtle digital sound effects, and a confident technical voice-over.\n\n### SCENE 1 — THE HOOK (0–5 SECONDS)\n\nOpen in complete darkness. A subtle digital grid and floating particles emerge. A realistic PHP code editor materializes in the center as the camera pushes forward.\n\nA single line of code turns red. A database appears behind the editor, connected by a pulsing red data line.\n\nDisplay the headline using powerful kinetic typography:\n\n“ONE PHP MISTAKE”\n\nThen reveal:\n\n“YOUR DATABASE IS AT RISK.”\n\nVoice-over: “One small mistake in PHP can expose sensitive database information.”\n\nUse cinematic lighting, restrained glitch effects, and a deep impact sound.\n\n### SCENE 2 — THE VULNERABLE CODE (5–12 SECONDS)\n\nShow a realistic code editor with PHP syntax highlighting.\n\nDisplay this deliberately vulnerable example:\n\n$username = $_POST['username'];\n$sql = \"SELECT * FROM users WHERE username = '$username'\";\n$result = mysqli_query($conn, $sql);\n\nReveal the code line by line. Highlight the interpolated username in danger red. Animate the untrusted input flowing directly into the SQL query.\n\nDisplay a warning:\n\n“UNTRUSTED INPUT”\n“UNSAFE SQL CONSTRUCTION”\n\nVoice-over: “When user input is inserted directly into an SQL query, the application can become vulnerable to SQL injection.”\n\nKeep the code readable throughout the animation. Use a controlled camera push, subtle cursor movement, and focused line highlighting.\n\n### SCENE 3 — THE SIMULATED BREACH (12–19 SECONDS)\n\nTransition into a fictional login interface.\n\nCreate a visual network showing:\n\nUSER → PHP APPLICATION → DATABASE\n\nAnimate a simulated malicious input entering the login form. Show the application constructing an unsafe SQL query, followed by a visual explanation of how SQL syntax can be altered.\n\nThe database changes from a locked state to an exposed state. Fictional database records appear as floating panels.\n\nDisplay:\n\n“SQL INJECTION”\n“SIMULATED SECURITY BREACH”\n\nVoice-over: “A crafted input may change the meaning of the query, potentially allowing unauthorized access to data.”\n\nClearly label the scene as a simulation. Use fictional data only. Do not connect to real systems or suggest that every SQL injection attempt succeeds.\n\n### SCENE 4 — INSIDE THE VULNERABILITY (19–25 SECONDS)\n\nZoom into the SQL query and separate the visualization into two layers:\n\nLAYER 1: SQL QUERY STRUCTURE\nLAYER 2: USER-SUPPLIED DATA\n\nShow how unsafe string construction combines these elements. Use red connecting lines and an animated query transformation to explain the root cause.\n\nThen split the screen into two contrasting panels:\n\nLEFT: “VULNERABLE QUERY”\nRIGHT: “PARAMETERIZED QUERY”\n\nThe vulnerable side uses red warning indicators. The secure side uses cyan and green accents.\n\nVoice-over: “The root problem is mixing untrusted data with SQL instructions.”\n\nMake this scene educational and technically clear rather than relying on decorative effects.\n\n### SCENE 5 — THE PHP SECURITY FIX (25–34 SECONDS)\n\nTransform the red visual environment into a clean, secure interface.\n\nDisplay the corrected PHP code:\n\n$stmt = $conn->prepare(\n    \"SELECT * FROM users WHERE username = ?\"\n);\n$stmt->bind_param(\"s\", $username);\n$stmt->execute();\n\nHighlight the question-mark placeholder. Animate the username being bound separately as a parameter.\n\nVisually show that the SQL structure and input data remain separate.\n\nDisplay three labels:\n\n“PREPARED STATEMENTS”\n“PARAMETER BINDING”\n“SAFER QUERY EXECUTION”\n\nVoice-over: “Use prepared statements and parameter binding to keep user input separate from SQL instructions.”\n\nShow the database returning to a protected state. Replace the red data-flow line with a clean cyan connection and a restrained green confirmation animation.\n\nDo not imply that prepared statements alone guarantee complete application security.\n\n### SCENE 6 — THE FINAL REVEAL (34–40 SECONDS)\n\nCreate a cinematic hero shot of the protected database, floating code panels, and a slowly rotating security shield.\n\nReveal three security principles sequentially:\n\n“VALIDATE INPUT”\n“USE PREPARED STATEMENTS”\n“APPLY LEAST PRIVILEGE”\n\nFinish with bold typography:\n\n“SECURE CODE. SAFER SYSTEMS.”\n\nAdd the brand name:\n\n“ANIMATRIX AI”\n\nVoice-over: “Write secure queries, restrict database privileges, and test your application before deployment.”\n\nEnd with a smooth camera pullback, subtle particles, and a cinematic audio finish.\n\n### MOTION-DESIGN REQUIREMENTS\n\n- Use purposeful camera movement, smooth easing, layered depth, and polished transitions.\n- Use syntax-highlighted PHP code with readable line spacing.\n- Animate individual code lines and relevant variables instead of displaying static code blocks.\n- Use network diagrams, flowing data paths, database visualizations, and meaningful security indicators.\n- Synchronize visual events with narration and sound effects.\n- Use background texture and particles subtly; never compromise text readability.\n- Maintain consistent typography, margins, alignment, and visual hierarchy.\n- Avoid generic presentation slides, excessive random glitch effects, repetitive transitions, and overcrowded screens.\n- Ensure the video works as a vertical social-media video on a mobile phone.\n- Prioritize accurate security explanations and visual storytelling over unnecessary effects.\n\n**IMPORTANT IMPLEMENTATION REQUIREMENT:**\nUse the existing Motion Studio and Remotion animation engine. Reuse existing components wherever possible. Generate the video from scene configuration and reusable animation components. Do not rewrite the permanent codebase or create an entirely new animation engine for this video.",
+      "accentWord": "Cloud",
+      "subtitle": "A modern visual explanation of your enterprise architecture.",
+      "description": "Eliminate latency, simplify deployment pipelines, and enforce zero-trust security.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s2",
+      "type": "terminal_code",
+      "tag": "LIVE VERIFICATION",
+      "headline": "Deterministic Infrastructure Execution",
+      "accentWord": "Deterministic",
+      "terminalCommand": "engine deploy --cluster=production --verify",
+      "terminalOutput": "✔ 100% Policy Rules Verified. Zero lateral risk detected.",
+      "terminalAlert": "ENFORCEMENT: All Workload Access Cloaked",
+      "terminalTitle": "bash — deploy_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s3",
+      "type": "network_topology",
+      "tag": "NETWORK ARCHITECTURE",
+      "headline": "Direct App Micro-Tunnels Enforced",
+      "accentWord": "Micro-Tunnels",
+      "terminalTitle": "bash — auth_policy.sh",
+      "nodeLeft": {
+        "icon": "user",
+        "label": "Client Identity",
+        "status": "Passkey Verified",
+        "sub": "Clean Posture"
+      },
+      "nodeCenter": {
+        "icon": "shield",
+        "label": "Policy Mesh",
+        "sub": "Continuous Auth",
+        "status": "ENFORCED"
+      },
+      "nodeRight": {
+        "icon": "lock",
+        "label": "Cloud App",
+        "sub": "Zero WAN IP",
+        "status": "CLOAKED"
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s4",
+      "type": "feature_cards",
+      "tag": "CORE CAPABILITIES",
+      "headline": "Engineered For Mission-Critical Scale",
+      "accentWord": "Mission-Critical",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        {
+          "title": "Continuous Risk Telemetry",
+          "description": "Real-time device and user session evaluation.",
+          "badge": "REAL-TIME"
+        },
+        {
+          "title": "100% Code-Driven Animations",
+          "description": "Deterministic frame rendering without manual editing.",
+          "badge": "AUTOMATED"
+        },
+        {
+          "title": "Instant Multi-Format Export",
+          "description": "Native 9:16 vertical, 16:9 horizontal, and 1:1 square.",
+          "badge": "MULTI-FORMAT"
+        }
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s5",
+      "type": "metric_counter",
+      "tag": "PROVEN IMPACT",
+      "headline": "Quantifiable Performance & Security Gain",
+      "accentWord": "Performance",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Eliminated",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Unauthorized Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s6",
+      "type": "conversion_cta",
+      "tag": "READY TO SCALE",
+      "headline": "Upgrade Your Video Pipeline Today",
+      "accentWord": "Today",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "trustBadges": [
+        "SOC 2 TYPE II AUDITED",
+        "ZERO RUNTIME OVERHEAD",
+        "INSTANT DEPLOYMENT"
+      ],
+      "durationSeconds": 5
+    }
+  ]
+}

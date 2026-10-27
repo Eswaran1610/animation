@@ -1,0 +1,73 @@
+{
+  "campaign": {
+    "name": "example",
+    "fps": 30,
+    "scenes": [
+      {
+        "type": "title",
+        "seconds": 3,
+        "eyebrow": "Claude Code",
+        "headline": "Review code in one command",
+        "sub": "Catch bugs before they ship."
+      },
+      {
+        "type": "terminal",
+        "seconds": 6,
+        "lines": [
+          {
+            "kind": "cmd",
+            "text": "claude review --strict --branch=prod"
+          },
+          {
+            "kind": "out",
+            "text": "Scanning 42 files..."
+          },
+          {
+            "kind": "out",
+            "text": "2 issues found, 1 auto-fixed"
+          }
+        ]
+      },
+      {
+        "type": "diagram",
+        "seconds": 5,
+        "caption": "From terminal to cloud",
+        "nodes": [
+          {
+            "id": "a",
+            "label": "Terminal",
+            "x": 50,
+            "y": 25
+          },
+          {
+            "id": "b",
+            "label": "Claude",
+            "x": 50,
+            "y": 50
+          },
+          {
+            "id": "c",
+            "label": "Cloud",
+            "x": 50,
+            "y": 75
+          }
+        ],
+        "edges": [
+          [
+            "a",
+            "b"
+          ],
+          [
+            "b",
+            "c"
+          ]
+        ]
+      },
+      {
+        "type": "title",
+        "seconds": 3,
+        "headline": "Ship with confidence"
+      }
+    ]
+  }
+}

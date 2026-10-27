@@ -1,0 +1,96 @@
+{
+  "campaignId": "test_before_after_split",
+  "title": "Legacy VPN vs Modern Zero Trust",
+  "brand": {
+    "name": "Sentinel ZTNA",
+    "primaryColor": "#10B981",
+    "accentColor": "#06B6D4",
+    "backgroundColor": "#030712",
+    "theme": "cyber"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Deploy Sentinel Today →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "PERIMETER FAILURE",
+      "headline": "Stop Trusting The Legacy Perimeter",
+      "accentWord": "Perimeter",
+      "subtitle": "Traditional VPN tunnels grant broad network traversal upon a single credential breach.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s2",
+      "type": "before_after_split",
+      "tag": "BEFORE VS AFTER",
+      "headline": "Replace VPN Blindspots With App-Level Micro-Tunnels",
+      "accentWord": "Micro-Tunnels",
+      "subtitle": "Quantifiable reduction in attack surface and incident blast radius.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "beforeAfter": {
+        "beforeTitle": "Legacy Perimeter VPN",
+        "beforeItems": [
+          "2,400+ Internal Subnet IPs Exposed",
+          "Unrestricted Lateral Traversal Allowed",
+          "Static Passwords Without Posture Checks"
+        ],
+        "afterTitle": "Sentinel Zero Trust",
+        "afterItems": [
+          "Zero Internal IP Surface (100% Cloaked)",
+          "Point-to-Point Ephemeral Micro-Tunnels",
+          "Continuous Biometric Posture Evaluation"
+        ]
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 7
+    },
+    {
+      "id": "s3",
+      "type": "terminal_code",
+      "tag": "LIVE VERIFICATION",
+      "headline": "Deterministic Policy Enforcement",
+      "accentWord": "Enforcement",
+      "terminalCommand": "sentinel policy test --target=prod-db --user=engineer",
+      "terminalOutput": "✔ Access granted via ephemeral TLS 1.3 micro-tunnel (id=0x9f4a).",
+      "terminalAlert": "ENFORCED: Zero Lateral Traversal Enabled",
+      "terminalTitle": "sentinel — verify_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 6
+    },
+    {
+      "id": "s4",
+      "type": "conversion_cta",
+      "tag": "DEPLOY IN MINUTES",
+      "headline": "Modernize Your Infrastructure Today",
+      "accentWord": "Today",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "trustBadges": [
+        "SOC 2 TYPE II AUDITED",
+        "FIPS 140-3 COMPLIANT",
+        "ZERO RUNTIME IMPACT"
+      ],
+      "durationSeconds": 5
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "campaignId": "claude_code_tier_test",
+  "title": "Claude Code Pro Demo",
+  "brand": {
+    "name": "Claude Code Pro",
+    "primaryColor": "#6366F1",
+    "accentColor": "#EC4899",
+    "backgroundColor": "#030712"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Install Claude Code →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "terminal_code",
+      "tag": "AUTONOMOUS REFACTORING",
+      "headline": "Agent Analyzes & Fixes Multi-File Regressions",
+      "accentWord": "Regressions",
+      "subtitle": "Claude Code automatically parses AST trees and repairs broken unit tests.",
+      "terminalCommand": "claude review --strict --fix-memory-leaks --branch=prod",
+      "terminalOutput": "✔ AST parsed in 1.4s. Patched 14 memory leaks across 28 files.",
+      "terminalAlert": "VERIFIED: 100% Deterministic Test Suite Passing",
+      "terminalTitle": "claude — autonomous_refactor.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 8
+    },
+    {
+      "id": "s2",
+      "type": "network_topology",
+      "tag": "NEURAL COMPILATION MESH",
+      "headline": "E2E Verified Execution From Local To Production",
+      "accentWord": "Verified",
+      "subtitle": "Dynamic cryptographically signed code changes verified at compile time.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "nodeLeft": {
+        "icon": "user",
+        "label": "Local Developer",
+        "status": "Claude Code CLI",
+        "sub": "v1.4.2 Active"
+      },
+      "nodeCenter": {
+        "icon": "shield",
+        "label": "Neural Engine",
+        "sub": "Static AST Verifier",
+        "status": "REAL-TIME"
+      },
+      "nodeRight": {
+        "icon": "lock",
+        "label": "Production Cluster",
+        "sub": "Zero Regressions",
+        "status": "DEPLOYED"
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 7
+    }
+  ]
+}

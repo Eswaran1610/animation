@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="coinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+  <!-- Main Coin Circle -->
+  <circle cx="200" cy="200" r="140" fill="url(#coinGrad)" stroke="#B45309" stroke-width="12"/>
+  <circle cx="200" cy="200" r="110" fill="none" stroke="#D97706" stroke-width="6" stroke-dasharray="10,6"/>
+  <!-- Trend Arrow in Coin -->
+  <path d="M140 230 L180 180 L210 200 L250 140" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="250,140 230,145 245,160" fill="#FFFFFF"/>
+  <!-- Sparkles -->
+  <polygon points="320,80 326,96 342,102 326,108 320,124 314,108 298,102 314,96" fill="#FDE047"/>
+  <polygon points="90,110 94,122 106,126 94,130 90,142 86,130 74,126 86,122" fill="#FDE047"/>
+</svg>

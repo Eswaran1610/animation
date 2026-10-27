@@ -1,0 +1,31 @@
+{
+  "name": "animation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "remotion studio src/index.tsx",
+    "render": "tsx src/renderPipeline.ts",
+    "ui": "tsx src/server.ts"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "dependencies": {
+    "@remotion/cli": "^4.0.539",
+    "@remotion/noise": "^4.0.539",
+    "@remotion/paths": "^4.0.539",
+    "@types/node": "^26.6.5",
+    "@types/prismjs": "^1.26.6",
+    "@types/react": "^19.3.0",
+    "lucide-react": "^1.62.0",
+    "prismjs": "^1.30.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.539",
+    "typescript": "^7.0.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2"
+  }
+}

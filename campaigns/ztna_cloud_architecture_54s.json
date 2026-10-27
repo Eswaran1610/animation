@@ -1,0 +1,151 @@
+{
+  "campaignId": "ztna_cloud_architecture_54s",
+  "title": "Cloud-Native Zero Trust Architecture",
+  "brand": {
+    "name": "Sentinel ZTNA",
+    "primaryColor": "#10B981",
+    "accentColor": "#06B6D4",
+    "backgroundColor": "#030712"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Deploy Sentinel Zero-Trust →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "type": "kinetic_hook",
+      "tag": "PERIMETER ARCHITECTURE FAILURE",
+      "headline": "Legacy VPNs Cannot Stop Lateral Infiltration",
+      "accentWord": "Lateral",
+      "subtitle": "A single compromised credential exposes your entire private cloud network.",
+      "description": "Traditional perimeter VPNs authenticate at the edge and grant unrestricted access across internal subnets. Once inside, attackers traverse database clusters freely.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 8
+    },
+    {
+      "id": "scene-2",
+      "type": "terminal_code",
+      "tag": "EXPLOIT SIMULATION",
+      "headline": "Simulating Attacker Port Probe Across Cloud Subnets",
+      "accentWord": "Attacker",
+      "subtitle": "Watch how lateral scanning uncovers internal databases behind legacy VPN gateways.",
+      "terminalCommand": "nmap -sS -p 22,443,5432,8080 10.0.0.0/16 --open",
+      "terminalOutput": "[-] 4,200 Internal Workload Ports Discovered via VPN Tunnel.",
+      "terminalAlert": "CRITICAL RISK: Perimeter Breached. Attacker Can Query Production DBs.",
+      "terminalTitle": "soc-telemetry — incident_scan.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 10
+    },
+    {
+      "id": "scene-3",
+      "type": "network_topology",
+      "tag": "ZERO-TRUST TOPOLOGY",
+      "headline": "Direct Application Micro-Tunnels With Ephemeral Tokens",
+      "accentWord": "Micro-Tunnels",
+      "subtitle": "Identity-driven connections that cloak all internal infrastructure from unauthorized probes.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "nodeLeft": {
+        "icon": "user",
+        "label": "Remote Engineer",
+        "status": "Biometric Passkey",
+        "sub": "EDR Posture Clean"
+      },
+      "nodeCenter": {
+        "icon": "shield",
+        "label": "ZTNA Policy Mesh",
+        "sub": "Continuous Auth Engine",
+        "status": "ENFORCED"
+      },
+      "nodeRight": {
+        "icon": "lock",
+        "label": "Production DB",
+        "sub": "WAN Cloaked (0 IP)",
+        "status": "ZERO EXPOSURE"
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 10
+    },
+    {
+      "id": "scene-4",
+      "type": "feature_cards",
+      "tag": "SECURITY ENFORCEMENT",
+      "headline": "Continuous Cryptographic Verification On Every Request",
+      "accentWord": "Cryptographic",
+      "subtitle": "Automated security posture checks enforced continuously at microsecond latency.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        {
+          "title": "Ephemeral Dynamic Tunnels",
+          "description": "Point-to-point TLS 1.3 micro-tunnels torn down immediately after execution.",
+          "badge": "AUTO-TEARDOWN"
+        },
+        {
+          "title": "Continuous Posture Evaluation",
+          "description": "Instant session kill upon BitLocker disablement, malware detection, or location anomaly.",
+          "badge": "REAL-TIME"
+        },
+        {
+          "title": "Zero Public IP Address Footprint",
+          "description": "Internal microservices remain completely dark to WAN and external port scanners.",
+          "badge": "CLOAKED"
+        }
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 9
+    },
+    {
+      "id": "scene-5",
+      "type": "metric_counter",
+      "tag": "ENTERPRISE TELEMETRY",
+      "headline": "Eliminate Attack Surface Across Hybrid Multi-Cloud",
+      "accentWord": "Eliminate",
+      "subtitle": "Measurable security posture improvement verified by Fortune 500 security audits.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 98,
+      "metricSuffix": "%",
+      "metricLabel": "Lateral Attack Surface Eliminated",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Unauthorized Lateral Traversal Allowed",
+      "durationSeconds": 9
+    },
+    {
+      "id": "scene-6",
+      "type": "conversion_cta",
+      "tag": "DEPLOY IN MINUTES",
+      "headline": "Upgrade From Legacy VPN To Zero-Trust Today",
+      "accentWord": "Zero-Trust",
+      "subtitle": "Drop-in cloud architecture. Zero client software friction. Immediate compliance.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Deploy Sentinel Zero-Trust",
+      "ctaSubtext": "Start free with up to 100 workloads",
+      "trustBadges": [
+        "SOC 2 TYPE II AUDITED",
+        "FIPS 140-3 COMPLIANT",
+        "99.999% SLA UPTIME"
+      ],
+      "durationSeconds": 8
+    }
+  ]
+}
