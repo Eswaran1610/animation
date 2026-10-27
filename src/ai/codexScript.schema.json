@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["videoTitle", "targetAudience", "lines", "narrationScript"],
+  "properties": {
+    "videoTitle": { "type": "string" },
+    "targetAudience": { "type": "string" },
+    "lines": { "type": "array", "minItems": 2, "items": { "type": "object", "additionalProperties": false, "required": ["id", "beat", "text", "claimIds", "emphasis"], "properties": { "id": { "type": "string" }, "beat": { "type": "string", "enum": ["hook", "context", "mechanism", "impact", "detect_fix", "cta"] }, "text": { "type": "string" }, "claimIds": { "type": "array", "items": { "type": "string" } }, "emphasis": { "type": "array", "items": { "type": "string" } } } } },
+    "narrationScript": { "type": "string" }
+  }
+}

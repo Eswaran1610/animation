@@ -27,6 +27,8 @@ export const MotionSceneSchema = z.object({
   tag: z.string().default("ENTERPRISE ARCHITECTURE"),
   headline: z.string().min(1),
   accentWord: z.string().optional(),
+  sourceSceneType: z.string().optional(),
+  visualStyle: z.enum(["default", "claude_workspace", "astra_browser", "comparison_matrix"]).optional(),
   subtitle: z.string().optional(),
   description: z.string().optional(),
   
@@ -77,6 +79,11 @@ export const MotionSceneSchema = z.object({
   secondaryMetricLabel: z.string().optional().default("Lateral Traversal"),
   comparisonBefore: z.string().optional(),
   comparisonAfter: z.string().optional(),
+  comparisonRows: z.array(z.object({
+    label: z.string(),
+    claude: z.string(),
+    astra: z.string(),
+  })).optional(),
 
   // CTA specific props (for 'conversion_cta')
   ctaHeadline: z.string().optional(),
@@ -98,6 +105,7 @@ export const CampaignDataSchema = z.object({
     theme: z.enum(["cyber", "claude", "fintech", "indigo"]).default("cyber").optional(),
   }),
   aspectRatio: z.enum(["16:9", "9:16", "1:1"]).default("9:16"),
+  fps: z.number().int().min(1).max(120).default(60),
   ctaText: z.string().default("Get Started Today →"),
   audioTrack: z.string().default("cyber_audio.wav"),
   scenes: z.array(MotionSceneSchema).min(1),

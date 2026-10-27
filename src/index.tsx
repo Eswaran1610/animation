@@ -128,13 +128,14 @@ export const RemotionRoot: React.FC = () => {
         }}
       />
 
-      {/* Universal Data-Driven Engine Composition */}
+      {/* Universal Data-Driven Engine Composition — supports configurable FPS via props.campaign.fps */}
       <Composition
         id="Universal-Motion-Engine"
         component={require("./engine/UniversalMotionEngine").UniversalMotionEngine}
         calculateMetadata={({ props }: any) => {
-          const fps = 30;
           const campaign = props?.campaign;
+          // Support configurable FPS: default to 60 for research-generated jobs, 30 for legacy
+          const fps = campaign?.fps || 60;
           const scenes = campaign?.scenes || [];
           const totalSeconds = scenes.reduce((acc: number, s: any) => acc + (s.durationSeconds || 5), 0);
           const isLandscape = campaign?.aspectRatio === "16:9";

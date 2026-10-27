@@ -1,0 +1,253 @@
+{
+  "campaignId": "job_1793123016618_8ogs6j",
+  "title": "Leading Industry Chains We Have Experience With",
+  "brand": {
+    "name": "Motion Studio",
+    "primaryColor": "#D97757",
+    "accentColor": "#F5F1E8",
+    "backgroundColor": "#1A1916",
+    "theme": "claude"
+  },
+  "aspectRatio": "9:16",
+  "fps": 60,
+  "ctaText": "Review the sources and take the next safe step →",
+  "audioTrack": "audio/job_1793123016618_8ogs6j_voiceover.wav",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "type": "kinetic_hook",
+      "tag": "HOOK",
+      "headline": "Bitcoin works differently when you look beneath the price chart.",
+      "accentWord": "differently",
+      "sourceSceneType": "kinetic_title",
+      "description": "Bitcoin works differently when you look beneath the price chart.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-2",
+      "type": "feature_cards",
+      "tag": "CONTEXT",
+      "headline": "Its original design enables direct online payments between parties, without a fi",
+      "sourceSceneType": "quote_card",
+      "description": "Its original design enables direct online payments between parties, without a financial institution.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Its original design enables direct online payments between parties, without a financial institution."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-3",
+      "type": "before_after_split",
+      "tag": "MECHANISM",
+      "headline": "Full nodes independently verify every block and transaction against Bitcoin’s co",
+      "sourceSceneType": "flow_diagram",
+      "description": "Full nodes independently verify every block and transaction against Bitcoin’s consensus rules.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "beforeAfter": {
+        "beforeTitle": "Mechanism",
+        "beforeItems": [
+          "Full nodes independently verify every block and transaction against Bitcoin’s consensus rules."
+        ],
+        "afterTitle": "What to verify",
+        "afterItems": [
+          "Full nodes independently verify every block and transaction against Bitcoin’s consensus rules."
+        ]
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-4",
+      "type": "terminal_code",
+      "tag": "MECHANISM",
+      "headline": "Mining confirms transactions, strengthens security, and rewards miners with fees",
+      "sourceSceneType": "compare_split",
+      "description": "Mining confirms transactions, strengthens security, and rewards miners with fees and newly issued bitcoin.",
+      "terminalCommand": "Mining confirms transactions, strengthens security, and rewards miners with fees and newly issued bitcoin.",
+      "terminalOutput": "Source-linked scene ready.",
+      "terminalAlert": "VERIFIED FLOW",
+      "terminalTitle": "COMPARE_SPLIT",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-5",
+      "type": "before_after_split",
+      "tag": "MECHANISM",
+      "headline": "Mainnet targets blocks roughly every ten minutes on average.",
+      "sourceSceneType": "flow_diagram",
+      "description": "Mainnet targets blocks roughly every ten minutes on average.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "beforeAfter": {
+        "beforeTitle": "Mechanism",
+        "beforeItems": [
+          "Mainnet targets blocks roughly every ten minutes on average."
+        ],
+        "afterTitle": "What to verify",
+        "afterItems": [
+          "Mainnet targets blocks roughly every ten minutes on average."
+        ]
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-6",
+      "type": "metric_counter",
+      "tag": "IMPACT",
+      "headline": "The block subsidy halves every 210,000 blocks, roughly every four years.",
+      "sourceSceneType": "stat_counter",
+      "description": "The block subsidy halves every 210,000 blocks, roughly every four years.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 210,
+      "metricSuffix": "",
+      "metricLabel": "The block subsidy halves every 210,000 blocks, roughly every four years.",
+      "secondaryMetricValue": "1",
+      "secondaryMetricLabel": "Source-linked claim",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-7",
+      "type": "feature_cards",
+      "tag": "IMPACT",
+      "headline": "Mining hardware evolved from GPUs and FPGAs toward far more efficient ASICs.",
+      "sourceSceneType": "quote_card",
+      "description": "Mining hardware evolved from GPUs and FPGAs toward far more efficient ASICs.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Mining hardware evolved from GPUs and FPGAs toward far more efficient ASICs."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-8",
+      "type": "feature_cards",
+      "tag": "DETECT_FIX",
+      "headline": "Network electricity use is estimated, not directly measured, because Bitcoin is ",
+      "sourceSceneType": "timeline",
+      "description": "Network electricity use is estimated, not directly measured, because Bitcoin is decentralized.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Network electricity use is estimated, not directly measured, because Bitcoin is decentralized."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-9",
+      "type": "before_after_split",
+      "tag": "MECHANISM",
+      "headline": "Lightning uses payment channels anchored on Bitcoin for peer-to-peer, atomic pay",
+      "sourceSceneType": "flow_diagram",
+      "description": "Lightning uses payment channels anchored on Bitcoin for peer-to-peer, atomic payments.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "beforeAfter": {
+        "beforeTitle": "Mechanism",
+        "beforeItems": [
+          "Lightning uses payment channels anchored on Bitcoin for peer-to-peer",
+          "atomic payments."
+        ],
+        "afterTitle": "What to verify",
+        "afterItems": [
+          "Lightning uses payment channels anchored on Bitcoin for peer-to-peer, atomic payments."
+        ]
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-10",
+      "type": "feature_cards",
+      "tag": "DETECT_FIX",
+      "headline": "But channel liquidity can limit Lightning payment reliability.",
+      "sourceSceneType": "checklist",
+      "description": "But channel liquidity can limit Lightning payment reliability.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "But channel liquidity can limit Lightning payment reliability."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-11",
+      "type": "terminal_code",
+      "tag": "DETECT_FIX",
+      "headline": "Your private key proves spending rights; a recovery phrase can unlock the corres",
+      "sourceSceneType": "file_tree",
+      "description": "Your private key proves spending rights; a recovery phrase can unlock the corresponding bitcoin.",
+      "terminalCommand": "upload-folder/",
+      "terminalOutput": "Your private key proves spending rights; a recovery phrase can unlock the corresponding bitcoin.",
+      "terminalAlert": "PATH REQUIRES REVIEW",
+      "terminalTitle": "FILE TREE",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-12",
+      "type": "conversion_cta",
+      "tag": "CTA",
+      "headline": "Understand the chain, then decide how you want to use it.",
+      "sourceSceneType": "cta_end",
+      "description": "Understand the chain, then decide how you want to use it.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Understand the chain, then decide how you want to use it.",
+      "trustBadges": [
+        "CLAIM-LINKED",
+        "QA PASSED",
+        "SOURCE READY"
+      ],
+      "durationSeconds": 5
+    }
+  ]
+}

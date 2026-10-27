@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["queries", "summary", "sources", "claims", "stats", "timeline", "fixes"],
+  "properties": {
+    "queries": { "type": "array", "items": { "type": "string" } },
+    "summary": { "type": "string" },
+    "sources": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["id", "title", "url", "publisher", "publicationDate", "retrievedAt", "supportsClaims"], "properties": { "id": { "type": "string" }, "title": { "type": "string" }, "url": { "type": "string" }, "publisher": { "type": "string" }, "publicationDate": { "type": "string" }, "retrievedAt": { "type": "string" }, "supportsClaims": { "type": "array", "items": { "type": "string" } } } } },
+    "claims": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["id", "text", "sources", "date", "confidence", "type"], "properties": { "id": { "type": "string" }, "text": { "type": "string" }, "sources": { "type": "array", "items": { "type": "string" } }, "date": { "type": "string" }, "confidence": { "type": "string", "enum": ["high", "medium", "low", "single_source"] }, "type": { "type": "string", "enum": ["context", "mechanism", "impact", "indicator", "fix", "timeline", "other"] } } } },
+    "stats": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["id", "label", "value", "source"], "properties": { "id": { "type": "string" }, "label": { "type": "string" }, "value": { "type": ["string", "number"] }, "source": { "type": "string" } } } },
+    "timeline": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["date", "event", "source"], "properties": { "date": { "type": "string" }, "event": { "type": "string" }, "source": { "type": "string" } } } },
+    "fixes": { "type": "array", "items": { "type": "object", "additionalProperties": false, "required": ["id", "step", "source", "claimIds"], "properties": { "id": { "type": "string" }, "step": { "type": "string" }, "source": { "type": "string" }, "claimIds": { "type": "array", "items": { "type": "string" } } } } }
+  }
+}

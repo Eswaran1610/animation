@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "remotion studio src/index.tsx",
     "render": "tsx src/renderPipeline.ts",
-    "ui": "tsx src/server.ts"
+    "ui": "tsx src/server.ts",
+    "make": "tsx make.ts",
+    "video": "tsx make.ts",
+    "pipeline": "tsx pipeline.ts",
+    "test": "tsx src/tests/run.ts"
   },
   "keywords": [],
   "type": "commonjs",
@@ -26,6 +30,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsx": "^4.0.0"
   }
 }

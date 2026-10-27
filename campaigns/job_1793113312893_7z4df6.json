@@ -1,0 +1,88 @@
+{
+  "campaignId": "job_1793113312893_7z4df6",
+  "title": "# PROJECT: VPN vs. ZTNA — The Future of Secure Access\n\n## 1.",
+  "brand": {
+    "name": "Motion Studio",
+    "primaryColor": "#D97757",
+    "accentColor": "#F5F1E8",
+    "backgroundColor": "#1A1916",
+    "theme": "claude"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Learn More →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "BREAKING",
+      "headline": "# PROJECT: VPN vs. ZTNA — The Future of Secure Access\n\n## 1.",
+      "accentWord": "#",
+      "subtitle": "Research-backed motion graphics",
+      "description": "Today we're covering: # PROJECT: VPN vs. ZTNA — The Future of Secure Access\n\n## 1..",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 23
+    },
+    {
+      "id": "s2",
+      "type": "feature_cards",
+      "tag": "KEY FACTS",
+      "headline": "Key Research Findings",
+      "accentWord": "Know",
+      "description": "Here are the key facts from our research.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Current situation under active research",
+        "Multiple verified sources consulted",
+        "Findings updated in real time"
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 27
+    },
+    {
+      "id": "s3",
+      "type": "metric_counter",
+      "tag": "IMPACT",
+      "headline": "Key metric from research",
+      "accentWord": "Impact",
+      "description": "The numbers tell a clear story.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 90,
+      "metricSuffix": "%",
+      "metricLabel": "Topic relevance score",
+      "secondaryMetricValue": "0",
+      "secondaryMetricLabel": "Sources consulted",
+      "durationSeconds": 23
+    },
+    {
+      "id": "s4",
+      "type": "conversion_cta",
+      "tag": "STAY INFORMED",
+      "headline": "Subscribe For More →",
+      "accentWord": "Full",
+      "description": "Stay informed with research-backed motion graphics.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Subscribe For More →",
+      "trustBadges": [
+        "RESEARCH-BACKED",
+        "60 FPS",
+        "VERIFIED SOURCES"
+      ],
+      "durationSeconds": 18
+    }
+  ]
+}

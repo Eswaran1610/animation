@@ -1,13 +1,14 @@
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
 import { CampaignSchema, CampaignConfig } from "./schema";
+import {
+  OUTPUT_DIR,
+  createContactSheet,
+  ensureVideoDirectories,
+  renderComposition,
+} from "./render/videoPipeline";
 
-const OUTPUT_DIR = path.join(__dirname, "../out");
-
-if (!fs.existsSync(OUTPUT_DIR)) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-}
+ensureVideoDirectories();
 
 // Read input from command line argument or standard input
 function getCampaignInput(): CampaignConfig {
@@ -43,13 +44,17 @@ async function generate() {
   const contactSheet = path.join(OUTPUT_DIR, `${config.id}_contact.png`);
 
   console.log(`\n1. Rendering ${compId} -> ${videoOut}`);
-  execSync(`npx remotion render src/index.tsx ${compId} ${videoOut} --props=${propsPath} --overwrite`, {
-    stdio: "inherit",
+  renderComposition({
+    compositionId: compId,
+    outputPath: videoOut,
+    propsPath,
   });
 
   console.log(`\n2. Generating Quality Control Sheet...`);
-  execSync(`ffmpeg -y -i ${videoOut} -vf "fps=1,scale=270:-1,tile=4x2" -frames:v 1 ${contactSheet}`, {
-    stdio: "inherit",
+  createContactSheet({
+    videoPath: videoOut,
+    outputPath: contactSheet,
+    scaleWidth: 270,
   });
 
   console.log(`\n✔ Video Ready: ${videoOut}`);

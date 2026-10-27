@@ -1,0 +1,235 @@
+{
+  "campaignId": "job_1793122604348_zwzp8l",
+  "title": "AI Overview",
+  "brand": {
+    "name": "Motion Studio",
+    "primaryColor": "#D97757",
+    "accentColor": "#F5F1E8",
+    "backgroundColor": "#1A1916",
+    "theme": "claude"
+  },
+  "aspectRatio": "9:16",
+  "fps": 60,
+  "ctaText": "Review the sources and take the next safe step →",
+  "audioTrack": "audio/job_1793122604348_zwzp8l_voiceover.wav",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "type": "kinetic_hook",
+      "tag": "HOOK",
+      "headline": "Search is becoming a generated interface, and your visibility strategy needs a n",
+      "accentWord": "generated interface",
+      "sourceSceneType": "kinetic_title",
+      "description": "Search is becoming a generated interface, and your visibility strategy needs a new operating model.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-2",
+      "type": "metric_counter",
+      "tag": "CONTEXT",
+      "headline": "Google brought AI Overviews to everyone in the United States in May 2024.",
+      "sourceSceneType": "stat_counter",
+      "description": "Google brought AI Overviews to everyone in the United States in May 2024.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 2024,
+      "metricSuffix": "",
+      "metricLabel": "Google brought AI Overviews to everyone in the United States in May 2024.",
+      "secondaryMetricValue": "1",
+      "secondaryMetricLabel": "Source-linked claim",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-3",
+      "type": "before_after_split",
+      "tag": "MECHANISM",
+      "headline": "They combine a customized language model with Google’s core web-ranking systems.",
+      "sourceSceneType": "flow_diagram",
+      "description": "They combine a customized language model with Google’s core web-ranking systems.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "beforeAfter": {
+        "beforeTitle": "Mechanism",
+        "beforeItems": [
+          "They combine a customized language model with Google’s core web-ranking systems."
+        ],
+        "afterTitle": "What to verify",
+        "afterItems": [
+          "They combine a customized language model with Google’s core web-ranking systems."
+        ]
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-4",
+      "type": "terminal_code",
+      "tag": "MECHANISM",
+      "headline": "Query fan-out can launch related searches across subtopics and data sources.",
+      "sourceSceneType": "compare_split",
+      "description": "Query fan-out can launch related searches across subtopics and data sources.",
+      "terminalCommand": "Query fan-out can launch related searches across subtopics and data sources.",
+      "terminalOutput": "Source-linked scene ready.",
+      "terminalAlert": "VERIFIED FLOW",
+      "terminalTitle": "COMPARE_SPLIT",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-5",
+      "type": "feature_cards",
+      "tag": "CONTEXT",
+      "headline": "AI Overviews appear only when Google’s systems determine they add value beyond c",
+      "sourceSceneType": "quote_card",
+      "description": "AI Overviews appear only when Google’s systems determine they add value beyond classic Search.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "AI Overviews appear only when Google’s systems determine they add value beyond classic Search."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-6",
+      "type": "feature_cards",
+      "tag": "DETECT_FIX",
+      "headline": "Supporting links need indexed, snippet-eligible pages; no special schema markup ",
+      "sourceSceneType": "timeline",
+      "description": "Supporting links need indexed, snippet-eligible pages; no special schema markup is required.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Supporting links need indexed, snippet-eligible pages; no special schema markup is required."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-7",
+      "type": "feature_cards",
+      "tag": "DETECT_FIX",
+      "headline": "Google made over a dozen improvements, including nonsensical-query detection and",
+      "sourceSceneType": "checklist",
+      "description": "Google made over a dozen improvements, including nonsensical-query detection and limits on satire.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Google made over a dozen improvements, including nonsensical-query detection and limits on satire."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-8",
+      "type": "metric_counter",
+      "tag": "IMPACT",
+      "headline": "By August 2024, AI Overviews expanded to six additional countries with local-lan",
+      "sourceSceneType": "stat_counter",
+      "description": "By August 2024, AI Overviews expanded to six additional countries with local-language support.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 2024,
+      "metricSuffix": "",
+      "metricLabel": "By August 2024, AI Overviews expanded to six additional countries with local-language support.",
+      "secondaryMetricValue": "1",
+      "secondaryMetricLabel": "Source-linked claim",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-9",
+      "type": "terminal_code",
+      "tag": "IMPACT",
+      "headline": "Pew found AI summaries in 12,593 of 68,879 analyzed Google searches.",
+      "sourceSceneType": "file_tree",
+      "description": "Pew found AI summaries in 12,593 of 68,879 analyzed Google searches.",
+      "terminalCommand": "upload-folder/",
+      "terminalOutput": "Pew found AI summaries in 12,593 of 68,879 analyzed Google searches.",
+      "terminalAlert": "PATH REQUIRES REVIEW",
+      "terminalTitle": "FILE TREE",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-10",
+      "type": "feature_cards",
+      "tag": "IMPACT",
+      "headline": "Traditional-result clicks were eight percent with summaries, versus fifteen perc",
+      "sourceSceneType": "quote_card",
+      "description": "Traditional-result clicks were eight percent with summaries, versus fifteen percent without them.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Traditional-result clicks were eight percent with summaries, versus fifteen percent without them."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-11",
+      "type": "feature_cards",
+      "tag": "IMPACT",
+      "headline": "Google reported over ten percent more usage for AI Overview query types in major",
+      "sourceSceneType": "timeline",
+      "description": "Google reported over ten percent more usage for AI Overview query types in major markets.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Google reported over ten percent more usage for AI Overview query types in major markets."
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "scene-12",
+      "type": "conversion_cta",
+      "tag": "CTA",
+      "headline": "Build clear, indexable technical authority now—before the answer box becomes the",
+      "sourceSceneType": "cta_end",
+      "description": "Build clear, indexable technical authority now—before the answer box becomes the only first impression.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Build clear, indexable technical authority now—before the answer box becomes the only first impression.",
+      "trustBadges": [
+        "CLAIM-LINKED",
+        "QA PASSED",
+        "SOURCE READY"
+      ],
+      "durationSeconds": 5
+    }
+  ]
+}

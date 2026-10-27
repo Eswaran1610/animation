@@ -1,0 +1,141 @@
+{
+  "campaignId": "claude_vs_astra_60s",
+  "title": "Claude vs Astra: Which Workflow Fits You?",
+  "brand": {
+    "name": "Claude vs Astra",
+    "primaryColor": "#D97757",
+    "accentColor": "#7CC4E8",
+    "backgroundColor": "#111827",
+    "theme": "indigo"
+  },
+  "aspectRatio": "9:16",
+  "fps": 30,
+  "ctaText": "Test Both On Your Workflow →",
+  "audioTrack": "claude_vs_astra_audio.wav",
+  "scenes": [
+    {
+      "id": "hook",
+      "type": "kinetic_hook",
+      "tag": "AI WORKFLOW SHOWDOWN",
+      "headline": "Claude vs Astra",
+      "accentWord": "vs",
+      "subtitle": "Two frontier AI approaches. One workflow decision.",
+      "description": "The real question is not which model wins every benchmark. It is which system fits the way you work.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 10
+    },
+    {
+      "id": "claude",
+      "type": "before_after_split",
+      "tag": "CLAUDE",
+      "headline": "Reasoning With Control",
+      "accentWord": "Control",
+      "visualStyle": "claude_workspace",
+      "description": "Claude is a model family built for text and image understanding, vision, multilingual work, and tool use.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "beforeAfter": {
+        "beforeTitle": "Claude Strengths",
+        "beforeItems": [
+          "Careful conversation and analysis",
+          "Writing, coding, and long tasks",
+          "Controlled tool workflows"
+        ],
+        "afterTitle": "Best Fit",
+        "afterItems": [
+          "Deep collaboration",
+          "Complex reasoning",
+          "Reviewable outputs"
+        ]
+      },
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 12
+    },
+    {
+      "id": "astra",
+      "type": "terminal_code",
+      "tag": "GPT-6 ASTRA",
+      "headline": "Intelligence That Acts",
+      "accentWord": "Acts",
+      "visualStyle": "astra_browser",
+      "description": "Astra is positioned around computer use, browsing, software engineering, and multi-step professional workflows.",
+      "terminalCommand": "astra browse --plan --execute --verify",
+      "terminalOutput": "✔ Screen understood. Tools selected. Workflow completed.",
+      "terminalAlert": "COMPUTER USE READY",
+      "terminalTitle": "astra — workflow.run",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 12
+    },
+    {
+      "id": "decision",
+      "type": "metric_counter",
+      "tag": "MAKE THE CHOICE",
+      "headline": "Measure The Workflow",
+      "accentWord": "Workflow",
+      "visualStyle": "comparison_matrix",
+      "description": "There is no universal winner. Run both systems on the tasks your team actually cares about.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 5,
+      "metricSuffix": " tests",
+      "metricLabel": "Compare quality, speed, cost, reliability, and safety",
+      "secondaryMetricValue": "1",
+      "secondaryMetricLabel": "Real workflow decides",
+      "comparisonRows": [
+        {
+          "label": "Long-form reasoning",
+          "claude": "Strong",
+          "astra": "Strong"
+        },
+        {
+          "label": "Computer interaction",
+          "claude": "Tool-driven",
+          "astra": "Native focus"
+        },
+        {
+          "label": "Reviewable output",
+          "claude": "High",
+          "astra": "Workflow log"
+        },
+        {
+          "label": "Best first test",
+          "claude": "Complex thinking",
+          "astra": "Screen-based tasks"
+        }
+      ],
+      "durationSeconds": 12
+    },
+    {
+      "id": "cta",
+      "type": "conversion_cta",
+      "tag": "YOUR WORKFLOW DECIDES",
+      "headline": "Claude For Thought. Astra For Action.",
+      "accentWord": "Action",
+      "description": "Choose the system that makes your next important task clearer, faster, and safer.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Test Both On Your Workflow →",
+      "trustBadges": [
+        "QUALITY",
+        "SPEED",
+        "SAFETY"
+      ],
+      "durationSeconds": 14
+    }
+  ]
+}

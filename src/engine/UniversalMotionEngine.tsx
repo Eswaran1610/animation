@@ -1,4 +1,5 @@
-import { AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import React from "react";
+import { AbsoluteFill, Audio, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { noise2D } from "@remotion/noise";
 import { evolvePath } from "@remotion/paths";
 import Prism from "prismjs";
@@ -410,6 +411,237 @@ const SceneBeforeAfter: React.FC<{ scene: MotionScene; campaign: CampaignData; f
 
       </div>
     </AbsoluteFill>
+  );
+};
+
+// =========================================================================
+// COMPARISON-SPECIFIC UI: Claude workspace / Astra browser / decision matrix
+// =========================================================================
+const SceneClaudeWorkspace: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({
+  scene,
+  campaign,
+  frame,
+  fps,
+}) => {
+  const ba = scene.beforeAfter;
+  const responseIn = spring({ frame: frame - 12, fps, config: { damping: 14, stiffness: 110 } });
+  const contextItems = ba?.beforeItems || ["Conversation context", "Long-form reasoning", "Tool boundaries"];
+  const traceItems = ba?.afterItems || ["Clarify the goal", "Build the reasoning", "Return a reviewable answer"];
+
+  return (
+    <AbsoluteFill style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "54px 42px" }}>
+      <div style={{ textAlign: "center", marginBottom: 30 }}>
+        <div style={{ color: campaign.brand.primaryColor, fontSize: 15, fontWeight: 900, letterSpacing: 3, marginBottom: 10 }}>{scene.tag}</div>
+        <div style={{ color: "#FFF", fontSize: 54, fontWeight: 900, letterSpacing: -1 }}>{scene.headline}</div>
+      </div>
+
+      <div style={{ width: "100%", maxWidth: 980, alignSelf: "center", display: "flex", gap: 18, transform: `translateY(${interpolate(responseIn, [0, 1], [45, 0])}px)`, opacity: responseIn }}>
+        <div style={{ width: 245, flexShrink: 0, background: "rgba(255,255,255,0.045)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 22, padding: 22 }}>
+          <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, fontWeight: 900, letterSpacing: 2, marginBottom: 20 }}>CONTEXT</div>
+          <div style={{ color: "#FFF", fontSize: 20, fontWeight: 800, marginBottom: 22 }}>Claude</div>
+          {contextItems.map((item, i) => (
+            <div key={i} style={{ display: "flex", gap: 9, alignItems: "center", color: "rgba(248,250,252,0.72)", fontSize: 15, lineHeight: 1.25, marginTop: 16 }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: i === 0 ? campaign.brand.primaryColor : "rgba(255,255,255,0.25)" }} />
+              {item}
+            </div>
+          ))}
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0, background: "linear-gradient(145deg, rgba(217,119,87,0.16), rgba(15,23,42,0.9))", border: `1px solid ${campaign.brand.primaryColor}88`, borderRadius: 22, overflow: "hidden", boxShadow: `0 25px 70px ${campaign.brand.primaryColor}22` }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "18px 22px", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, color: "#FFF", fontWeight: 800 }}><IconSparkle color={campaign.brand.primaryColor} size={21} /> Reasoning workspace</div>
+            <span style={{ color: campaign.brand.primaryColor, fontSize: 12, fontWeight: 900, letterSpacing: 1.5 }}>CONTROLLED</span>
+          </div>
+          <div style={{ padding: 24 }}>
+            <div style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, fontWeight: 800, letterSpacing: 1.5, marginBottom: 10 }}>YOUR TASK</div>
+            <div style={{ background: "rgba(255,255,255,0.07)", borderRadius: 14, padding: "16px 18px", color: "#FFF", fontSize: 18, lineHeight: 1.35 }}>
+              {scene.subtitle || "Choose the right AI workflow for the team."}
+            </div>
+            <div style={{ color: "rgba(255,255,255,0.48)", fontSize: 13, fontWeight: 800, letterSpacing: 1.5, margin: "24px 0 10px" }}>CLAUDE RESPONSE</div>
+            <div style={{ color: "#FFF", fontSize: 20, lineHeight: 1.45, fontWeight: 650 }}>{scene.description}</div>
+            <div style={{ marginTop: 24, paddingTop: 18, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+              {traceItems.map((item, i) => (
+                <div key={i} style={{ display: "flex", gap: 10, alignItems: "center", color: "rgba(248,250,252,0.78)", fontSize: 16, marginTop: i === 0 ? 0 : 12 }}>
+                  <IconCheck color={campaign.brand.primaryColor} size={17} /> {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const SceneAstraBrowser: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({
+  scene,
+  campaign,
+  frame,
+  fps,
+}) => {
+  const reveal = spring({ frame: frame - 8, fps, config: { damping: 13, stiffness: 115 } });
+  const steps = ["Understand the screen", "Choose the right tools", "Execute and verify"];
+  const activeStep = Math.min(steps.length - 1, Math.floor(Math.max(0, frame - 12) / 22));
+
+  return (
+    <AbsoluteFill style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "54px 38px" }}>
+      <div style={{ textAlign: "center", marginBottom: 30 }}>
+        <div style={{ color: campaign.brand.accentColor, fontSize: 15, fontWeight: 900, letterSpacing: 3, marginBottom: 10 }}>{scene.tag}</div>
+        <div style={{ color: "#FFF", fontSize: 54, fontWeight: 900, letterSpacing: -1 }}>{scene.headline}</div>
+      </div>
+
+      <div style={{ width: "100%", maxWidth: 1000, alignSelf: "center", background: "rgba(8,13,26,0.96)", border: `1px solid ${campaign.brand.primaryColor}88`, borderRadius: 24, overflow: "hidden", transform: `scale(${interpolate(reveal, [0, 1], [0.94, 1])})`, boxShadow: `0 30px 90px ${campaign.brand.primaryColor}28` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 9, padding: "17px 22px", background: "rgba(255,255,255,0.045)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+          <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#FF5F56" }} />
+          <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#FFBD2E" }} />
+          <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#27C93F" }} />
+          <div style={{ flex: 1, marginLeft: 12, background: "rgba(255,255,255,0.07)", borderRadius: 8, padding: "9px 14px", color: "rgba(255,255,255,0.65)", fontFamily: "monospace", fontSize: 14 }}>astra://computer-use/workflow</div>
+          <span style={{ color: campaign.brand.accentColor, fontSize: 12, fontWeight: 900, letterSpacing: 1 }}>LIVE AGENT</span>
+        </div>
+
+        <div style={{ display: "flex", minHeight: 470 }}>
+          <div style={{ width: 280, padding: 24, borderRight: "1px solid rgba(255,255,255,0.1)" }}>
+            <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 12, fontWeight: 900, letterSpacing: 2, marginBottom: 22 }}>TASK PLAN</div>
+            {steps.map((step, i) => (
+              <div key={step} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 24, color: i <= activeStep ? "#FFF" : "rgba(255,255,255,0.36)" }}>
+                <div style={{ width: 27, height: 27, borderRadius: "50%", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", background: i <= activeStep ? `${campaign.brand.accentColor}30` : "rgba(255,255,255,0.06)", border: `1px solid ${i <= activeStep ? campaign.brand.accentColor : "rgba(255,255,255,0.15)"}`, color: i <= activeStep ? campaign.brand.accentColor : "rgba(255,255,255,0.4)", fontWeight: 900, fontSize: 13 }}>{i + 1}</div>
+                <div style={{ fontSize: 16, lineHeight: 1.3, paddingTop: 4 }}>{step}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ flex: 1, padding: 26 }}>
+            <div style={{ color: "rgba(255,255,255,0.46)", fontSize: 12, fontWeight: 900, letterSpacing: 2, marginBottom: 12 }}>ACTION CONSOLE</div>
+            <div style={{ background: "#111827", borderRadius: 16, padding: 20, border: "1px solid rgba(255,255,255,0.1)" }}>
+              <div style={{ color: campaign.brand.accentColor, fontFamily: "monospace", fontSize: 17, marginBottom: 18 }}>$ {scene.terminalCommand}</div>
+              <div style={{ color: "rgba(255,255,255,0.76)", fontSize: 18, lineHeight: 1.45 }}>{scene.description}</div>
+              <div style={{ marginTop: 22, padding: "16px 18px", borderRadius: 12, background: "rgba(56,189,248,0.1)", border: "1px solid rgba(56,189,248,0.35)", color: "#BAE6FD", fontSize: 16 }}>{scene.terminalOutput}</div>
+              <div style={{ marginTop: 16, padding: "14px 18px", borderRadius: 12, background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.4)", color: "#6EE7B7", fontWeight: 800, fontSize: 16 }}><IconCheck color="#6EE7B7" size={17} /> {scene.terminalAlert}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const SceneComparisonMatrix: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({
+  scene,
+  campaign,
+  frame,
+  fps,
+}) => {
+  const rows = scene.comparisonRows || [
+    { label: "Long-form reasoning", claude: "Strong", astra: "Strong" },
+    { label: "Computer interaction", claude: "Tool-driven", astra: "Native focus" },
+    { label: "Reviewable output", claude: "High", astra: "Workflow log" },
+    { label: "Best first test", claude: "Complex thinking", astra: "Screen-based tasks" },
+  ];
+  const reveal = spring({ frame: frame - 8, fps, config: { damping: 14, stiffness: 110 } });
+
+  return (
+    <AbsoluteFill style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "60px 40px" }}>
+      <div style={{ textAlign: "center", marginBottom: 30 }}>
+        <div style={{ color: campaign.brand.primaryColor, fontSize: 15, fontWeight: 900, letterSpacing: 3, marginBottom: 10 }}>{scene.tag}</div>
+        <div style={{ color: "#FFF", fontSize: 54, fontWeight: 900, letterSpacing: -1 }}>{scene.headline}</div>
+      </div>
+      <div style={{ width: "100%", maxWidth: 1000, alignSelf: "center", background: "rgba(255,255,255,0.045)", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 24, overflow: "hidden", opacity: reveal, transform: `translateY(${interpolate(reveal, [0, 1], [35, 0])}px)` }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr 1fr", padding: "20px 24px", background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)", fontSize: 13, fontWeight: 900, letterSpacing: 2 }}>
+          <div>WORKFLOW DIMENSION</div><div style={{ color: campaign.brand.primaryColor }}>CLAUDE</div><div style={{ color: campaign.brand.accentColor }}>ASTRA</div>
+        </div>
+        {rows.map((row, i) => (
+          <div key={row.label} style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr 1fr", padding: "23px 24px", borderTop: "1px solid rgba(255,255,255,0.1)", color: "#FFF", fontSize: 18 }}>
+            <div style={{ fontWeight: 750 }}>{row.label}</div><div style={{ color: "rgba(255,255,255,0.78)" }}>{row.claude}</div><div style={{ color: "rgba(255,255,255,0.78)" }}>{row.astra}</div>
+          </div>
+        ))}
+        <div style={{ padding: "22px 24px", borderTop: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)", textAlign: "center", fontSize: 17 }}>{scene.description}</div>
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+const PlanSceneShell: React.FC<{ children: React.ReactNode; scene: MotionScene; campaign: CampaignData }> = ({ children, scene, campaign }) => (
+  <AbsoluteFill style={{ display: "flex", flexDirection: "column", justifyContent: "center", padding: "58px 44px" }}>
+    <div style={{ textAlign: "center", marginBottom: 30 }}>
+      <div style={{ color: campaign.brand.primaryColor, fontSize: 14, fontWeight: 900, letterSpacing: 3, marginBottom: 10 }}>{scene.tag}</div>
+      <div style={{ color: "#FFF", fontSize: 54, fontWeight: 900, letterSpacing: -1 }}>{scene.headline}</div>
+    </div>
+    {children}
+  </AbsoluteFill>
+);
+
+const SceneFlowDiagram: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({ scene, campaign, frame, fps }) => {
+  const nodes = scene.beforeAfter?.beforeItems?.length ? scene.beforeAfter.beforeItems : [scene.description || "Input", "Process", "Outcome"];
+  const reveal = spring({ frame: frame - 6, fps, config: { damping: 14, stiffness: 120 } });
+  return (
+    <PlanSceneShell scene={scene} campaign={campaign}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 20, width: "100%", maxWidth: 920, alignSelf: "center", opacity: reveal }}>
+        {nodes.slice(0, 4).map((node, index) => (
+          <React.Fragment key={`${node}-${index}`}>
+            <div style={{ display: "flex", alignItems: "center", gap: 18, padding: "24px 26px", borderRadius: 20, background: index === nodes.length - 1 ? `${campaign.brand.primaryColor}20` : "rgba(255,255,255,0.05)", border: `1px solid ${index === nodes.length - 1 ? campaign.brand.primaryColor : "rgba(255,255,255,0.15)"}`, transform: `translateX(${interpolate(reveal, [0, 1], [index % 2 ? 70 : -70, 0])}px)` }}>
+              <div style={{ width: 42, height: 42, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${campaign.brand.primaryColor}25`, color: campaign.brand.primaryColor, fontWeight: 900 }}>{index + 1}</div>
+              <div style={{ color: "#FFF", fontSize: 23, fontWeight: 750 }}>{node}</div>
+              {index === nodes.length - 1 && <span style={{ marginLeft: "auto", color: campaign.brand.primaryColor, fontSize: 12, fontWeight: 900, letterSpacing: 1.5 }}>ACTIVE</span>}
+            </div>
+            {index < nodes.length - 1 && <div style={{ alignSelf: "center", width: 2, height: 20, background: `linear-gradient(${campaign.brand.primaryColor}, transparent)` }} />}
+          </React.Fragment>
+        ))}
+      </div>
+    </PlanSceneShell>
+  );
+};
+
+const SceneChecklist: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({ scene, campaign, frame, fps }) => {
+  const items = scene.items?.length ? scene.items.map((item) => typeof item === "string" ? item : item.title) : [scene.description || scene.headline];
+  return (
+    <PlanSceneShell scene={scene} campaign={campaign}>
+      <div style={{ width: "100%", maxWidth: 920, alignSelf: "center", display: "flex", flexDirection: "column", gap: 16 }}>
+        {items.slice(0, 5).map((item, index) => {
+          const progress = spring({ frame: frame - index * 8 - 8, fps, config: { damping: 14, stiffness: 130 } });
+          return <div key={`${item}-${index}`} style={{ display: "flex", alignItems: "center", gap: 18, padding: "22px 24px", borderRadius: 18, background: "rgba(255,255,255,0.05)", border: `1px solid ${campaign.brand.primaryColor}66`, opacity: progress, transform: `translateX(${interpolate(progress, [0, 1], [80, 0])}px)` }}><div style={{ width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: `${campaign.brand.primaryColor}25`, border: `1px solid ${campaign.brand.primaryColor}`, flexShrink: 0 }}><IconCheck color={campaign.brand.primaryColor} size={18} /></div><span style={{ color: "#FFF", fontSize: 21, fontWeight: 650, lineHeight: 1.35 }}>{item}</span></div>;
+        })}
+      </div>
+    </PlanSceneShell>
+  );
+};
+
+const SceneTimeline: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({ scene, campaign, frame, fps }) => {
+  const items = scene.items?.length ? scene.items.map((item) => typeof item === "string" ? item : item.title) : [scene.description || scene.headline];
+  const reveal = spring({ frame: frame - 8, fps, config: { damping: 15, stiffness: 110 } });
+  return (
+    <PlanSceneShell scene={scene} campaign={campaign}>
+      <div style={{ position: "relative", width: "100%", maxWidth: 900, alignSelf: "center", paddingLeft: 36, opacity: reveal }}>
+        <div style={{ position: "absolute", left: 12, top: 0, bottom: 0, width: 2, background: `linear-gradient(${campaign.brand.primaryColor}, transparent)` }} />
+        {items.slice(0, 5).map((item, index) => <div key={`${item}-${index}`} style={{ position: "relative", display: "flex", gap: 22, marginBottom: 24, transform: `translateY(${interpolate(reveal, [0, 1], [30, 0]) + index * 0}px)` }}><div style={{ position: "absolute", left: -36, top: 4, width: 26, height: 26, borderRadius: "50%", background: campaign.brand.primaryColor, boxShadow: `0 0 24px ${campaign.brand.primaryColor}` }} /><div style={{ flex: 1, padding: "18px 22px", borderRadius: 16, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.14)", color: "#FFF", fontSize: 20, lineHeight: 1.35 }}>{item}</div></div>)}
+      </div>
+    </PlanSceneShell>
+  );
+};
+
+const SceneFileTree: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({ scene, campaign, frame, fps }) => {
+  const path = scene.terminalCommand || "upload-folder/";
+  const parts = path.split(/[\\/]/).filter(Boolean);
+  const reveal = spring({ frame: frame - 8, fps, config: { damping: 14, stiffness: 120 } });
+  return (
+    <PlanSceneShell scene={scene} campaign={campaign}>
+      <div style={{ width: "100%", maxWidth: 900, alignSelf: "center", padding: 28, borderRadius: 22, background: "rgba(8,13,26,0.9)", border: `1px solid ${campaign.brand.primaryColor}77`, fontFamily: "monospace", opacity: reveal }}>
+        <div style={{ color: "rgba(255,255,255,0.45)", fontSize: 13, letterSpacing: 2, marginBottom: 22 }}>FILE PATH INSPECTION</div>
+        {parts.map((part, index) => <div key={`${part}-${index}`} style={{ display: "flex", alignItems: "center", gap: 12, padding: `13px 0 13px ${index * 28}px`, color: index === parts.length - 1 ? "#FFF" : "rgba(255,255,255,0.7)", fontSize: 21, borderBottom: "1px solid rgba(255,255,255,0.07)" }}><span style={{ color: campaign.brand.primaryColor }}>{index === parts.length - 1 ? "◈" : "▸"}</span>{part}{index === parts.length - 1 && <span style={{ marginLeft: "auto", color: "#F87171", fontSize: 12, fontWeight: 900 }}>REVIEW</span>}</div>)}
+        <div style={{ marginTop: 20, color: "rgba(255,255,255,0.65)", fontFamily: "inherit", fontSize: 17 }}>{scene.description}</div>
+      </div>
+    </PlanSceneShell>
+  );
+};
+
+const SceneQuoteCard: React.FC<{ scene: MotionScene; campaign: CampaignData; frame: number; fps: number }> = ({ scene, campaign, frame, fps }) => {
+  const reveal = spring({ frame: frame - 8, fps, config: { damping: 15, stiffness: 105 } });
+  return (
+    <PlanSceneShell scene={scene} campaign={campaign}>
+      <div style={{ width: "100%", maxWidth: 900, alignSelf: "center", padding: "50px 42px", borderRadius: 28, background: `linear-gradient(140deg, ${campaign.brand.primaryColor}1c, rgba(255,255,255,0.045))`, border: `1px solid ${campaign.brand.primaryColor}88`, boxShadow: `0 28px 70px ${campaign.brand.primaryColor}22`, opacity: reveal, transform: `scale(${interpolate(reveal, [0, 1], [0.92, 1])})` }}>
+        <div style={{ color: campaign.brand.primaryColor, fontSize: 58, lineHeight: 0.7, fontFamily: "Georgia, serif" }}>“</div>
+        <div style={{ color: "#FFF", fontSize: 31, lineHeight: 1.35, fontWeight: 700, marginTop: 20 }}>{scene.terminalOutput || scene.description}</div>
+        <div style={{ marginTop: 30, color: campaign.brand.primaryColor, fontSize: 13, fontWeight: 900, letterSpacing: 2 }}>RESEARCHED CLAIM</div>
+      </div>
+    </PlanSceneShell>
   );
 };
 
@@ -864,17 +1096,32 @@ const StudioScene: React.FC<{
         transformOrigin: "center center",
       }}
     >
-      {scene.type === "kinetic_hook" && <SceneKineticHook scene={scene} campaign={campaign} frame={frame} fps={fps} />}
-      {scene.type === "before_after_split" && <SceneBeforeAfter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
-      {(scene.type === "terminal_code" || (scene.type as any) === "code_terminal") && (
-        <SceneTerminal scene={scene} campaign={campaign} frame={frame} fps={fps} />
-      )}
-      {scene.type === "metric_counter" && <SceneMetricCounter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
-      {scene.type === "conversion_cta" && <SceneConversionCTA scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "kinetic_title" && <SceneKineticHook scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "flow_diagram" && <SceneFlowDiagram scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "checklist" && <SceneChecklist scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "timeline" && <SceneTimeline scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "file_tree" && <SceneFileTree scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "quote_card" && <SceneQuoteCard scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "stat_counter" && <SceneMetricCounter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "compare_split" && <SceneBeforeAfter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {(scene.sourceSceneType === "terminal" || scene.sourceSceneType === "code_reveal") && <SceneTerminal scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {scene.sourceSceneType === "cta_end" && <SceneConversionCTA scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+
+      {!scene.sourceSceneType && scene.type === "kinetic_hook" && <SceneKineticHook scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {!scene.sourceSceneType && scene.type === "before_after_split" && (scene.visualStyle === "claude_workspace"
+        ? <SceneClaudeWorkspace scene={scene} campaign={campaign} frame={frame} fps={fps} />
+        : <SceneBeforeAfter scene={scene} campaign={campaign} frame={frame} fps={fps} />)}
+      {!scene.sourceSceneType && (scene.type === "terminal_code" || (scene.type as any) === "code_terminal") && (scene.visualStyle === "astra_browser"
+        ? <SceneAstraBrowser scene={scene} campaign={campaign} frame={frame} fps={fps} />
+        : <SceneTerminal scene={scene} campaign={campaign} frame={frame} fps={fps} />)}
+      {!scene.sourceSceneType && scene.type === "metric_counter" && (scene.visualStyle === "comparison_matrix"
+        ? <SceneComparisonMatrix scene={scene} campaign={campaign} frame={frame} fps={fps} />
+        : <SceneMetricCounter scene={scene} campaign={campaign} frame={frame} fps={fps} />)}
+      {!scene.sourceSceneType && scene.type === "conversion_cta" && <SceneConversionCTA scene={scene} campaign={campaign} frame={frame} fps={fps} />}
       
       {/* Fallback for other scene types */}
-      {scene.type === "feature_cards" && <SceneBeforeAfter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
-      {scene.type === "network_topology" && <SceneTerminal scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {!scene.sourceSceneType && scene.type === "feature_cards" && <SceneBeforeAfter scene={scene} campaign={campaign} frame={frame} fps={fps} />}
+      {!scene.sourceSceneType && scene.type === "network_topology" && <SceneTerminal scene={scene} campaign={campaign} frame={frame} fps={fps} />}
     </AbsoluteFill>
   );
 };
@@ -884,6 +1131,10 @@ const StudioScene: React.FC<{
 // =========================================================================
 export const UniversalMotionEngine: React.FC<{ campaign: CampaignData }> = ({ campaign }) => {
   const { fps } = useVideoConfig();
+  // Audio generated by the job pipeline is copied to public/audio and may be
+  // addressed as a nested staticFile path. Do not discard it in favor of the
+  // ambient fallback just because it contains a slash.
+  const audioTrack = campaign.audioTrack || "cyber_audio.wav";
 
   // Calculate timeline offsets
   let runningFrame = 0;
@@ -896,6 +1147,7 @@ export const UniversalMotionEngine: React.FC<{ campaign: CampaignData }> = ({ ca
 
   return (
     <AbsoluteFill style={{ backgroundColor: campaign.brand.backgroundColor || "#030611", overflow: "hidden" }}>
+      <Audio src={staticFile(audioTrack)} volume={0.86} />
       {/* 1. Underlying Cinematic Ambient Atmosphere */}
       <CinematicAtmosphere
         theme={campaign.brand.theme}
@@ -917,4 +1169,3 @@ export const UniversalMotionEngine: React.FC<{ campaign: CampaignData }> = ({ ca
     </AbsoluteFill>
   );
 };
-

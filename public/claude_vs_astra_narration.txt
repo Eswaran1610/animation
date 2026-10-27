@@ -1,0 +1,13 @@
+Claude versus Astra. Two frontier AI approaches. One workflow decision.
+
+The real question is not which model wins every benchmark. It is which system fits the way you work.
+
+Claude is a model family built for text and image understanding, vision, multilingual work, and tool use. For careful reasoning, writing, coding, and long-horizon collaboration, Claude is the system to evaluate.
+
+Astra takes a different route. It is positioned around computer use, browsing, software engineering, and multi-step professional workflows. The goal is not just to answer, but to understand a screen, choose tools, and complete actions.
+
+Choose Claude when you want a strong conversational partner and controlled tool workflow. Choose Astra when direct computer use and automation are central.
+
+There is no universal winner. Test both on your own tasks: quality, speed, cost, reliability, and safety.
+
+Claude for thought. Astra for action. Your workflow decides.

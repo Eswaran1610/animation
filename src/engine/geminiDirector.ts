@@ -50,10 +50,11 @@ export async function askGemini(prompt: string, apiKey?: string): Promise<Campai
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key.trim()}`;
+    const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "x-goog-api-key": key.trim() },
       body: JSON.stringify({
         contents: [{ role: "user", parts: [{ text: prompt }] }],
         systemInstruction: { parts: [{ text: GEMINI_SYSTEM_PROMPT }] },

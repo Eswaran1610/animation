@@ -1,15 +1,16 @@
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
 import { CampaignDataSchema, CampaignData, SupportedSceneTypes } from "./schema";
-
-const CAMPAIGNS_DIR = path.join(__dirname, "../../campaigns");
-const OUTPUT_DIR = path.join(__dirname, "../../out");
-
-if (!fs.existsSync(CAMPAIGNS_DIR)) fs.mkdirSync(CAMPAIGNS_DIR, { recursive: true });
-if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+import {
+  CAMPAIGNS_DIR,
+  OUTPUT_DIR,
+  createContactSheet,
+  ensureVideoDirectories,
+  renderComposition,
+} from "../render/videoPipeline";
 
 export function validateAndRender(campaignInput: string | object) {
+  ensureVideoDirectories();
   let rawData: any;
 
   if (typeof campaignInput === "string") {
@@ -44,23 +45,33 @@ export function validateAndRender(campaignInput: string | object) {
 
   fs.writeFileSync(propsPath, JSON.stringify({ campaign }, null, 2));
 
-  const totalFrames = campaign.scenes.reduce((acc, s) => acc + s.durationSeconds * 30, 0);
+  // 4. Render directly using the permanent Remotion Engine (Zero Code Touched)
+  const fps = campaign.fps;
+  const totalFrames = campaign.scenes.reduce((acc, s) => acc + Math.round(s.durationSeconds * fps), 0);
 
   console.log(`\n=============================================================`);
   console.log(`🎬 Rendering Campaign: ${campaign.campaignId} ("${campaign.title}")`);
   console.log(`🎨 Brand: ${campaign.brand.name} | Primary: ${campaign.brand.primaryColor}`);
-  console.log(`⏱️ Duration: ${totalFrames / 30}s (${totalFrames} frames @ 30 FPS)`);
+  console.log(`⏱️ Duration: ${totalFrames / fps}s (${totalFrames} frames @ ${fps} FPS)`);
   console.log(`📐 Aspect Ratio: ${campaign.aspectRatio}`);
   console.log(`=============================================================\n`);
 
   // 4. Render directly using the permanent Remotion Engine (Zero Code Touched)
-  const renderCmd = `npx remotion render src/index.tsx Universal-Motion-Engine ${videoOut} --props=${propsPath} --frames=0-${totalFrames - 1} --overwrite`;
-  execSync(renderCmd, { stdio: "inherit" });
+  renderComposition({
+    compositionId: "Universal-Motion-Engine",
+    outputPath: videoOut,
+    propsPath,
+    frames: `0-${totalFrames - 1}`,
+  });
 
   // 5. Generate Automated Quality Control Contact Sheet via FFmpeg (High-res 4x2 grid)
   console.log(`\nGenerating High-Res QC Contact Sheet: ${campaign.campaignId}_contact.png`);
-  const ffmpegCmd = `ffmpeg -y -i ${videoOut} -vf "fps=1/${Math.max(1, Math.floor(totalFrames / 260))},scale=450:-1,tile=4x2" -frames:v 1 ${contactOut}`;
-  execSync(ffmpegCmd, { stdio: "inherit" });
+  createContactSheet({
+    videoPath: videoOut,
+    outputPath: contactOut,
+    sampleEverySeconds: Math.max(1, Math.floor(totalFrames / (fps * campaign.scenes.length))),
+    tile: `${Math.min(5, campaign.scenes.length)}x${Math.ceil(campaign.scenes.length / Math.min(5, campaign.scenes.length))}`,
+  });
 
   console.log(`\n✔ Video Render Complete: ${videoOut}`);
   console.log(`✔ QC Contact Sheet: ${contactOut}`);

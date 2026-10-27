@@ -1,0 +1,4 @@
+topic: Recent PHP web shell problem
+angle: How attackers get in, how to detect it, and how to fix it
+audience: Developers and site owners (non-expert friendly)
+format: 60s, 9:16, English, calm and clear tone

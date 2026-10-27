@@ -1,13 +1,14 @@
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
 import { MasterScriptPlanSchema, MasterScriptPlan } from "./scriptSchema";
+import {
+  OUTPUT_DIR,
+  createContactSheet,
+  ensureVideoDirectories,
+  renderComposition,
+} from "./render/videoPipeline";
 
-const OUTPUT_DIR = path.join(__dirname, "../out");
-
-if (!fs.existsSync(OUTPUT_DIR)) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-}
+ensureVideoDirectories();
 
 // Convert rough user text into a structured MasterScriptPlan if needed
 export function buildPlanFromText(input: string | MasterScriptPlan): MasterScriptPlan {
@@ -97,12 +98,20 @@ export async function renderScriptPlan(planInput: string | MasterScriptPlan, out
   console.log(`======================================================\n`);
 
   // Render video
-  const renderCmd = `npx remotion render src/index.tsx Dynamic-Script-Video ${videoOut} --props=${propsPath} --frames=0-${totalDurationFrames - 1} --overwrite`;
-  execSync(renderCmd, { stdio: "inherit" });
+  renderComposition({
+    compositionId: "Dynamic-Script-Video",
+    outputPath: videoOut,
+    propsPath,
+    frames: `0-${totalDurationFrames - 1}`,
+  });
 
   // Generate automated QC contact sheet
-  const ffmpegCmd = `ffmpeg -y -i ${videoOut} -vf "fps=1/${Math.max(1, Math.floor(totalDurationFrames / 300))},scale=220:-1,tile=4x2" -frames:v 1 ${contactOut}`;
-  execSync(ffmpegCmd, { stdio: "inherit" });
+  createContactSheet({
+    videoPath: videoOut,
+    outputPath: contactOut,
+    sampleEverySeconds: Math.max(1, Math.floor(totalDurationFrames / 300)),
+    scaleWidth: 220,
+  });
 
   console.log(`✔ Finished MP4: ${videoOut}`);
   console.log(`✔ Contact Sheet: ${contactOut}\n`);

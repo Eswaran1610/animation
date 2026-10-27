@@ -1,0 +1,87 @@
+{
+  "campaignId": "legacy_manual_deploys_cause_ou_8325",
+  "title": "Legacy manual deploys cause outage panic",
+  "brand": {
+    "name": "Motion Studio",
+    "primaryColor": "#10B981",
+    "accentColor": "#06B6D4",
+    "backgroundColor": "#030712",
+    "theme": "cyber"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Get Started →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "THE HOOK",
+      "headline": "Legacy manual deploys cause outage panic",
+      "accentWord": "Legacy",
+      "subtitle": "Research-backed motion graphics",
+      "description": "Legacy manual deploys cause outage panic",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 4
+    },
+    {
+      "id": "s2",
+      "type": "terminal_code",
+      "tag": "LIVE EXECUTION",
+      "headline": "AI Code Agent automatically verifies regressions",
+      "accentWord": "AI",
+      "subtitle": "Deterministic execution in seconds.",
+      "description": "AI Code Agent automatically verifies regressions",
+      "terminalCommand": "AI Code Agent automatically verifies regressions",
+      "terminalOutput": "✔ AST parsed in 1.1s. 100% verification rules passing.",
+      "terminalAlert": "VERIFIED: Zero Regressions Detected",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s3",
+      "type": "metric_counter",
+      "tag": "VERIFIED IMPACT",
+      "headline": "98% reduction in mean time to recovery",
+      "accentWord": "98%",
+      "description": "98% reduction in mean time to recovery",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 98,
+      "metricSuffix": "%",
+      "metricLabel": "98% reduction in mean time to recov",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Overhead",
+      "durationSeconds": 4
+    },
+    {
+      "id": "s4",
+      "type": "conversion_cta",
+      "tag": "GET STARTED",
+      "headline": "Ship code with zero fear today",
+      "accentWord": "Ship",
+      "description": "Ship code with zero fear today",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Ship code with zero fear today",
+      "trustBadges": [
+        "100% CODE-DRIVEN",
+        "60 FPS",
+        "VERIFIED MOTION"
+      ],
+      "durationSeconds": 3
+    }
+  ]
+}

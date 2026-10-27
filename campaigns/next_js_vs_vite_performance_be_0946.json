@@ -1,0 +1,88 @@
+{
+  "campaignId": "next_js_vs_vite_performance_be_0946",
+  "title": "Next.js vs Vite Performance Benchmarks",
+  "brand": {
+    "name": "Motion Studio",
+    "primaryColor": "#6366F1",
+    "accentColor": "#EC4899",
+    "backgroundColor": "#030712",
+    "theme": "indigo"
+  },
+  "aspectRatio": "9:16",
+  "ctaText": "Get Started →",
+  "audioTrack": "cyber_audio.wav",
+  "scenes": [
+    {
+      "id": "s1",
+      "type": "kinetic_hook",
+      "tag": "BREAKING",
+      "headline": "Next.js vs Vite Performance Benchmarks",
+      "accentWord": "Next.js",
+      "subtitle": "Research-backed motion graphics",
+      "description": "Today we're covering: Next.js vs Vite Performance Benchmarks.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 4
+    },
+    {
+      "id": "s2",
+      "type": "feature_cards",
+      "tag": "KEY FACTS",
+      "headline": "Key Research Findings",
+      "accentWord": "Know",
+      "description": "Here are the key facts from our research.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "items": [
+        "Current situation under active research",
+        "Multiple verified sources consulted",
+        "Findings updated in real time"
+      ],
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "durationSeconds": 5
+    },
+    {
+      "id": "s3",
+      "type": "metric_counter",
+      "tag": "IMPACT",
+      "headline": "Key metric from research",
+      "accentWord": "Impact",
+      "description": "The numbers tell a clear story.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 90,
+      "metricSuffix": "%",
+      "metricLabel": "Topic relevance score",
+      "secondaryMetricValue": "0",
+      "secondaryMetricLabel": "Sources consulted",
+      "durationSeconds": 4
+    },
+    {
+      "id": "s4",
+      "type": "conversion_cta",
+      "tag": "STAY INFORMED",
+      "headline": "Subscribe For More →",
+      "accentWord": "Full",
+      "description": "Stay informed with research-backed motion graphics.",
+      "terminalTitle": "bash — auth_policy.sh",
+      "metricTarget": 95,
+      "metricSuffix": "%",
+      "metricLabel": "Attack Surface Removed",
+      "secondaryMetricValue": "0ms",
+      "secondaryMetricLabel": "Lateral Traversal",
+      "ctaHeadline": "Subscribe For More →",
+      "trustBadges": [
+        "RESEARCH-BACKED",
+        "60 FPS",
+        "VERIFIED SOURCES"
+      ],
+      "durationSeconds": 3
+    }
+  ]
+}

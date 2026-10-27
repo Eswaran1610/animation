@@ -1,14 +1,15 @@
-import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { CampaignSchema, CampaignConfig } from "./schema";
 import { defaultCampaign } from "./sampleData";
+import {
+  OUTPUT_DIR,
+  createContactSheet,
+  ensureVideoDirectories,
+  renderComposition,
+} from "./render/videoPipeline";
 
-const OUTPUT_DIR = path.join(__dirname, "../out");
-
-if (!fs.existsSync(OUTPUT_DIR)) {
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-}
+ensureVideoDirectories();
 
 async function renderVariant(compositionId: string, outputName: string, props: { config: CampaignConfig }) {
   // Validate campaign data against schema
@@ -25,13 +26,19 @@ async function renderVariant(compositionId: string, outputName: string, props: {
   console.log(`========================================`);
 
   // 1. Render Video via Remotion CLI
-  const remotionCmd = `npx remotion render src/index.tsx ${compositionId} ${videoOut} --props=${propsPath} --overwrite`;
-  execSync(remotionCmd, { stdio: "inherit" });
+  renderComposition({
+    compositionId,
+    outputPath: videoOut,
+    propsPath,
+  });
 
   // 2. Generate Automated Quality Control Contact Sheet via FFmpeg
   console.log(`\nGenerating QC Contact Sheet: ${outputName}_contact.png`);
-  const ffmpegCmd = `ffmpeg -y -i ${videoOut} -vf "fps=1,scale=270:-1,tile=4x2" -frames:v 1 ${contactSheetOut}`;
-  execSync(ffmpegCmd, { stdio: "inherit" });
+  createContactSheet({
+    videoPath: videoOut,
+    outputPath: contactSheetOut,
+    scaleWidth: 270,
+  });
 
   console.log(`✔ Completed: ${videoOut}`);
   console.log(`✔ Contact Sheet: ${contactSheetOut}`);
