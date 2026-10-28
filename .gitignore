@@ -6,6 +6,8 @@ out/
 *.mp4
 out/
 public/generated-audio/
+public/research/
+public/screenshots/
 
 # Local tooling and environment files
 .env

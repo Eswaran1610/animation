@@ -15,6 +15,7 @@ export const PlanSceneTypes = [
   "list_build",
   "before_after",
   "network_topology",
+  "product_showcase",
   "cta",
 ] as const;
 
@@ -22,16 +23,17 @@ export type PlanSceneType = (typeof PlanSceneTypes)[number];
 
 /** Human- and agent-readable capability list; it deliberately contains no UI code. */
 export const SceneCatalog = [
-  { type: "kinetic_hook", label: "Kinetic hook", purpose: "Open with a concise, high-impact claim.", requiredContent: ["headline"], suggestedDuration: [3, 5] },
+  { type: "kinetic_hook", label: "Kinetic hook", purpose: "Open with a concise, high-impact claim.", requiredContent: ["headline"], suggestedDuration: [3, 6] },
+  { type: "product_showcase", label: "Product showcase", purpose: "Showcase a real product with title, description, and high-impact visual media/screenshot.", requiredContent: ["headline"], suggestedDuration: [5, 8] },
   { type: "typing_terminal", label: "Typing terminal", purpose: "Show a command and its live output.", requiredContent: ["headline", "command", "output"], suggestedDuration: [4, 7] },
   { type: "code_diff", label: "Code diff", purpose: "Contrast a risky or old snippet with its improved replacement.", requiredContent: ["headline", "before", "after"], suggestedDuration: [4, 7] },
-  { type: "card_reveal", label: "Card reveal", purpose: "Reveal 2–4 product features or benefits.", requiredContent: ["headline", "items"], suggestedDuration: [4, 6] },
-  { type: "stat_counter", label: "Stat counter", purpose: "Land a measurable result with a counter or gauge.", requiredContent: ["headline", "value", "label"], suggestedDuration: [3, 5] },
-  { type: "quote", label: "Quote", purpose: "Present a customer statement or concise proof point.", requiredContent: ["quote"], suggestedDuration: [3, 5] },
-  { type: "list_build", label: "List build", purpose: "Build a short checklist or process step-by-step.", requiredContent: ["headline", "items"], suggestedDuration: [4, 6] },
+  { type: "card_reveal", label: "Card reveal", purpose: "Reveal 2–4 product features or benefits.", requiredContent: ["headline", "items"], suggestedDuration: [4, 7] },
+  { type: "stat_counter", label: "Stat counter", purpose: "Land a measurable result with a counter or gauge.", requiredContent: ["headline", "value", "label"], suggestedDuration: [3, 6] },
+  { type: "quote", label: "Quote", purpose: "Present a customer statement or concise proof point.", requiredContent: ["quote"], suggestedDuration: [3, 6] },
+  { type: "list_build", label: "List build", purpose: "Build a short checklist or process step-by-step.", requiredContent: ["headline", "items"], suggestedDuration: [4, 7] },
   { type: "before_after", label: "Before / after", purpose: "Compare an old state to an improved state.", requiredContent: ["headline", "before", "after"], suggestedDuration: [4, 7] },
   { type: "network_topology", label: "Network topology", purpose: "Show an identity, policy, and workload relationship.", requiredContent: ["headline", "nodes"], suggestedDuration: [4, 7] },
-  { type: "cta", label: "Call to action", purpose: "Close with one clear next step.", requiredContent: ["headline", "cta"], suggestedDuration: [3, 5] },
+  { type: "cta", label: "Call to action", purpose: "Close with one clear next step.", requiredContent: ["headline", "cta"], suggestedDuration: [3, 6] },
 ] as const satisfies ReadonlyArray<{
   type: PlanSceneType;
   label: string;
@@ -45,7 +47,7 @@ const HexColor = z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Must be a 6-character he
 export const PlanSchema = z.object({
   meta: z.object({
     fps: z.literal(30),
-    size: z.object({ width: z.literal(1080), height: z.literal(1920) }),
+    size: z.object({ width: z.number().int().min(480), height: z.number().int().min(480) }).default({ width: 1080, height: 1920 }),
     mood: z.string().min(1).max(60),
     styleSeed: z.string().min(1).max(128),
   }),
@@ -68,23 +70,28 @@ export const PlanSchema = z.object({
     start: z.number().min(0),
     dur: z.number().min(2).max(30),
     content: z.object({
-      headline: z.string().max(100).optional(),
-      eyebrow: z.string().max(50).optional(),
-      body: z.string().max(280).optional(),
-      items: z.array(z.string().max(100)).max(6).optional(),
-      quote: z.string().max(280).optional(),
+      headline: z.string().max(120).optional(),
+      eyebrow: z.string().max(60).optional(),
+      body: z.string().max(350).optional(),
+      items: z.array(z.string().max(140)).max(8).optional(),
+      quote: z.string().max(350).optional(),
       attribution: z.string().max(100).optional(),
       value: z.string().max(24).optional(),
-      label: z.string().max(80).optional(),
-      command: z.string().max(160).optional(),
-      output: z.string().max(280).optional(),
-      before: z.union([z.string().max(280), z.array(z.string().max(100)).max(6)]).optional(),
-      after: z.union([z.string().max(280), z.array(z.string().max(100)).max(6)]).optional(),
-      cta: z.string().max(80).optional(),
-      nodes: z.array(z.object({ id: z.string().max(40), label: z.string().max(80) })).max(6).optional(),
+      label: z.string().max(100).optional(),
+      command: z.string().max(180).optional(),
+      output: z.string().max(350).optional(),
+      before: z.union([z.string().max(350), z.array(z.string().max(120)).max(8)]).optional(),
+      after: z.union([z.string().max(350), z.array(z.string().max(120)).max(8)]).optional(),
+      cta: z.string().max(100).optional(),
+      nodes: z.array(z.object({ id: z.string().max(40), label: z.string().max(80) })).max(8).optional(),
+      image: z.string().max(300).optional(),
+      images: z.array(z.string().max(300)).max(8).optional(),
+      logo: z.string().max(300).optional(),
+      badge: z.string().max(60).optional(),
+      tags: z.array(z.string().max(60)).max(8).optional(),
     }).passthrough(),
     params: z.record(z.string(), z.unknown()).default({}),
-  })).min(1).max(12).superRefine((scenes, ctx) => {
+  })).min(1).max(20).superRefine((scenes, ctx) => {
     const ids = new Set<string>();
     let lastStart = -1;
     for (const [index, scene] of scenes.entries()) {
@@ -163,6 +170,7 @@ export const campaignToMotionPlan = (campaign: CampaignData): MotionPlan => {
 
 const planSceneToLegacyType: Record<PlanSceneType, MotionScene["type"]> = {
   kinetic_hook: "kinetic_hook",
+  product_showcase: "feature_cards",
   typing_terminal: "terminal_code",
   code_diff: "before_after_split",
   card_reveal: "feature_cards",
@@ -178,9 +186,7 @@ const asItems = (value: string | string[] | undefined): string[] | undefined =>
   Array.isArray(value) ? value : value ? [value] : undefined;
 
 /**
- * Temporary presentation adapter for the existing scene components. The
- * universal engine receives a MotionPlan first; this adapter lets it reuse
- * established visual components while new scene implementations land.
+ * Presentation adapter for legacy scene components.
  */
 export const motionPlanToCampaign = (planInput: MotionPlan): CampaignData => {
   const plan = PlanSchema.parse(planInput);
@@ -190,6 +196,8 @@ export const motionPlanToCampaign = (planInput: MotionPlan): CampaignData => {
   const theme = isClaude ? "claude" :
     primaryLower === "#10b981" ? "cyber" :
     primaryLower === "#f59e0b" ? "fintech" : "indigo";
+
+  const derivedBrand = isClaude ? "Claude Code" : (plan.scenes[0]?.content.headline?.split(/[:–-]/)[0]?.trim() || "Motion Studio");
 
   const scenes = plan.scenes.map((scene) => {
     const preserved = scene.params as Partial<MotionScene>;
@@ -204,18 +212,18 @@ export const motionPlanToCampaign = (planInput: MotionPlan): CampaignData => {
       ...preserved,
       id: scene.id,
       type: planSceneToLegacyType[scene.type],
-      tag: scene.content.eyebrow ?? preserved.tag ?? (isClaude ? "CLAUDE CODE" : "SYSTEM EXECUTION"),
+      tag: scene.content.eyebrow ?? preserved.tag ?? (isClaude ? "CLAUDE CODE" : "ARCHITECTURE"),
       headline: headlineText,
       accentWord,
       subtitle: scene.content.body ?? preserved.subtitle ?? (isClaude ? "Autonomous engineering with code-level precision." : "Engineered for maximum velocity."),
       terminalTitle: isClaude ? "claude — interactive session" : (preserved.terminalTitle ?? "terminal — zsh"),
-      terminalCommand: scene.content.command ?? preserved.terminalCommand ?? "claude review --strict --branch=main",
-      terminalOutput: scene.content.output ?? preserved.terminalOutput ?? "✔ Parsed AST. All verification passes.",
-      terminalAlert: preserved.terminalAlert ?? "VERIFIED: Zero Regressions Detected",
+      terminalCommand: scene.content.command ?? preserved.terminalCommand ?? "execute --strict --verify",
+      terminalOutput: scene.content.output ?? preserved.terminalOutput ?? "✔ AST parsed. All verification passes.",
+      terminalAlert: preserved.terminalAlert ?? "VERIFIED: Deterministic Execution",
       items: scene.content.items?.map((title) => ({ title })) ?? preserved.items ?? [
-        { title: "Autonomous Refactoring" },
+        { title: "Continuous Verification" },
         { title: "Type-Safe Guarantee" },
-        { title: "Sub-Second Execution" }
+        { title: "Deterministic Output" }
       ],
       beforeAfter: beforeItems || afterItems ? {
         beforeTitle: isClaude ? "Legacy Manual Workflow" : "Legacy Approach",
@@ -225,9 +233,9 @@ export const motionPlanToCampaign = (planInput: MotionPlan): CampaignData => {
       } : preserved.beforeAfter,
       metricTarget: Number.isFinite(metricTarget) ? metricTarget : preserved.metricTarget ?? 98,
       metricSuffix: scene.content.value?.match(/[%a-zA-Z]+$/)?.[0] ?? preserved.metricSuffix ?? "%",
-      metricLabel: scene.content.label ?? preserved.metricLabel ?? "Cycle Time Reduction",
-      ctaHeadline: scene.content.cta ?? preserved.ctaHeadline ?? "Experience Claude Code →",
-      trustBadges: isClaude ? ["CLAUDE-POWERED", "ZERO RETENTION", "LOCAL CLI AUTONOMY"] : ["SOC-2 AUDITED", "ZERO OVERHEAD", "DEPLOYS IN 5 MIN"],
+      metricLabel: scene.content.label ?? preserved.metricLabel ?? "Cycle Time Acceleration",
+      ctaHeadline: scene.content.cta ?? preserved.ctaHeadline ?? "Get Started Today →",
+      trustBadges: preserved.trustBadges ?? (isClaude ? ["CLAUDE-POWERED", "ZERO RETENTION", "LOCAL CLI AUTONOMY"] : ["VERIFIED ACCELERATION", "ZERO OVERHEAD", "DEPLOYS IN 5 MIN"]),
       durationSeconds: scene.dur,
     } as MotionScene;
   });
@@ -236,7 +244,7 @@ export const motionPlanToCampaign = (planInput: MotionPlan): CampaignData => {
     campaignId: `plan_${plan.meta.styleSeed.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 40) || "render"}`,
     title: plan.meta.mood,
     brand: {
-      name: isClaude ? "Claude Code" : "Motion Studio",
+      name: derivedBrand,
       primaryColor: plan.theme.palette.primary,
       accentColor: plan.theme.palette.accent,
       backgroundColor: plan.theme.palette.background,

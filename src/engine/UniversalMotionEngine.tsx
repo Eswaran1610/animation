@@ -1,11 +1,18 @@
 import React from "react";
-import { AbsoluteFill, Sequence, Audio, staticFile, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Sequence, Audio, Img, staticFile, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { noise2D } from "@remotion/noise";
 import Prism from "prismjs";
 import "prismjs/components/prism-bash";
 import { CampaignData } from "./schema";
 import { campaignToMotionPlan, MotionPlan, PlanSchema } from "./plan";
 import { buildSfxCues, musicDuckMultiplier } from "./sfx";
+
+const resolveMediaSrc = (src?: string): string | undefined => {
+  if (!src) return undefined;
+  if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:")) return src;
+  const cleanPath = src.replace(/^\/+/, "");
+  return staticFile(cleanPath);
+};
 
 // =========================================================================
 // SVG VECTOR ICONS (Zero external font dependency, 100% deterministic)
@@ -276,11 +283,35 @@ const SceneKineticHook: React.FC<{ scene: MotionPlan["scenes"][number]; plan: Mo
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        padding: "80px 60px",
+        padding: "60px 50px",
         textAlign: "center",
         transform: `translate(${shake}px, ${shake * 0.5}px)`,
       }}
     >
+      {/* Brand Logo if provided */}
+      {(scene.content.logo || scene.content.image) && (
+        <div
+          style={{
+            marginBottom: 24,
+            transform: `scale(${spring({ frame, fps, config: { damping: 10 } })})`,
+          }}
+        >
+          <Img
+            src={resolveMediaSrc(scene.content.logo || scene.content.image)!}
+            style={{
+              width: 88,
+              height: 88,
+              objectFit: "contain",
+              borderRadius: 22,
+              background: "rgba(255, 255, 255, 0.08)",
+              border: `1.5px solid ${primaryColor}77`,
+              padding: 10,
+              boxShadow: `0 0 45px ${primaryColor}44`,
+            }}
+          />
+        </div>
+      )}
+
       {/* Category Pill with Glowing Pulse */}
       <div
         style={{
@@ -591,6 +622,7 @@ const SceneCardReveal: React.FC<{ scene: MotionPlan["scenes"][number]; plan: Mot
           const itemSpring = spring({ frame: frame - i * 8, fps, config: { damping: 11, stiffness: 120 } });
           const itemX = interpolate(itemSpring, [0, 1], [-40, 0]);
           const IconComp = icons[i % icons.length];
+          const cardImg = scene.content.images && scene.content.images[i] ? resolveMediaSrc(scene.content.images[i]) : undefined;
 
           return (
             <div
@@ -611,8 +643,8 @@ const SceneCardReveal: React.FC<{ scene: MotionPlan["scenes"][number]; plan: Mot
             >
               <div
                 style={{
-                  width: 52,
-                  height: 52,
+                  width: 54,
+                  height: 54,
                   borderRadius: 16,
                   background: `${primaryColor}22`,
                   border: `1px solid ${primaryColor}77`,
@@ -621,9 +653,14 @@ const SceneCardReveal: React.FC<{ scene: MotionPlan["scenes"][number]; plan: Mot
                   justifyContent: "center",
                   flexShrink: 0,
                   boxShadow: `0 0 20px ${primaryColor}33`,
+                  overflow: "hidden",
                 }}
               >
-                <IconComp color={primaryColor} size={26} />
+                {cardImg ? (
+                  <Img src={cardImg} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <IconComp color={primaryColor} size={26} />
+                )}
               </div>
 
               <div style={{ flex: 1 }}>
@@ -1070,22 +1107,46 @@ const SceneConversionCTA: React.FC<{ scene: MotionPlan["scenes"][number]; plan: 
         textAlign: "center",
       }}
     >
-      <div
-        style={{
-          width: 100,
-          height: 100,
-          borderRadius: 32,
-          background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: `0 0 60px ${primaryColor}88`,
-          transform: `scale(${spring({ frame, fps, config: { damping: 9 } })}) rotate(${Math.sin(frame / 20) * 8}deg)`,
-          marginBottom: 32,
-        }}
-      >
-        <IconShield color="#FFFFFF" size={50} />
-      </div>
+      {/* Brand Icon or Logo */}
+      {(scene.content.logo || scene.content.image) ? (
+        <div
+          style={{
+            marginBottom: 28,
+            transform: `scale(${spring({ frame, fps, config: { damping: 9 } })})`,
+          }}
+        >
+          <Img
+            src={resolveMediaSrc(scene.content.logo || scene.content.image)!}
+            style={{
+              width: 96,
+              height: 96,
+              objectFit: "contain",
+              borderRadius: 26,
+              background: "rgba(255, 255, 255, 0.08)",
+              border: `2px solid ${primaryColor}99`,
+              padding: 12,
+              boxShadow: `0 0 60px ${primaryColor}66`,
+            }}
+          />
+        </div>
+      ) : (
+        <div
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 32,
+            background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: `0 0 60px ${primaryColor}88`,
+            transform: `scale(${spring({ frame, fps, config: { damping: 9 } })}) rotate(${Math.sin(frame / 20) * 8}deg)`,
+            marginBottom: 32,
+          }}
+        >
+          <IconShield color="#FFFFFF" size={50} />
+        </div>
+      )}
 
       <div style={{ fontSize: 16, fontWeight: 900, letterSpacing: 3, textTransform: "uppercase", color: primaryColor, marginBottom: 12 }}>
         {scene.content.eyebrow || "GET STARTED TODAY"}
@@ -1145,6 +1206,184 @@ const SceneConversionCTA: React.FC<{ scene: MotionPlan["scenes"][number]; plan: 
 };
 
 // =========================================================================
+// SCENE ARCHETYPE: PRODUCT SHOWCASE (Hero Visual Media / Screenshot with Depth)
+// =========================================================================
+const SceneProductShowcase: React.FC<{
+  scene: MotionPlan["scenes"][number];
+  plan: MotionPlan;
+  frame: number;
+  fps: number;
+}> = ({ scene, plan, frame, fps }) => {
+  const primaryColor = plan.theme.palette.primary;
+  const accentColor = plan.theme.palette.accent;
+  const isClaude = plan.meta.mood === "claude" || plan.theme.background === "paper";
+
+  const heroSpring = spring({ frame: frame - 6, fps, config: { damping: 12, stiffness: 100 } });
+  const heroY = interpolate(heroSpring, [0, 1], [40, 0]);
+  const heroScale = interpolate(heroSpring, [0, 1], [0.92, 1.0]);
+  const floatY = Math.sin(frame / 25) * 6;
+
+  const imgSrc = resolveMediaSrc(scene.content.image || scene.content.logo);
+  const tags = scene.content.tags || (scene.content.items?.length ? scene.content.items : ["VERIFIED ASSET", "PRODUCTION READY", "DYNAMIC ARCHITECTURE"]);
+
+  return (
+    <AbsoluteFill
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "50px 48px",
+        textAlign: "center",
+      }}
+    >
+      {/* Eyebrow Pill */}
+      <div
+        style={{
+          background: `${primaryColor}18`,
+          border: `1px solid ${primaryColor}77`,
+          borderRadius: 9999,
+          padding: "8px 24px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          marginBottom: 16,
+          transform: `scale(${spring({ frame, fps, config: { damping: 10 } })})`,
+        }}
+      >
+        <span style={{ width: 8, height: 8, borderRadius: "50%", background: primaryColor, boxShadow: `0 0 10px ${primaryColor}` }} />
+        <span style={{ fontSize: 14, fontWeight: 900, letterSpacing: 2.5, textTransform: "uppercase", color: primaryColor, fontFamily: "monospace" }}>
+          {scene.content.eyebrow || "FEATURED PRODUCT"}
+        </span>
+      </div>
+
+      {/* Product Headline */}
+      <div
+        style={{
+          fontSize: 52,
+          fontWeight: isClaude ? 700 : 900,
+          color: "#FFFFFF",
+          letterSpacing: -1.5,
+          maxWidth: 920,
+          lineHeight: 1.12,
+          marginBottom: 20,
+          fontFamily: isClaude ? "Georgia, serif" : plan.theme.fonts.heading,
+          textShadow: "0 10px 40px rgba(0,0,0,0.8)",
+        }}
+      >
+        {scene.content.headline || "Verified Architectural Solution"}
+      </div>
+
+      {/* Hero Product Visual Card */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 900,
+          transform: `translateY(${heroY + floatY}px) scale(${heroScale})`,
+          opacity: heroSpring,
+          background: "rgba(12, 18, 34, 0.88)",
+          border: `1.5px solid ${primaryColor}55`,
+          borderRadius: 28,
+          padding: 18,
+          boxShadow: `0 30px 90px rgba(0, 0, 0, 0.8), 0 0 60px ${primaryColor}25`,
+          backdropFilter: "blur(24px)",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            height: 480,
+            borderRadius: 20,
+            overflow: "hidden",
+            position: "relative",
+            background: "radial-gradient(circle at center, rgba(30, 41, 59, 0.6) 0%, rgba(10, 15, 29, 0.95) 100%)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {imgSrc ? (
+            <Img
+              src={imgSrc}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+              <div
+                style={{
+                  width: 90,
+                  height: 90,
+                  borderRadius: "50%",
+                  background: `${primaryColor}22`,
+                  border: `2px solid ${primaryColor}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: `0 0 40px ${primaryColor}55`,
+                }}
+              >
+                <IconSparkle color={primaryColor} size={44} />
+              </div>
+              <span style={{ fontSize: 20, fontWeight: 800, color: "#94A3B8" }}>Verified Architectural Asset</span>
+            </div>
+          )}
+        </div>
+
+        {/* Product Description */}
+        {scene.content.body && (
+          <div
+            style={{
+              marginTop: 18,
+              padding: "16px 20px",
+              background: "rgba(255, 255, 255, 0.03)",
+              borderRadius: 16,
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              color: "rgba(248, 250, 252, 0.92)",
+              fontSize: 20,
+              lineHeight: 1.45,
+              fontWeight: 500,
+              textAlign: "left",
+            }}
+          >
+            {scene.content.body}
+          </div>
+        )}
+
+        {/* Tags / Pills */}
+        {tags.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 16, paddingLeft: 4, paddingRight: 4 }}>
+            {tags.slice(0, 4).map((tag, i) => (
+              <div
+                key={i}
+                style={{
+                  background: `${accentColor}18`,
+                  border: `1px solid ${accentColor}55`,
+                  borderRadius: 9999,
+                  padding: "6px 16px",
+                  fontSize: 12,
+                  fontWeight: 800,
+                  letterSpacing: 1.5,
+                  color: accentColor,
+                  textTransform: "uppercase",
+                }}
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+// =========================================================================
 // SCENE ROUTER & CINEMATIC CAMERA RIG (Dynamic Per-Archetype Motion)
 // =========================================================================
 const StudioScene: React.FC<{
@@ -1159,6 +1398,8 @@ const StudioScene: React.FC<{
   let camScale = 1.0;
   if (scene.type === "kinetic_hook") {
     camScale = interpolate(frame, [0, 14, durationFrames], [0.93, 1.02, 1.05], { extrapolateRight: "clamp" });
+  } else if (scene.type === "product_showcase") {
+    camScale = interpolate(frame, [0, durationFrames], [0.97, 1.03], { extrapolateRight: "clamp" });
   } else if (scene.type === "typing_terminal") {
     camScale = interpolate(frame, [0, durationFrames], [1.02, 1.0], { extrapolateRight: "clamp" });
   } else if (scene.type === "stat_counter") {
@@ -1189,6 +1430,7 @@ const StudioScene: React.FC<{
       }}
     >
       {scene.type === "kinetic_hook" && <SceneKineticHook scene={scene} plan={plan} frame={frame} fps={fps} />}
+      {scene.type === "product_showcase" && <SceneProductShowcase scene={scene} plan={plan} frame={frame} fps={fps} />}
       {scene.type === "typing_terminal" && <SceneTerminal scene={scene} plan={plan} frame={frame} fps={fps} />}
       {scene.type === "code_diff" && <SceneCodeDiff scene={scene} plan={plan} frame={frame} fps={fps} />}
       {scene.type === "card_reveal" && <SceneCardReveal scene={scene} plan={plan} frame={frame} fps={fps} />}

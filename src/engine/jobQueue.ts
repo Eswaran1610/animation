@@ -22,7 +22,7 @@ export type MotionJob = {
 };
 
 const now = () => new Date().toISOString();
-const PLANNER_CACHE_VERSION = "website-brief-v2";
+const PLANNER_CACHE_VERSION = "website-brief-v3-dur-fix";
 
 // Object key order is not meaningful in request options, so it must not make
 // two otherwise identical requests miss the plan cache.
@@ -142,9 +142,11 @@ export class MotionJobQueue {
         this.setStatus(job, "planning");
         this.log(job, "Calling AGY Motion Director.");
         let planningContent = job.content;
+        let websiteBrief: any;
         try {
-          const website = await researchWebsite(job.content);
+          const website = await researchWebsite(job.content, this.workspaceRoot);
           if (website) {
+            websiteBrief = website;
             fs.writeFileSync(path.join(this.jobDir(job.id), "website.json"), JSON.stringify(website, null, 2));
             planningContent += `\n\nWebsite research (already fetched; use this instead of guessing):\n${websiteBriefForPrompt(website)}`;
             this.log(job, `Website research collected from ${website.url}.`);
@@ -152,7 +154,11 @@ export class MotionJobQueue {
         } catch (error) {
           this.log(job, `Website research skipped: ${error instanceof Error ? error.message : String(error)}`);
         }
-        const result = await this.dependencies.generatePlan({ content: planningContent, options: job.options, workspaceRoot: this.workspaceRoot });
+        const result = await this.dependencies.generatePlan({
+          content: planningContent,
+          options: { ...job.options, websiteBrief },
+          workspaceRoot: this.workspaceRoot,
+        });
         plan = result.plan;
         this.log(job, `Planning ${result.source} after ${result.attempts} attempt(s).`);
         if (result.errors.length) this.log(job, `Validation feedback: ${result.errors.join(" | ")}`);
@@ -166,6 +172,7 @@ export class MotionJobQueue {
 
     this.setStatus(job, "audio");
     const duration = Math.max(...plan.scenes.map((scene) => scene.start + scene.dur));
+    this.log(job, `Configured duration: ${duration.toFixed(1)}s across ${plan.scenes.length} scene(s).`);
     const prepared = this.dependencies.prepareAudio(plan, duration, this.workspaceRoot, job.id);
     const jobAudio = path.join(this.jobDir(job.id), "audio", path.basename(prepared.assetPath));
     fs.copyFileSync(prepared.assetPath, jobAudio);

@@ -59,6 +59,7 @@ const cue = (styleSeed: string, id: string, at: number, category: SfxCategory, a
 
 const sceneCues: Record<PlanSceneType, (scene: MotionPlan["scenes"][number]) => Array<[number, SfxCategory]>> = {
   kinetic_hook: () => [[0.12, "whoosh"], [0.55, "impact"]],
+  product_showcase: () => [[0.10, "whoosh"], [0.60, "click"], [1.25, "impact"]],
   typing_terminal: (scene) => {
     const textLength = scene.content.command?.length ?? 24;
     const ticks = Math.min(10, Math.max(3, Math.ceil(textLength / 18)));
