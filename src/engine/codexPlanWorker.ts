@@ -3,7 +3,7 @@ import { promises as fs } from "node:fs";
 import { spawn } from "node:child_process";
 import os from "node:os";
 import path from "node:path";
-import { MotionPlanJsonSchema, PlanSchema, SceneCatalog, campaignToMotionPlan, type MotionPlan } from "./plan";
+import { MotionPlanJsonSchema, PlanSchema, SceneCatalog, campaignToMotionPlan, type MotionPlan, type PlanSceneType } from "./plan";
 import { appendPlanHistory, describeRecentStyles, readRecentPlans } from "./planHistory";
 import { askGemini } from "./geminiDirector";
 
@@ -91,49 +91,322 @@ const issueText = (error: unknown) => {
 
 export const safeFallbackPlan = (content: string, options: Record<string, unknown> = {}): MotionPlan => {
   const p = content.toLowerCase();
-  const isClaude = p.includes("claude") || options?.theme === "claude";
-  const isCyber = p.includes("cyber") || p.includes("security") || p.includes("vpn") || options?.theme === "cyber";
-  const isFintech = p.includes("fintech") || p.includes("trade") || p.includes("crypto") || options?.theme === "fintech";
+  const themeOpt = typeof options?.theme === "string" ? options.theme : "";
+  const requestedDuration = Number(content.match(/(\d+)\s*s(?:econds?)?/i)?.[1]) || 24;
 
-  const styleSeed = createHash("sha256").update(JSON.stringify({ content, options, t: Date.now() })).digest("hex").slice(0, 16);
-  const headline = truncate(content.trim() || (isClaude ? "Claude Code Autonomous Engineering" : "Turn your idea into motion"), 84);
+  const isClaude = p.includes("claude") || themeOpt === "claude";
+  const isCyber = p.includes("cyber") || p.includes("security") || p.includes("vpn") || p.includes("rce") || p.includes("shield") || themeOpt === "cyber";
+  const isFintech = p.includes("fintech") || p.includes("trade") || p.includes("trading") || p.includes("crypto") || p.includes("stock") || p.includes("payment") || themeOpt === "fintech";
+  const isAI = p.includes("huggingface") || p.includes("model") || p.includes("weights") || p.includes("dataset") || p.includes("neural") || p.includes("llm") || p.includes("inference") || p.includes("deepseek");
+  const isCloud = p.includes("cloud") || p.includes("docker") || p.includes("kubernetes") || p.includes("cluster") || p.includes("deploy") || p.includes("api") || p.includes("infra");
 
-  const primary = isClaude ? "#D97757" : isCyber ? "#10B981" : isFintech ? "#F59E0B" : "#6366F1";
-  const accent = isClaude ? "#E09F67" : isCyber ? "#06B6D4" : isFintech ? "#10B981" : "#EC4899";
-  const background = isClaude ? "#181714" : isFintech ? "#060A12" : "#080C14";
+  const category = isClaude ? "claude" : isCyber ? "cyber" : isFintech ? "fintech" : isAI ? "ai" : isCloud ? "cloud" : "saas";
 
-  return PlanSchema.parse({
-    meta: { fps: 30, size: { width: 1080, height: 1920 }, mood: isClaude ? "claude" : "cinematic", styleSeed },
-    theme: {
-      palette: { background, foreground: isClaude ? "#F5F1E8" : "#F8FAFC", primary, accent, muted: "#94A3B8" },
-      fonts: { heading: isClaude ? "Georgia, serif" : "Inter, sans-serif", body: "Inter, sans-serif", mono: "monospace" },
+  const cleanText = content.replace(/https?:\/\/[^\s]+/g, "").replace(/\b(?:visit|website|generate|motion|animation|\d+s)\b/gi, "").trim();
+  const headline = truncate(cleanText || (isClaude ? "Claude Code Autonomous Engineering" : isAI ? "Open Machine Learning Intelligence" : isCyber ? "Autonomous Zero-Trust Defense" : isFintech ? "Sub-Millisecond Financial Velocity" : "Transform Your Workflow In Motion"), 80);
+
+  const styleSeed = createHash("sha256").update(JSON.stringify({ content, options, t: Date.now(), r: Math.random() })).digest("hex").slice(0, 16);
+
+  type CategoryStyle = {
+    palette: { background: string; foreground: string; primary: string; accent: string; muted: string };
+    fonts: { heading: string; body: string; mono: string };
+    background: "aurora" | "grid" | "paper" | "gradient" | "noise";
+    easing: "calm" | "snappy" | "cinematic";
+    motionIntensity: "low" | "medium" | "high";
+    mood: string;
+    bpm: number;
+  };
+
+  const styles: Record<string, CategoryStyle> = {
+    claude: {
+      palette: { background: "#181714", foreground: "#F5F1E8", primary: "#D97757", accent: "#E09F67", muted: "#8C827A" },
+      fonts: { heading: "Georgia, serif", body: "Inter, sans-serif", mono: "JetBrains Mono, monospace" },
+      background: "paper",
       easing: "cinematic",
       motionIntensity: "medium",
-      background: isClaude ? "paper" : "gradient",
+      mood: "claude",
+      bpm: 85,
     },
-    scenes: [
-      { id: "hook", type: "kinetic_hook", start: 0, dur: 5, content: { headline, eyebrow: isClaude ? "CLAUDE CODE" : "SYSTEM ARCHITECTURE" }, params: {} },
-      { id: "terminal", type: "typing_terminal", start: 5, dur: 6, content: {
-          headline: isClaude ? "Autonomous Code Refactoring" : "Sub-Second Production Execution",
-          command: isClaude ? "claude review --strict --branch=main" : "engine deploy --verify --production",
-          output: "✔ AST parsed in 0.8s. 0 regressions detected. 100% verified."
-        }, params: {} },
-      { id: "diff", type: "before_after", start: 11, dur: 5, content: {
-          headline: isClaude ? "Clean Decoupled Architecture" : "Modern High-Velocity Pipeline",
-          before: ["Manual fragile workflows", "Slow review cycles"],
-          after: ["100% Deterministic execution", "Instant autonomous fixes"]
-        }, params: {} },
-      { id: "proof", type: "stat_counter", start: 16, dur: 4, content: {
-          headline: "Measurable Production Velocity",
-          value: "98%",
-          label: "Engineering Cycle Acceleration"
-        }, params: {} },
-      { id: "cta", type: "cta", start: 20, dur: 4, content: {
-          headline: isClaude ? "Experience Claude Code CLI" : "Deploy Your Vision Today",
-          cta: isClaude ? "claude.ai/code →" : "Get Started Free →"
-        }, params: {} },
-    ],
-    audio: { bed: { mood: isClaude ? "claude" : "cinematic", bpm: isClaude ? 85 : 100 }, sfxCues: [] },
+    cyber: {
+      palette: { background: "#030712", foreground: "#F8FAFC", primary: "#10B981", accent: "#06B6D4", muted: "#64748B" },
+      fonts: { heading: "Inter, sans-serif", body: "Inter, sans-serif", mono: "JetBrains Mono, monospace" },
+      background: "grid",
+      easing: "snappy",
+      motionIntensity: "high",
+      mood: "cyber",
+      bpm: 110,
+    },
+    fintech: {
+      palette: { background: "#060A12", foreground: "#F8FAFC", primary: "#F59E0B", accent: "#10B981", muted: "#78716C" },
+      fonts: { heading: "Inter, sans-serif", body: "Inter, sans-serif", mono: "JetBrains Mono, monospace" },
+      background: "noise",
+      easing: "snappy",
+      motionIntensity: "high",
+      mood: "fintech",
+      bpm: 105,
+    },
+    ai: {
+      palette: { background: "#090D1A", foreground: "#F8FAFC", primary: "#8B5CF6", accent: "#EC4899", muted: "#94A3B8" },
+      fonts: { heading: "Inter, sans-serif", body: "Inter, sans-serif", mono: "JetBrains Mono, monospace" },
+      background: "aurora",
+      easing: "cinematic",
+      motionIntensity: "high",
+      mood: "ai",
+      bpm: 96,
+    },
+    cloud: {
+      palette: { background: "#080C14", foreground: "#F8FAFC", primary: "#38BDF8", accent: "#818CF8", muted: "#94A3B8" },
+      fonts: { heading: "Inter, sans-serif", body: "Inter, sans-serif", mono: "JetBrains Mono, monospace" },
+      background: "grid",
+      easing: "snappy",
+      motionIntensity: "medium",
+      mood: "cloud",
+      bpm: 100,
+    },
+    saas: {
+      palette: { background: "#080C14", foreground: "#F8FAFC", primary: "#6366F1", accent: "#EC4899", muted: "#94A3B8" },
+      fonts: { heading: "Inter, sans-serif", body: "Inter, sans-serif", mono: "JetBrains Mono, monospace" },
+      background: "gradient",
+      easing: "cinematic",
+      motionIntensity: "medium",
+      mood: "saas",
+      bpm: 100,
+    },
+  };
+
+  const chosenStyle = styles[category] || styles.saas;
+
+  // Custom primary color override from options if valid hex
+  if (typeof options.primaryColor === "string" && /^#[0-9A-Fa-f]{6}$/.test(options.primaryColor)) {
+    chosenStyle.palette.primary = options.primaryColor;
+  }
+
+  // Construct diverse scenes per archetype category
+  type RawScene = { type: PlanSceneType; dur: number; content: Record<string, unknown> };
+  let rawScenes: RawScene[] = [];
+
+  if (category === "ai") {
+    rawScenes = [
+      {
+        type: "kinetic_hook",
+        dur: 4.5,
+        content: { headline, eyebrow: "OPEN AI ECOSYSTEM", body: "Accelerate discovery, training, and inference on one open platform." },
+      },
+      {
+        type: "card_reveal",
+        dur: 5.5,
+        content: {
+          headline: "Unified Foundation Infrastructure",
+          eyebrow: "ALL MODALITIES",
+          items: ["2M+ Open Weight Models", "500k+ Clean Multimodal Datasets", "Serverless GPU Inference Endpoints"],
+          body: "Scale from experimentation to distributed production in one click.",
+        },
+      },
+      {
+        type: "stat_counter",
+        dur: 4.5,
+        content: { headline: "Enterprise Scale & Adoption", eyebrow: "VERIFIED TRACTION", value: "400K+", label: "Organizations Building On Open Weights" },
+      },
+      {
+        type: "quote",
+        dur: 4.5,
+        content: { headline: "Production Intelligence", quote: "The global epicenter of machine learning collaboration and reproducible science.", attribution: "Frontier AI Consortium" },
+      },
+      {
+        type: "cta",
+        dur: 4.0,
+        content: { headline: "Build With Open Models Today", eyebrow: "ZERO LOCK-IN", cta: "Explore Models & Spaces →" },
+      },
+    ];
+  } else if (category === "cyber") {
+    rawScenes = [
+      {
+        type: "kinetic_hook",
+        dur: 4.5,
+        content: { headline, eyebrow: "ZERO TRUST POSTURE", body: "Continuous biometric verification and microsegmentation for modern clouds." },
+      },
+      {
+        type: "network_topology",
+        dur: 5.5,
+        content: {
+          headline: "Decoupled Zero-Trust Architecture",
+          eyebrow: "ISOLATION MESH",
+          nodes: [
+            { id: "client", label: "Identity & Client" },
+            { id: "gateway", label: "Zero-Trust Proxy" },
+            { id: "workload", label: "Workload Cluster" },
+            { id: "vault", label: "Encrypted Data Vault" },
+          ],
+        },
+      },
+      {
+        type: "before_after",
+        dur: 5.0,
+        content: {
+          headline: "Eliminate Lateral Breach Exposure",
+          eyebrow: "BEFORE VS AFTER",
+          before: ["Open internal WANs", "Static VPN credentials", "Blindspot lateral movement"],
+          after: ["Dynamic micro-tunnels", "Ephemerally signed mTLS", "Zero lateral attack surface"],
+        },
+      },
+      {
+        type: "stat_counter",
+        dur: 4.0,
+        content: { headline: "Measurable Threat Neutralization", eyebrow: "AUDITED IMPACT", value: "0", label: "Uncontained CVE Exploitations Detected" },
+      },
+      {
+        type: "cta",
+        dur: 4.0,
+        content: { headline: "Deploy Zero Trust Architecture", eyebrow: "5 MINUTE ENROLLMENT", cta: "Get Started Free →" },
+      },
+    ];
+  } else if (category === "fintech") {
+    rawScenes = [
+      {
+        type: "kinetic_hook",
+        dur: 4.5,
+        content: { headline, eyebrow: "INSTANT LIQUIDITY", body: "Ultra-low latency portfolio telemetry with real-time risk settlement." },
+      },
+      {
+        type: "stat_counter",
+        dur: 4.5,
+        content: { headline: "Sub-Millisecond Execution Speed", eyebrow: "BENCHMARK PERFORMANCE", value: "0.2ms", label: "Average Atomic Clearing & Settlement Latency" },
+      },
+      {
+        type: "card_reveal",
+        dur: 5.0,
+        content: {
+          headline: "Engineered For Sovereign Velocity",
+          eyebrow: "CORE ADVANTAGES",
+          items: ["Continuous Risk Telemetry", "Cross-Exchange Arbitrage Router", "100% Deterministic Accounting"],
+        },
+      },
+      {
+        type: "list_build",
+        dur: 5.0,
+        content: {
+          headline: "Three-Stage Transaction Pipeline",
+          eyebrow: "EXECUTION PHASES",
+          items: ["Ingest global order book depth", "Run sub-microsecond risk checks", "Execute zero-slippage settlement"],
+        },
+      },
+      {
+        type: "cta",
+        dur: 4.0,
+        content: { headline: "Power Your Trading Infrastructure", eyebrow: "SOC-2 CERTIFIED", cta: "Access Sandbox API →" },
+      },
+    ];
+  } else if (category === "claude") {
+    rawScenes = [
+      {
+        type: "kinetic_hook",
+        dur: 4.5,
+        content: { headline, eyebrow: "CLAUDE CODE CLI", body: "Autonomous engineering across your terminal with mathematical certainty." },
+      },
+      {
+        type: "typing_terminal",
+        dur: 6.0,
+        content: {
+          headline: "Refactor Large Codebases Intelligently",
+          eyebrow: "LIVE TERMINAL RUNTIME",
+          command: "claude review --strict --fix-type-errors src/auth.ts",
+          output: "✔ AST parsed in 0.4s. 3 regressions repaired. 100% TypeScript verified.",
+        },
+      },
+      {
+        type: "code_diff",
+        dur: 5.0,
+        content: {
+          headline: "Zero-Regression Code Evolution",
+          eyebrow: "BEFORE VS AFTER",
+          before: "const user = req.body; // Unchecked raw payload",
+          after: "const user = UserSchema.parse(req.body); // 100% type safe",
+        },
+      },
+      {
+        type: "stat_counter",
+        dur: 4.0,
+        content: { headline: "Engineering Cycle Acceleration", eyebrow: "MEASURED IMPACT", value: "85%", label: "Reduction In Pull Request Review Latency" },
+      },
+      {
+        type: "cta",
+        dur: 4.0,
+        content: { headline: "Experience Claude Code CLI", eyebrow: "LOCAL & AUTONOMOUS", cta: "claude.ai/code →" },
+      },
+    ];
+  } else {
+    rawScenes = [
+      {
+        type: "kinetic_hook",
+        dur: 4.5,
+        content: { headline, eyebrow: "PRODUCT SHOWCASE", body: "Transforming how high-performing teams build and deliver modern software." },
+      },
+      {
+        type: "card_reveal",
+        dur: 5.0,
+        content: {
+          headline: "Designed For Unmatched Productivity",
+          eyebrow: "KEY CAPABILITIES",
+          items: ["Instant Real-Time Collaboration", "Code-Driven Deterministic Exports", "Multi-Platform Automated Sync"],
+        },
+      },
+      {
+        type: "before_after",
+        dur: 5.0,
+        content: {
+          headline: "From Friction To Autonomous Velocity",
+          eyebrow: "TRANSFORMATION",
+          before: ["Manual fragmented tools", "Slow iterative cycles"],
+          after: ["Unified modern engine", "Sub-second verified output"],
+        },
+      },
+      {
+        type: "stat_counter",
+        dur: 4.5,
+        content: { headline: "Proven Production Acceleration", eyebrow: "METRIC PROOF", value: "10x", label: "Faster Delivery Cycle vs Traditional Workflows" },
+      },
+      {
+        type: "cta",
+        dur: 4.0,
+        content: { headline: "Launch Your Next Project Today", eyebrow: "GET STARTED NOW", cta: "Start Free Trial →" },
+      },
+    ];
+  }
+
+  // Calculate chronological starts without overlaps
+  let currentStart = 0;
+  const scenes = rawScenes.map((s, idx) => {
+    const scene = {
+      id: `scene-${idx + 1}-${s.type}`,
+      type: s.type,
+      start: currentStart,
+      dur: s.dur,
+      content: s.content,
+      params: {},
+    };
+    currentStart = Math.round((currentStart + s.dur) * 10) / 10;
+    return scene;
+  });
+
+  return PlanSchema.parse({
+    meta: {
+      fps: 30,
+      size: { width: 1080, height: 1920 },
+      mood: chosenStyle.mood,
+      styleSeed,
+    },
+    theme: {
+      palette: chosenStyle.palette,
+      fonts: chosenStyle.fonts,
+      easing: chosenStyle.easing,
+      motionIntensity: chosenStyle.motionIntensity,
+      background: chosenStyle.background,
+    },
+    scenes,
+    audio: {
+      bed: { mood: chosenStyle.mood, bpm: chosenStyle.bpm },
+      sfxCues: [],
+    },
   });
 };
 
@@ -142,30 +415,36 @@ You are a world-class Motion Graphics Creative Director designing high-convertin
 Produce exactly one JSON object matching the JSON Schema.
 
 CREATIVE DIRECTION RULES:
-1. PUNCHY, CODE-DRIVEN STORYTELLING:
-   - Make it feel like an authentic, high-end tech video (Claude Code, Linear, Stripe).
-   - Hook the viewer in Scene 1 (kinetic_hook) with a bold headline and eyebrow.
-   - For dev tools / CLI / AI agents: include typing_terminal with realistic commands (e.g., \`claude "refactor src/auth.ts"\`, \`cargo check\`) and verified outputs.
-   - For transformations: include before_after or code_diff.
-   - For metrics & stats: include stat_counter (e.g. value "10x", "85%", "0 CVEs").
-   - End with a compelling conversion cta.
+1. DYNAMIC, TOPIC-TAILORED STORYTELLING:
+   - Select the optimal scene count (between 3 and 6 scenes) and total duration (~18s-30s) that best suits the product topic.
+   - Do NOT follow a rigid, repetitive formula. Pick and order scene archetypes dynamically to fit the narrative:
+     * code_diff: for code refactoring, bug fixes, type safety, API migrations, or framework upgrades.
+     * card_reveal: for displaying feature cards, product benefits, modalities, or service pillars.
+     * network_topology: for cloud architecture, microservices, zero-trust security, distributed databases, or API gateway flows.
+     * stat_counter: for key numbers, benchmark speedups, percentage gains, or scale proof points.
+     * quote: for user testimonials, executive statements, engineering philosophies, or partner endorsements.
+     * list_build: for sequential steps, deployment pipelines, 3-step setups, or staged workflows.
+     * typing_terminal: for developer tools, CLI utilities, shell commands, and verified execution logs.
+     * before_after: for contrasting legacy headaches vs automated modern solutions.
+     * kinetic_hook: for bold opening claim slams.
+     * cta: for closing action and conversion.
 
-2. THEME & ART DIRECTION:
-   - If the topic relates to Claude Code or developer agents:
-     * mood: "claude"
-     * palette: background "#181714", foreground "#F5F1E8", primary "#D97757" (clay/terracotta), accent "#E09F67" (amber), muted "#8C827A"
-     * fonts: heading "Georgia, serif", body "Inter, sans-serif", mono: "JetBrains Mono, monospace"
-     * audio bed: mood "claude", bpm 85
-   - If cyber / security: primary "#10B981" (emerald neon), accent "#06B6D4" (cyan), background "#030712", audio bed mood "cyber", bpm 110.
-   - If fintech: primary "#F59E0B" (gold), accent "#10B981", background "#080C14", audio bed mood "fintech", bpm 100.
-   - If SaaS / indigo: primary "#6366F1", accent "#EC4899", background "#080C14".
+2. THEME, BACKGROUND & ART DIRECTION:
+   - Match palette colors to the subject matter (e.g. Claude terracotta/amber, Cyber neon emerald/cyan, Fintech gold/amber, AI violet/pink, Cloud sky/indigo, Minimal slate).
+   - Choose a distinctive background:
+     * "aurora": volumetric glowing noise mesh (ideal for AI, modern SaaS, consumer apps)
+     * "grid": 3D perspective cyber tech grid (ideal for dev tools, terminal, cybersecurity, infrastructure)
+     * "paper": warm editorial paper aesthetic (ideal for Claude, documentation, engineering blogs)
+     * "gradient": vivid modern multi-stop mesh (ideal for creative tools, design, platforms)
+     * "noise": deep obsidian starfield void (ideal for big data, financial telemetry, astrophysics)
+   - Vary easing ("calm", "snappy", "cinematic") and motionIntensity ("low", "medium", "high").
 
 3. SCENE CATALOG:
 ${JSON.stringify(SceneCatalog, null, 2)}
 
 4. OUTPUT REQUIREMENTS:
    - meta.fps must be 30 and meta.size must be { width: 1080, height: 1920 }.
-   - Ordered scenes with start time and duration (total video duration ~20-25s).
+   - Ordered scenes with start time and duration (total video duration ~18-30s).
    - Return valid JSON matching the schema.
    - Do NOT attempt to run tools, fetch URLs, or execute commands. All relevant context is provided directly in this prompt.
 

@@ -418,11 +418,22 @@ const server = http.createServer((req, res) => {
         </div>
 
 
-        <!-- Generate Button -->
-        <button id="renderBtn" onclick="handleRender()" class="mt-5 w-full bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-4 rounded-xl text-lg shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition active:scale-[0.99]">
-          <span id="btnText">Render Dynamic Motion Video 🚀</span>
-          <svg id="spinner" class="animate-spin h-5 w-5 text-white hidden" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
-        </button>
+        <!-- Generate Buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-5">
+          <button id="renderBtn" onclick="handleRender(false)" class="sm:col-span-2 bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-3.5 px-4 rounded-xl text-base shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition active:scale-[0.99]">
+            <span id="btnText">Render Dynamic Video 🚀</span>
+            <svg id="spinner" class="animate-spin h-5 w-5 text-white hidden" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+          </button>
+          <button type="button" onclick="handleRender(true)" class="border border-indigo-500/50 bg-indigo-950/40 hover:bg-indigo-900/50 text-indigo-300 font-semibold py-3.5 px-3 rounded-xl text-sm flex items-center justify-center gap-1.5 transition active:scale-[0.99]" title="Bypass cache and generate a completely fresh visual plan">
+            <span>🎲 New Variation</span>
+          </button>
+        </div>
+        <div class="flex items-center justify-between mt-2 px-1">
+          <label class="flex items-center gap-2 text-[11px] text-slate-400 cursor-pointer select-none">
+            <input type="checkbox" id="bypassCacheCheck" class="rounded bg-slate-950 border-slate-800 text-indigo-500 focus:ring-0">
+            <span>Always generate fresh plan (bypass cache)</span>
+          </label>
+        </div>
 
         <!-- Quick Presets -->
         <div class="mt-6 flex flex-wrap gap-2 text-xs text-slate-400">
@@ -521,7 +532,7 @@ const server = http.createServer((req, res) => {
       }
     }
 
-    async function handleRender() {
+    async function handleRender(fresh = false) {
       const prompt = document.getElementById('promptInput').value.trim();
       if (!prompt) {
         alert("Please enter a prompt or choose a preset!");
@@ -535,10 +546,13 @@ const server = http.createServer((req, res) => {
 
       btn.disabled = true;
       btn.classList.add('opacity-75', 'cursor-not-allowed');
-      btnText.innerText = "Rendering Video via Chromium...";
+      btnText.innerText = fresh ? "Planning Fresh Variation..." : "Rendering Video via Chromium...";
       spinner.classList.remove('hidden');
       statusBadge.innerText = "Rendering (30 fps)...";
       statusBadge.className = "text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded";
+
+      const bypassCheck = document.getElementById('bypassCacheCheck');
+      const isFresh = Boolean(fresh || (bypassCheck && bypassCheck.checked));
 
       const customConfig = {
         theme: currentTheme,
@@ -547,6 +561,7 @@ const server = http.createServer((req, res) => {
         primaryColor: document.getElementById('primaryColor').value || undefined,
         metricValue: document.getElementById('metricValue').value || undefined,
         ctaText: document.getElementById('ctaText').value || undefined,
+        fresh: isFresh,
       };
 
       try {

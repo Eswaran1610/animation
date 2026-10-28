@@ -131,9 +131,10 @@ export class MotionJobQueue {
     if (job.rerenderOf) {
       plan = PlanSchema.parse(JSON.parse(fs.readFileSync(path.join(this.jobDir(job.id), "plan.json"), "utf-8")));
     } else {
+      const bypassCache = Boolean(job.options?.fresh || job.options?.regenerate || job.options?.bypassCache);
       const key = createHash("sha256").update(stableJson({ version: PLANNER_CACHE_VERSION, content: job.content, options: job.options })).digest("hex");
       const cachePath = path.join(this.cacheDir, `${key}.json`);
-      if (fs.existsSync(cachePath)) {
+      if (!bypassCache && fs.existsSync(cachePath)) {
         job.cacheHit = true;
         plan = PlanSchema.parse(JSON.parse(fs.readFileSync(cachePath, "utf-8")));
         this.log(job, `Plan cache hit: ${key.slice(0, 12)}.`);

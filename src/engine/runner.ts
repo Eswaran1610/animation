@@ -13,8 +13,17 @@ if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
 /** Renders an already validated plan. Used by the asynchronous job queue. */
 export function renderMotionPlan(planInput: MotionPlan, videoOut: string, propsPath: string) {
-  const plan = PlanSchema.parse(planInput);
+  let plan = PlanSchema.parse(planInput);
   const totalFrames = Math.round(Math.max(...plan.scenes.map((scene) => scene.start + scene.dur)) * plan.meta.fps);
+  const durationSeconds = totalFrames / plan.meta.fps;
+
+  // Ensure audio bed exists; synthesize or adapt if missing
+  const publicAsset = plan.audio.bed.asset ? path.join(process.cwd(), "public", plan.audio.bed.asset) : "";
+  if (!plan.audio.bed.asset || !fs.existsSync(publicAsset)) {
+    const prepared = prepareAudioBed(plan, durationSeconds, process.cwd(), path.basename(videoOut, ".mp4"));
+    plan = prepared.plan;
+  }
+
   fs.mkdirSync(path.dirname(videoOut), { recursive: true });
   fs.writeFileSync(propsPath, JSON.stringify({ plan }, null, 2));
   const remotion = path.join(process.cwd(), "node_modules", ".bin", "remotion");
