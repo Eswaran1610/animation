@@ -2,12 +2,16 @@ node_modules/
 out/
 .agents/
 
+# Video and media outputs
+*.mp4
+out/
+public/generated-audio/
+
 # Local tooling and environment files
 .env
 .env.*
 *.log
 .motion-plans/
-public/generated-audio/
 .motion-cache/
 jobs/
 .dev-build/

@@ -188,10 +188,24 @@ export const RemotionRoot: React.FC = () => {
         calculateMetadata={({ props }: any) => {
           const { Campaign } = require("./claude-motion/schema");
           const { timeline } = require("./claude-motion/motion");
-          const c = Campaign.parse(props?.campaign || { name: "demo", scenes: [{ type: "title", seconds: 3, headline: "Claude Motion" }] });
+          const raw = (props?.campaign && typeof props.campaign === "object") ? props.campaign : props;
+          const c = Campaign.parse(raw?.name && raw?.scenes ? raw : {
+            name: "claude-demo",
+            fps: 30,
+            size: "9:16",
+            scenes: [{ type: "title", seconds: 3, headline: "Claude Motion" }]
+          });
+          const SIZES: Record<string, { width: number; height: number }> = {
+            "9:16": { width: 1080, height: 1920 },
+            "16:9": { width: 1920, height: 1080 },
+            "1:1": { width: 1080, height: 1080 },
+          };
+          const { width, height } = SIZES[c.size || "9:16"] || SIZES["9:16"];
           return {
-            durationInFrames: timeline(c).total,
+            durationInFrames: Math.max(30, timeline(c).total),
             fps: c.fps,
+            width,
+            height,
             props: { campaign: c },
           };
         }}
@@ -199,11 +213,17 @@ export const RemotionRoot: React.FC = () => {
           campaign: {
             name: "claude-demo",
             fps: 30,
+            size: "9:16",
+            audio: {
+              music: "claude_audio.wav",
+              musicVolume: 0.35,
+              sfx: true,
+            },
             scenes: [
-              { type: "title", seconds: 3, eyebrow: "Claude Code", headline: "Review code in one command", sub: "Catch bugs before they ship." },
+              { type: "title", seconds: 3, eyebrow: "Claude Code", headline: "Review code in one command", sub: "Catch bugs before they ship.", sfx: "whoosh" },
               { type: "terminal", seconds: 6, lines: [{ kind: "cmd", text: "claude review --strict --branch=prod" }, { kind: "out", text: "Scanning 42 files..." }, { kind: "out", text: "2 issues found, 1 auto-fixed" }] },
               { type: "diagram", seconds: 5, caption: "From terminal to cloud", nodes: [{ id: "a", label: "Terminal", x: 50, y: 25 }, { id: "b", label: "Claude", x: 50, y: 50 }, { id: "c", label: "Cloud", x: 50, y: 75 }], edges: [["a", "b"], ["b", "c"]] },
-              { type: "title", seconds: 3, headline: "Ship with confidence" }
+              { type: "title", seconds: 3, headline: "Ship with confidence", sfx: "impact" }
             ]
           }
         }}

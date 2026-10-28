@@ -1,0 +1,64 @@
+{
+  "campaign": {
+    "name": "zero-trust-network-architectur",
+    "fps": 30,
+    "size": "9:16",
+    "audio": {
+      "music": "claude_audio.wav",
+      "musicVolume": 0.35,
+      "sfx": true
+    },
+    "scenes": [
+      {
+        "type": "title",
+        "seconds": 3.5,
+        "eyebrow": "ARCHITECTURE & MOTION",
+        "headline": "Zero Trust Network Architecture for Cloud Security",
+        "sub": "Data-driven motion graphics powered by Remotion.",
+        "sfx": "whoosh"
+      },
+      {
+        "type": "terminal",
+        "seconds": 5.5,
+        "eyebrow": "EXECUTION PIPELINE",
+        "lines": [
+          {
+            "kind": "cmd",
+            "text": "execute --target=\"zero-trust-network-architectur\" --verify"
+          },
+          {
+            "kind": "out",
+            "text": "Analyzing: Zero Trust Network Architecture for Cloud Security..."
+          },
+          {
+            "kind": "out",
+            "text": "✔ Synthesis complete with zero human latency"
+          },
+          {
+            "kind": "out",
+            "text": "✔ Generated verified scenes & motion plan"
+          }
+        ],
+        "sfx": "click"
+      },
+      {
+        "type": "stat",
+        "seconds": 4,
+        "eyebrow": "PERFORMANCE",
+        "value": "100%",
+        "label": "Deterministic Remotion Rendering",
+        "sub": "Zero manual video editing required.",
+        "sfx": "impact"
+      },
+      {
+        "type": "cta",
+        "seconds": 3.5,
+        "eyebrow": "GET STARTED",
+        "headline": "Turn Any Idea Into Motion.",
+        "sub": "Zero Trust Network Architecture for Cloud Security",
+        "buttonText": "Explore Pipeline →",
+        "sfx": "whoosh"
+      }
+    ]
+  }
+}

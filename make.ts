@@ -1,21 +1,38 @@
 // Usage:
 //   npx tsx make.ts "idea for the video"
 //   npx tsx make.ts campaigns/claude_code_example.json
+//   npx tsx make.ts "idea for the video" --preview
 import { execSync } from "node:child_process";
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
-import path from "node:path";
 import { Campaign, TCampaign } from "./src/claude-motion/schema";
 
 const RULES = `You turn an idea into a JSON campaign for a vertical 1080x1920 Claude-style motion video.
-Return ONLY JSON (no markdown) matching:
-{"name": slug, "fps": 30, "scenes": [...3-6 scenes]}
-Scene types:
- title:    {type,seconds(1.5-8),eyebrow?,headline<=80 chars,sub?<=140}
- terminal: {type,seconds(2-12),lines:[{kind:"cmd"|"out",text<=70}] (max 8)}
- diagram:  {type,seconds(3-10),caption?,nodes:[{id,label<=18,x(8-92),y(12-88)}] (2-6),edges:[[fromId,toId]]}
-Style: calm, one idea per scene, start with a title, end with a title. Short punchy copy.`;
+Return ONLY valid JSON (no markdown fences, no explanatory text) matching:
+{
+  "name": "short-slug",
+  "fps": 30,
+  "size": "9:16",
+  "audio": { "music": "claude_audio.wav", "musicVolume": 0.35, "sfx": true },
+  "scenes": [...3-6 scenes]
+}
+
+Supported Scene Types:
+- title:        { type: "title", seconds: 2-5, eyebrow?: string, headline: string (<=80 chars), sub?: string, sfx?: "whoosh"|"impact"|"click" }
+- terminal:     { type: "terminal", seconds: 3-8, eyebrow?: string, lines: [{ kind: "cmd"|"out", text: string (<=70) }], sfx?: string }
+- diagram:      { type: "diagram", seconds: 3-8, eyebrow?: string, caption?: string, nodes: [{ id: string, label: string (<=20), x: 10-90, y: 15-85 }], edges: [[fromId, toId]] }
+- stat:         { type: "stat", seconds: 2-5, eyebrow?: string, value: string (<=20, e.g. "99.9%", "10x"), label: string, sub?: string, sfx?: "impact" }
+- before_after: { type: "before_after", seconds: 3-8, eyebrow?: string, headline?: string, beforeTitle: string, beforeItems: string[], afterTitle: string, afterItems: string[] }
+- list:         { type: "list", seconds: 3-8, eyebrow?: string, headline: string, items: string[] (2-5 items) }
+- quote:        { type: "quote", seconds: 2-6, quote: string, author: string, role?: string }
+- cta:          { type: "cta", seconds: 2-5, eyebrow?: string, headline: string, sub?: string, buttonText?: string, sfx?: "impact" }
+
+Style Guidelines:
+- Calm, thoughtful rhythm, one core concept per scene.
+- Warm clay accent (#D97757), dark background (#1A1916), Georgia serif headlines, mono terminal commands.
+- Start with a title or stat, progress with terminal/diagram/comparison, end with a cta or title.`;
 
 async function askAnthropic(idea: string): Promise<string> {
+  const model = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -24,67 +41,93 @@ async function askAnthropic(idea: string): Promise<string> {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 2000,
+      model,
+      max_tokens: 2500,
       system: RULES,
       messages: [{ role: "user", content: idea }],
     }),
   });
+
+  if (!r.ok) {
+    const errText = await r.text();
+    throw new Error(`Claude API error HTTP ${r.status}: ${errText}`);
+  }
+
   const d: any = await r.json();
-  return (d.content?.[0]?.text ?? "").replace(/```json|```/g, "").trim();
+  const text = (d.content?.[0]?.text ?? "").replace(/```json|```/g, "").trim();
+  return text;
 }
 
 function generateLocalCampaign(idea: string): TCampaign {
-  const slug = idea.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30).replace(/^-|-$/g, "") || "claude-demo";
+  const cleanIdea = idea.trim().replace(/\s+/g, " ");
+  const slug = cleanIdea.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30).replace(/^-|-$/g, "") || "motion-demo";
+  
+  // Extract key phrases for custom scenes
+  const words = cleanIdea.split(" ");
+  const titleHeadline = cleanIdea.length > 70 ? words.slice(0, 8).join(" ") : cleanIdea;
+  const subHeadline = cleanIdea.length > 70 ? words.slice(8).join(" ") : "Data-driven motion graphics powered by Remotion.";
+
   return {
     name: slug,
     fps: 30,
+    size: "9:16",
+    audio: {
+      music: "claude_audio.wav",
+      musicVolume: 0.35,
+      sfx: true,
+    },
     scenes: [
       {
         type: "title",
         seconds: 3.5,
-        eyebrow: "Claude Code",
-        headline: idea.slice(0, 75),
-        sub: "Autonomous multi-file refactoring and deterministic verification.",
+        eyebrow: "ARCHITECTURE & MOTION",
+        headline: titleHeadline.slice(0, 80),
+        sub: subHeadline.slice(0, 140),
+        sfx: "whoosh",
       },
       {
         type: "terminal",
-        seconds: 6,
-        lines: [
-          { kind: "cmd", text: "claude review --strict --fix-bugs" },
-          { kind: "out", text: "AST parsed 58 files in 1.2s..." },
-          { kind: "out", text: "3 regressions detected, 3 auto-repaired" },
-          { kind: "out", text: "✔ All unit tests passing" },
-        ],
-      },
-      {
-        type: "diagram",
         seconds: 5.5,
-        caption: "From local terminal to cloud production",
-        nodes: [
-          { id: "a", label: "Developer", x: 50, y: 22 },
-          { id: "b", label: "Claude Code", x: 50, y: 50 },
-          { id: "c", label: "Production", x: 50, y: 78 },
+        eyebrow: "EXECUTION PIPELINE",
+        lines: [
+          { kind: "cmd", text: `execute --target="${slug}" --verify` },
+          { kind: "out", text: `Analyzing: ${cleanIdea.slice(0, 50)}...` },
+          { kind: "out", text: "✔ Synthesis complete with zero human latency" },
+          { kind: "out", text: "✔ Generated verified scenes & motion plan" },
         ],
-        edges: [
-          ["a", "b"],
-          ["b", "c"],
-        ],
+        sfx: "click",
       },
       {
-        type: "title",
-        seconds: 3,
-        headline: "Ship with confidence.",
-        sub: "Built for developer velocity.",
+        type: "stat",
+        seconds: 4.0,
+        eyebrow: "PERFORMANCE",
+        value: "100%",
+        label: "Deterministic Remotion Rendering",
+        sub: "Zero manual video editing required.",
+        sfx: "impact",
+      },
+      {
+        type: "cta",
+        seconds: 3.5,
+        eyebrow: "GET STARTED",
+        headline: "Turn Any Idea Into Motion.",
+        sub: cleanIdea.slice(0, 100),
+        buttonText: "Explore Pipeline →",
+        sfx: "whoosh",
       },
     ],
   };
 }
 
 (async () => {
-  const arg = process.argv.slice(2).join(" ").trim();
+  const rawArgs = process.argv.slice(2);
+  const isPreview = rawArgs.includes("--preview") || rawArgs.includes("--quick");
+  const filteredArgs = rawArgs.filter((a) => a !== "--preview" && a !== "--quick" && !a.startsWith("--scale="));
+  const scaleArg = rawArgs.find((a) => a.startsWith("--scale=")) || (isPreview ? "--scale=0.5" : "");
+
+  const arg = filteredArgs.join(" ").trim();
   if (!arg) {
-    console.error("Usage: npx tsx make.ts \"<idea or path to json>\"");
+    console.error('Usage: npx tsx make.ts "<idea or path to json>" [--preview]');
     process.exit(1);
   }
 
@@ -100,7 +143,7 @@ function generateLocalCampaign(idea: string): TCampaign {
   } else {
     // Case 2: Argument is an idea prompt
     if (process.env.ANTHROPIC_API_KEY) {
-      console.log("Generating campaign via Claude API...");
+      console.log(`Generating campaign via Claude API (${process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6"})...`);
       for (let attempt = 0; attempt < 3; attempt++) {
         try {
           const raw = await askAnthropic(arg);
@@ -111,9 +154,9 @@ function generateLocalCampaign(idea: string): TCampaign {
         }
       }
     }
-    // Fallback: smart deterministic local generation
+    // Fallback: smart deterministic local generation from the actual user idea
     if (!campaign) {
-      console.log("Generating Claude-style campaign locally...");
+      console.log("Generating Claude-style campaign locally from your prompt...");
       campaign = Campaign.parse(generateLocalCampaign(arg));
     }
   }
@@ -128,19 +171,31 @@ function generateLocalCampaign(idea: string): TCampaign {
 
   console.log(`\n=============================================================`);
   console.log(`🎬 Rendering Claude Motion: ${campaign.name}`);
-  console.log(`📐 Aspect: 9:16 (1080x1920) | Scenes: ${campaign.scenes.length}`);
+  console.log(`📐 Aspect: ${campaign.size} | Scenes: ${campaign.scenes.length}`);
+  if (scaleArg) console.log(`⚡ Preview Scale: ${scaleArg}`);
   console.log(`=============================================================\n`);
 
   const videoOut = `out/${campaign.name}.mp4`;
   const contactOut = `out/${campaign.name}_contact.png`;
 
-  execSync(`npx remotion render src/index.tsx ClaudeMotion ${videoOut} --props=${file} --overwrite`, { stdio: "inherit" });
+  const scaleFlag = scaleArg ? ` ${scaleArg}` : "";
+  execSync(
+    `npx remotion render src/index.tsx ClaudeMotion ${videoOut} --props=${file} --overwrite${scaleFlag}`,
+    { stdio: "inherit" }
+  );
 
-  // Generate QC Contact Sheet
-  console.log(`\nGenerating QC Contact Sheet: ${contactOut}`);
-  execSync(`ffmpeg -y -i ${videoOut} -vf "fps=1/2,scale=450:-1,tile=4x2" -frames:v 1 ${contactOut}`, { stdio: "inherit" });
+  // Generate QC Contact Sheet if ffmpeg is available
+  try {
+    console.log(`\nGenerating QC Contact Sheet: ${contactOut}`);
+    execSync(
+      `ffmpeg -y -i ${videoOut} -vf "fps=1/2,scale=450:-1,tile=4x2" -frames:v 1 ${contactOut}`,
+      { stdio: "inherit" }
+    );
+    console.log(`✔ QC Contact Sheet: ${contactOut}`);
+  } catch {
+    console.warn("Notice: FFmpeg contact sheet generation skipped or failed.");
+  }
 
   console.log(`\n✔ Video Render Complete: ${videoOut}`);
-  console.log(`✔ QC Contact Sheet: ${contactOut}`);
   console.log(`✔ Preserved Campaign Data: ${file}\n`);
 })();

@@ -9,6 +9,15 @@ export const T = {
   mono: "'JetBrains Mono', 'Geist Mono', Menlo, monospace",
 };
 
+export const getTheme = (theme?: TCampaign["theme"]) => ({
+  ...T,
+  bg: theme?.bg || T.bg,
+  panel: theme?.panel || T.panel,
+  clay: theme?.clay || T.clay,
+  cream: theme?.cream || T.cream,
+  muted: theme?.muted || T.muted,
+});
+
 // Calm, decelerating ease: Claude-style, no bounce.
 export const ease = Easing.bezier(0.22, 1, 0.36, 1);
 
