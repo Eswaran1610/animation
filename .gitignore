@@ -6,3 +6,8 @@ out/
 .env
 .env.*
 *.log
+.motion-plans/
+public/generated-audio/
+.motion-cache/
+jobs/
+.dev-build/

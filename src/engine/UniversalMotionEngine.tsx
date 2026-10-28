@@ -1,9 +1,11 @@
-import { AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Sequence, Audio, staticFile, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { noise2D } from "@remotion/noise";
 import { evolvePath } from "@remotion/paths";
 import Prism from "prismjs";
 import "prismjs/components/prism-bash";
 import { CampaignData, MotionScene } from "./schema";
+import { campaignToMotionPlan, motionPlanToCampaign, MotionPlan, PlanSchema } from "./plan";
+import { buildSfxCues, musicDuckMultiplier } from "./sfx";
 
 // =========================================================================
 // SVG VECTOR ICONS (Zero external font dependency, 100% deterministic)
@@ -69,19 +71,20 @@ function renderSyntaxTokens(text: string) {
 // =========================================================================
 // CINEMATIC BACKGROUND: Perlin Volumetric Noise & Deep Obsidian Mesh
 // =========================================================================
-const CinematicAtmosphere: React.FC<{ theme?: string; primaryColor: string; accentColor: string }> = ({
+const CinematicAtmosphere: React.FC<{ theme?: string; primaryColor: string; accentColor: string; styleSeed: string }> = ({
   theme = "cyber",
   primaryColor,
   accentColor,
+  styleSeed,
 }) => {
   const frame = useCurrentFrame();
   const isClaude = theme === "claude";
 
   // Multi-octave Perlin noise drift
-  const x1 = 50 + noise2D("aurora_x", frame / 180, 0) * 22;
-  const y1 = 35 + noise2D("aurora_y", 0, frame / 180) * 18;
-  const x2 = 50 + noise2D("aurora_x2", frame / 150, 1) * 25;
-  const y2 = 70 + noise2D("aurora_y2", 1, frame / 150) * 20;
+  const x1 = 50 + noise2D(`${styleSeed}_aurora_x`, frame / 180, 0) * 22;
+  const y1 = 35 + noise2D(`${styleSeed}_aurora_y`, 0, frame / 180) * 18;
+  const x2 = 50 + noise2D(`${styleSeed}_aurora_x2`, frame / 150, 1) * 25;
+  const y2 = 70 + noise2D(`${styleSeed}_aurora_y2`, 1, frame / 150) * 20;
 
   const bgBase = isClaude ? "#181714" : theme === "fintech" ? "#060A12" : "#030611";
   const glow1 = isClaude ? "rgba(217, 119, 87, 0.18)" : `${primaryColor}22`;
@@ -882,17 +885,24 @@ const StudioScene: React.FC<{
 // =========================================================================
 // MAIN ENTRY: Universal Motion Engine
 // =========================================================================
-export const UniversalMotionEngine: React.FC<{ campaign: CampaignData }> = ({ campaign }) => {
-  const { fps } = useVideoConfig();
+type UniversalMotionEngineProps = { plan?: MotionPlan; campaign?: CampaignData };
 
-  // Calculate timeline offsets
-  let runningFrame = 0;
-  const timeline = campaign.scenes.map((scene) => {
-    const durationFrames = Math.round((scene.durationSeconds || 5) * fps);
-    const from = runningFrame;
-    runningFrame += durationFrames;
+export const UniversalMotionEngine: React.FC<UniversalMotionEngineProps> = ({ plan: planInput, campaign: legacyCampaign }) => {
+  const { fps } = useVideoConfig();
+  // New renders enter as plans. `campaign` remains a read-only compatibility
+  // boundary for existing campaign files and Remotion Studio props.
+  const plan = PlanSchema.parse(planInput ?? campaignToMotionPlan(legacyCampaign!));
+  const campaign = motionPlanToCampaign(plan);
+
+  // Plan starts are absolute, so visual and audio timing share one source.
+  const timeline = campaign.scenes.map((scene, index) => {
+    const planScene = plan.scenes[index];
+    const durationFrames = Math.round(planScene.dur * fps);
+    const from = Math.round(planScene.start * fps);
     return { scene, from, durationFrames };
   });
+  const runningFrame = Math.max(...timeline.map(({ from, durationFrames }) => from + durationFrames));
+  const sfxCues = buildSfxCues(plan);
 
   return (
     <AbsoluteFill style={{ backgroundColor: campaign.brand.backgroundColor || "#030611", overflow: "hidden" }}>
@@ -901,6 +911,7 @@ export const UniversalMotionEngine: React.FC<{ campaign: CampaignData }> = ({ ca
         theme={campaign.brand.theme}
         primaryColor={campaign.brand.primaryColor}
         accentColor={campaign.brand.accentColor}
+        styleSeed={plan.meta.styleSeed}
       />
 
       {/* 2. Full-Screen Cinematic Scenes */}
@@ -914,7 +925,28 @@ export const UniversalMotionEngine: React.FC<{ campaign: CampaignData }> = ({ ca
           />
         </Sequence>
       ))}
+
+      {/* 3. Background Ambient Audio Soundtrack */}
+      {campaign.audioTrack && (
+        <Audio
+          src={staticFile(campaign.audioTrack)}
+          volume={(f) =>
+            interpolate(
+              f,
+              [0, 15, Math.max(16, runningFrame - 30), runningFrame],
+              [0, 0.65, 0.65, 0],
+              { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
+            ) * musicDuckMultiplier(f, fps, sfxCues)
+          }
+        />
+      )}
+
+      {/* 4. Timing-derived motion SFX, plus explicit plan exceptions. */}
+      {sfxCues.map((sfx) => (
+        <Sequence key={`sfx_${sfx.id}`} from={Math.round(sfx.at * fps)} durationInFrames={Math.round(fps * 1.5)}>
+          <Audio src={staticFile(sfx.src)} volume={sfx.volume} playbackRate={sfx.playbackRate} />
+        </Sequence>
+      ))}
     </AbsoluteFill>
   );
 };
-

@@ -2,6 +2,7 @@ import React from "react";
 import { Composition, registerRoot } from "remotion";
 import { DynamicMotionPromo } from "./DynamicMotionPromo";
 import { defaultCampaign } from "./sampleData";
+import { campaignToMotionPlan } from "./engine/plan";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -74,6 +75,17 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
       />
 
+      {/* 60-Second Vertical (9:16) Threads API Motion Animation with Mathable Sound */}
+      <Composition
+        id="Threads-60s"
+        component={require("./ThreadsMotion60s").ThreadsMotion60s}
+        durationInFrames={1800} // 60 seconds * 30 fps
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+
       {/* 50-Second Vertical (9:16) Before ZTNA vs Proposed ZTNA System with Emojis & Mascots */}
       <Composition
         id="ZTNA-Comparison-50s"
@@ -134,27 +146,14 @@ export const RemotionRoot: React.FC = () => {
         component={require("./engine/UniversalMotionEngine").UniversalMotionEngine}
         calculateMetadata={({ props }: any) => {
           const fps = 30;
-          const campaign = props?.campaign;
-          const scenes = campaign?.scenes || [];
-          const totalSeconds = scenes.reduce((acc: number, s: any) => acc + (s.durationSeconds || 5), 0);
-          const isLandscape = campaign?.aspectRatio === "16:9";
-          const isSquare = campaign?.aspectRatio === "1:1";
-
-          let width = 1080;
-          let height = 1920;
-          if (isLandscape) {
-            width = 1920;
-            height = 1080;
-          } else if (isSquare) {
-            width = 1080;
-            height = 1080;
-          }
+          const plan = props?.plan ?? campaignToMotionPlan(props?.campaign);
+          const totalSeconds = plan.scenes.reduce((max: number, scene: any) => Math.max(max, scene.start + scene.dur), 0);
 
           return {
             durationInFrames: Math.max(90, Math.round(totalSeconds * fps)),
             fps,
-            width,
-            height,
+            width: plan.meta.size.width,
+            height: plan.meta.size.height,
           };
         }}
         durationInFrames={1800}

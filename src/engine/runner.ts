@@ -1,13 +1,29 @@
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
+import { execFileSync, execSync } from "child_process";
 import { CampaignDataSchema, CampaignData, SupportedSceneTypes } from "./schema";
+import { campaignToMotionPlan, PlanSchema, type MotionPlan } from "./plan";
+import { prepareAudioBed } from "./audioBed";
 
 const CAMPAIGNS_DIR = path.join(__dirname, "../../campaigns");
 const OUTPUT_DIR = path.join(__dirname, "../../out");
 
 if (!fs.existsSync(CAMPAIGNS_DIR)) fs.mkdirSync(CAMPAIGNS_DIR, { recursive: true });
 if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
+/** Renders an already validated plan. Used by the asynchronous job queue. */
+export function renderMotionPlan(planInput: MotionPlan, videoOut: string, propsPath: string) {
+  const plan = PlanSchema.parse(planInput);
+  const totalFrames = Math.round(Math.max(...plan.scenes.map((scene) => scene.start + scene.dur)) * plan.meta.fps);
+  fs.mkdirSync(path.dirname(videoOut), { recursive: true });
+  fs.writeFileSync(propsPath, JSON.stringify({ plan }, null, 2));
+  const remotion = path.join(process.cwd(), "node_modules", ".bin", "remotion");
+  execFileSync(remotion, [
+    "render", "src/index.tsx", "Universal-Motion-Engine", videoOut,
+    `--props=${propsPath}`, `--frames=0-${totalFrames - 1}`, "--overwrite",
+  ], { stdio: "inherit" });
+  return { videoOut, totalFrames };
+}
 
 export function validateAndRender(campaignInput: string | object) {
   let rawData: any;
@@ -42,20 +58,26 @@ export function validateAndRender(campaignInput: string | object) {
   const contactOut = path.join(OUTPUT_DIR, `${campaign.campaignId}_contact.png`);
   const propsPath = path.join(OUTPUT_DIR, `props_${campaign.campaignId}.json`);
 
-  fs.writeFileSync(propsPath, JSON.stringify({ campaign }, null, 2));
+  // The render contract is a plan. Existing campaign files are converted only
+  // at this boundary so they remain valid without giving the renderer two APIs.
+  const rawPlan = campaignToMotionPlan(campaign);
+  const totalSeconds = rawPlan.scenes.reduce((max, scene) => Math.max(max, scene.start + scene.dur), 0);
+  const preparedAudio = prepareAudioBed(rawPlan, totalSeconds, path.join(__dirname, "../.."), campaign.campaignId);
+  const plan = preparedAudio.plan;
+  fs.writeFileSync(propsPath, JSON.stringify({ plan }, null, 2));
 
-  const totalFrames = campaign.scenes.reduce((acc, s) => acc + s.durationSeconds * 30, 0);
+  const totalFrames = Math.round(totalSeconds * 30);
 
   console.log(`\n=============================================================`);
   console.log(`🎬 Rendering Campaign: ${campaign.campaignId} ("${campaign.title}")`);
   console.log(`🎨 Brand: ${campaign.brand.name} | Primary: ${campaign.brand.primaryColor}`);
   console.log(`⏱️ Duration: ${totalFrames / 30}s (${totalFrames} frames @ 30 FPS)`);
+  console.log(`🎵 Audio bed: ${preparedAudio.generated ? "generated" : "selected"} (${plan.audio.bed.mood}, ${plan.audio.bed.bpm} BPM)`);
   console.log(`📐 Aspect Ratio: ${campaign.aspectRatio}`);
   console.log(`=============================================================\n`);
 
   // 4. Render directly using the permanent Remotion Engine (Zero Code Touched)
-  const renderCmd = `npx remotion render src/index.tsx Universal-Motion-Engine ${videoOut} --props=${propsPath} --frames=0-${totalFrames - 1} --overwrite`;
-  execSync(renderCmd, { stdio: "inherit" });
+  renderMotionPlan(plan, videoOut, propsPath);
 
   // 5. Generate Automated Quality Control Contact Sheet via FFmpeg (High-res 4x2 grid)
   console.log(`\nGenerating High-Res QC Contact Sheet: ${campaign.campaignId}_contact.png`);

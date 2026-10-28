@@ -1,0 +1,21 @@
+{
+  "appId": "1752110042571065",
+  "secretKeyMasked": "a14caebb••••••••••••••••••••",
+  "accessTokenMasked": "THAAY5iOix4T••••••••••••••••••••WttbGcZD",
+  "user": {
+    "id": "29044431508576475",
+    "username": "bharath082006",
+    "name": "bharth",
+    "threads_profile_picture_url": "https://scontent-maa5-2.cdninstagram.com/v/t51.82787-19/825324413_18115677346875674_5004352080012814211_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=109&ccb=7-5&_nc_sid=30ff31&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xNTAuQzMifQ%3D%3D&_nc_ohc=RPgv99z1hPYQ7kNvwG_mJs7&_nc_oc=Adr-XHGVWrVCYUpksoWNR17n0LE3nEpy4sdPjmhRbbgPGtaLj-2emqCUpjmLJKUzkvU&_nc_zt=24&_nc_ht=scontent-maa5-2.cdninstagram.com&edm=AP4hL3IEAAAA&_nc_gid=qH_voR3jK2773zNczFEB4A&_nc_tpa=Q5bMBQKQ-597DrIxS5Bp3ZprT_CgVbuYBMtUcFsiqAR3ysGSuHYiW_lZ9gHhb41St3uPMmFe1efL2w7_1A&oh=00_AQSJNLPcIdjS0kWoaJdBPI3WdgpoFqsFyzOm0FM3VnuUCw&oe=6AE7AA9C"
+  },
+  "limits": {
+    "data": [
+      {
+        "quota_usage": 0
+      }
+    ]
+  },
+  "queriedAt": "2026-10-28T10:09:50.740Z",
+  "apiEndpoint": "https://graph.threads.net/v1.0/me",
+  "status": "CONNECTED_200_OK"
+}

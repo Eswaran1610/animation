@@ -4,6 +4,8 @@ import path from "path";
 import { validateAndRender } from "./engine/runner";
 import { CampaignData, MotionScene } from "./engine/schema";
 import { askGemini } from "./engine/geminiDirector";
+import { checkCodexAuth } from "./engine/codexAuth";
+import { MotionJobQueue } from "./engine/jobQueue";
 
 const envPath = path.join(__dirname, "../.env");
 if (fs.existsSync(envPath)) {
@@ -17,7 +19,10 @@ if (fs.existsSync(envPath)) {
 }
 
 const PORT = 4000;
+const WORKSPACE_ROOT = path.join(__dirname, "..");
 const OUTPUT_DIR = path.join(__dirname, "../out");
+const jobQueue = new MotionJobQueue(WORKSPACE_ROOT);
+let codexAuth = checkCodexAuth();
 
 if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
@@ -216,46 +221,90 @@ const server = http.createServer((req, res) => {
     }
   }
 
-  // API endpoint to render video from prompt
+  const jobFile = req.url?.match(/^\/jobs\/([a-zA-Z0-9_-]+)\/out\.mp4$/);
+  if (jobFile) {
+    const filePath = path.join(WORKSPACE_ROOT, "jobs", jobFile[1], "out.mp4");
+    if (fs.existsSync(filePath)) {
+      res.writeHead(200, { "Content-Type": "video/mp4" });
+      return fs.createReadStream(filePath).pipe(res);
+    }
+  }
+
+  if (req.method === "GET" && req.url === "/api/auth") {
+    codexAuth = checkCodexAuth();
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(codexAuth));
+    return;
+  }
+
+  const jobStatus = req.url?.match(/^\/api\/jobs\/([a-zA-Z0-9_-]+)$/);
+  if (req.method === "GET" && jobStatus) {
+    const job = jobQueue.get(jobStatus[1]);
+    if (!job) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Job not found" }));
+      return;
+    }
+    const logPath = path.join(WORKSPACE_ROOT, "jobs", job.id, "log.txt");
+    const logs = fs.existsSync(logPath) ? fs.readFileSync(logPath, "utf-8").slice(-5000) : "";
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ ...job, logs, videoUrl: job.status === "done" ? `/jobs/${job.id}/out.mp4` : undefined }));
+    return;
+  }
+
+  const reRender = req.url?.match(/^\/api\/jobs\/([a-zA-Z0-9_-]+)\/rerender$/);
+  if (req.method === "POST" && reRender) {
+    try {
+      const job = jobQueue.rerender(reRender[1]);
+      res.writeHead(202, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(job));
+    } catch (error) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }));
+    }
+    return;
+  }
+
+  if (req.method === "POST" && req.url === "/api/jobs") {
+    let body = "";
+    req.on("data", (chunk) => (body += chunk));
+    req.on("end", () => {
+      if (!codexAuth.loggedIn) {
+        res.writeHead(401, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: "Codex is not connected. Run codex login, then refresh this page." }));
+        return;
+      }
+      try {
+        const payload = JSON.parse(body);
+        const content = String(payload.content ?? payload.prompt ?? "").trim();
+        if (!content) throw new Error("Content is required");
+        const job = jobQueue.create(content, payload.options ?? payload.customConfig ?? {});
+        res.writeHead(202, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(job));
+      } catch (error) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }));
+      }
+    });
+    return;
+  }
+
+  // Kept as a non-blocking compatibility alias for old callers. The legacy
+  // renderer is intentionally no longer invoked from the web server.
   if (req.method === "POST" && req.url === "/api/render") {
     let body = "";
     req.on("data", (chunk) => (body += chunk));
-    req.on("end", async () => {
+    req.on("end", () => {
       try {
         const payload = JSON.parse(body);
-        let campaignData: CampaignData | null = null;
-
-        // 1. Try Gemini AI Director if key is configured
-        const geminiKey = payload.geminiApiKey || process.env.GEMINI_API_KEY;
-        if (geminiKey && geminiKey.trim().length > 10) {
-          console.log(`[UI Render] Consulting Gemini AI Creative Director for prompt: "${payload.prompt?.slice(0, 50)}..."`);
-          campaignData = await askGemini(payload.prompt || "", geminiKey);
-          if (campaignData) {
-            console.log(`[UI Render] Gemini successfully generated custom motion script with ${campaignData.scenes.length} scenes.`);
-          }
-        }
-
-        // 2. Fall back to local dynamic intent parser if Gemini is not used or fails
-        if (!campaignData) {
-          campaignData = parseUserPrompt(payload.prompt || "", payload.customConfig);
-        }
-
-        console.log(`[UI Render] Starting studio render for ${campaignData.campaignId} (Theme: ${campaignData.brand.theme || "cyber"})...`);
-        const { videoOut, contactOut, campaignJsonPath } = validateAndRender(campaignData);
-
-        console.log(`[UI Render] Render complete: ${videoOut}`);
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({
-            success: true,
-            videoUrl: `/out/${path.basename(videoOut)}`,
-            contactUrl: `/out/${path.basename(contactOut)}`,
-            config: campaignData,
-          })
-        );
+        if (!codexAuth.loggedIn) throw new Error("Codex is not connected. Run codex login, then refresh this page.");
+        const content = String(payload.content ?? payload.prompt ?? "").trim();
+        if (!content) throw new Error("Content is required");
+        const job = jobQueue.create(content, payload.options ?? payload.customConfig ?? {});
+        res.writeHead(202, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(job));
       } catch (err: any) {
-        console.error("UI Render failed:", err);
-        res.writeHead(500, { "Content-Type": "application/json" });
+        res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: err.message }));
       }
     });
@@ -295,6 +344,8 @@ const server = http.createServer((req, res) => {
     </header>
 
     <!-- Main Grid -->
+    ${!codexAuth.loggedIn ? `<div class="mb-6 flex items-center justify-between gap-4 rounded-xl border border-amber-700/60 bg-amber-950/30 p-4 text-sm text-amber-100"><span><strong>Connect Codex</strong> — run <code>codex login</code> once in a terminal, then refresh this check. Credentials remain in ~/.codex.</span><button onclick="refreshCodexAuth()" class="shrink-0 rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-slate-950">Check connection</button></div>` : ""}
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
       
       <!-- Prompt Input Panel (7 Cols) -->
@@ -355,18 +406,17 @@ const server = http.createServer((req, res) => {
           </div>
         </details>
 
-        <!-- Gemini Creative Director API Key -->
+        <!-- AGY CLI motion director banner -->
         <div class="mt-5 p-3.5 bg-slate-950/80 rounded-xl border border-slate-800">
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-              <span>✨ Gemini AI Creative Director</span>
-              <span class="text-[10px] text-emerald-400 font-semibold bg-emerald-950/70 border border-emerald-800/80 px-2 py-0.5 rounded-full">Free Tier Supported</span>
+              <span>✦ AGY CLI Motion Director</span>
+              <span class="text-[10px] text-emerald-400 font-semibold bg-emerald-950/70 border border-emerald-800/80 px-2 py-0.5 rounded-full">Active ⚡ (AGY CLI)</span>
             </label>
-            <a href="https://aistudio.google.com" target="_blank" class="text-[11px] text-indigo-400 hover:text-indigo-300 underline">Get free key →</a>
           </div>
-          <input id="geminiApiKey" type="password" placeholder="Paste free Gemini API key (AIzaSy...) or leave blank for local engine" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition">
-          <p class="text-[10px] text-slate-500 mt-1">If provided, Gemini writes custom, viral video scripts with zero generic templates.</p>
+          <p class="text-[10px] text-slate-400 mt-1">Autonomous planning via local AGY CLI. Generates Claude Code caliber typography, typing terminals & dynamic video-synced audio.</p>
         </div>
+
 
         <!-- Generate Button -->
         <button id="renderBtn" onclick="handleRender()" class="mt-5 w-full bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white font-bold py-4 rounded-xl text-lg shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition active:scale-[0.99]">
@@ -407,12 +457,17 @@ const server = http.createServer((req, res) => {
             </div>
             <img id="contactImg" class="w-full rounded-lg border border-slate-800" src="" alt="Contact sheet preview">
           </div>
+
+          <pre id="jobLogs" class="mt-5 max-h-44 overflow-auto whitespace-pre-wrap rounded-lg border border-slate-800 bg-slate-950 p-3 text-[10px] leading-relaxed text-slate-400"></pre>
         </div>
 
         <div id="downloadSection" class="mt-6 hidden">
           <a id="downloadBtn" href="#" download class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 px-4 rounded-xl text-center block transition">
             Download MP4 Video ↓
           </a>
+          <button id="rerenderBtn" onclick="rerenderSamePlan()" class="mt-3 w-full rounded-xl border border-slate-700 bg-slate-800 py-3 text-sm font-bold text-slate-200 transition hover:bg-slate-700">
+            Re-render with same plan
+          </button>
         </div>
       </div>
 
@@ -426,6 +481,7 @@ const server = http.createServer((req, res) => {
   <script>
     let selectedRatio = '9:16';
     let currentTheme = 'indigo';
+    let latestJobId = '';
 
     function setRatio(ratio) {
       selectedRatio = ratio;
@@ -493,41 +549,16 @@ const server = http.createServer((req, res) => {
         ctaText: document.getElementById('ctaText').value || undefined,
       };
 
-      const geminiApiKey = document.getElementById('geminiApiKey')?.value?.trim() || undefined;
-
       try {
-        const res = await fetch('/api/render', {
+        const res = await fetch('/api/jobs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt, customConfig, geminiApiKey }),
+          body: JSON.stringify({ content: prompt, options: customConfig }),
         });
 
         const data = await res.json();
         if (data.error) throw new Error(data.error);
-
-        // Update UI with rendered video
-        const videoPlayer = document.getElementById('videoPlayer');
-        const placeholder = document.getElementById('placeholderText');
-        const contactImg = document.getElementById('contactImg');
-        const contactContainer = document.getElementById('contactContainer');
-        const downloadSection = document.getElementById('downloadSection');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const downloadContact = document.getElementById('downloadContact');
-
-        placeholder.classList.add('hidden');
-        videoPlayer.classList.remove('hidden');
-        videoPlayer.src = data.videoUrl;
-        videoPlayer.play();
-
-        contactImg.src = data.contactUrl;
-        contactContainer.classList.remove('hidden');
-        downloadContact.href = data.contactUrl;
-
-        downloadBtn.href = data.videoUrl;
-        downloadSection.classList.remove('hidden');
-
-        statusBadge.innerText = "Render Complete ✔";
-        statusBadge.className = "text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded";
+        await pollJob(data.id);
       } catch (err) {
         alert("Render failed: " + err.message);
         statusBadge.innerText = "Error";
@@ -538,6 +569,74 @@ const server = http.createServer((req, res) => {
         btnText.innerText = "Render Dynamic Motion Video 🚀";
         spinner.classList.add('hidden');
       }
+    }
+
+    async function pollJob(id) {
+      const btn = document.getElementById('renderBtn');
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('spinner');
+      const statusBadge = document.getElementById('statusBadge');
+      const logs = document.getElementById('jobLogs');
+      const res = await fetch('/api/jobs/' + id);
+      const job = await res.json();
+      if (job.error && !job.status) throw new Error(job.error);
+      logs.textContent = job.logs || 'Waiting for job log…';
+      statusBadge.innerText = job.status + (job.cacheHit ? ' • cache hit' : '');
+      if (job.status === 'done') {
+        const videoPlayer = document.getElementById('videoPlayer');
+        const placeholder = document.getElementById('placeholderText');
+        const downloadSection = document.getElementById('downloadSection');
+        const downloadBtn = document.getElementById('downloadBtn');
+        placeholder.classList.add('hidden');
+        videoPlayer.classList.remove('hidden');
+        videoPlayer.src = job.videoUrl;
+        videoPlayer.play();
+        latestJobId = job.id;
+        downloadBtn.href = job.videoUrl;
+        downloadSection.classList.remove('hidden');
+        statusBadge.className = "text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded";
+        btn.disabled = false;
+        btn.classList.remove('opacity-75', 'cursor-not-allowed');
+        btnText.innerText = "Render Dynamic Motion Video 🚀";
+        spinner.classList.add('hidden');
+        return;
+      }
+      if (job.status === 'failed') {
+        throw new Error(job.error || 'Job failed');
+      }
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return pollJob(id);
+    }
+
+    async function rerenderSamePlan() {
+      if (!latestJobId) return;
+      const res = await fetch('/api/jobs/' + latestJobId + '/rerender', { method: 'POST' });
+      const job = await res.json();
+      if (job.error) return finishJobError(new Error(job.error));
+      document.getElementById('renderBtn').disabled = true;
+      document.getElementById('btnText').innerText = 'Re-rendering saved plan...';
+      document.getElementById('spinner').classList.remove('hidden');
+      pollJob(job.id).catch(finishJobError);
+    }
+
+    function finishJobError(err) {
+      const btn = document.getElementById('renderBtn');
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('spinner');
+      const statusBadge = document.getElementById('statusBadge');
+      alert("Render failed: " + err.message);
+      statusBadge.innerText = "Error";
+      statusBadge.className = "text-xs bg-red-500/20 text-red-400 px-2 py-0.5 rounded";
+      btn.disabled = false;
+      btn.classList.remove('opacity-75', 'cursor-not-allowed');
+      btnText.innerText = "Render Dynamic Motion Video 🚀";
+      spinner.classList.add('hidden');
+    }
+
+    async function refreshCodexAuth() {
+      const auth = await fetch('/api/auth').then((r) => r.json());
+      if (auth.loggedIn) window.location.reload();
+      else alert('Codex is still not connected. Run: codex login');
     }
   </script>
 </body>
